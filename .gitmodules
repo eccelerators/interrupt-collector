@@ -13,3 +13,15 @@
 [submodule "submodules/simstm"]
 	path = submodules/simstm
 	url = git@github.com:eccelerators/simstm.git
+[submodule "submodules/interrupt-generator"]
+	path = submodules/interrupt-generator
+	url = git@github.com:eccelerators/interrupt-generator.git
+[submodule "submodules/bus-divider"]
+	path = submodules/bus-divider
+	url = git@github.com:eccelerators/bus-divider.git
+[submodule "submodules/bus-join"]
+	path = submodules/bus-join
+	url = git@github.com:eccelerators/bus-join.git
+[submodule "submodules/vhdl-eccelerators-basic-package"]
+	path = submodules/vhdl-eccelerators-basic-package
+	url = git@github.com:eccelerators/vhdl-eccelerators-basic-package.git

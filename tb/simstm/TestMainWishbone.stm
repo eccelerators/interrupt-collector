@@ -27,14 +27,14 @@
 --  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 --  SOFTWARE.
 -- ******************************************************************************
-include "../../src-gen/simstm/EventCatcherIfc.stm"
+include "../../src-gen/simstm/InterruptCollectorIfc.stm"
 
 include "Base/Base.stm"
 include "Base/Array.stm"
 include "Base/ReadModifyWrite.stm"
 
-include "EventCatcher/EventCatcher.stm"
-include "Tests/TestEventCatcher.stm"
+include "InterruptCollector/InterruptCollector.stm"
+include "Tests/TestInterruptCollector.stm"
 
 
 bus wishbone 0
@@ -47,16 +47,16 @@ proc
 	bus pointer copy ReadModifyWriteBus32 wishbone
 	bus pointer copy ReadModifyWriteBus16 wishbone
 	bus pointer copy ReadModifyWriteBus8 wishbone
-	bus pointer copy EventCatcherIfcBus wishbone
+	bus pointer copy InterruptCollectorIfcBus wishbone
 	
-	call $EventCatcherIfcInit
+	call $InterruptCollectorIfcInit
 	
 	verbosity $INFO_2
 	trace 0
 	wait 1000
 	log message $INFO "Main test started"
 		
-    call $TestEventCatcher
+    call $TestInterruptCollector
 	
 	log message $INFO "Main test finished"
 	wait 1000

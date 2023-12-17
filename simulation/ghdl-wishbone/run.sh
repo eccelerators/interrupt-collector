@@ -8,13 +8,13 @@ cd ./work
 echo "analyze testbench devices"
 
 echo "analyze hxs generated sources"
-ghdl -i --std=08 ../../../src-gen/vhdl/wishbone/EventCatcherIfcPackage.vhd
-ghdl -i --std=08 ../../../src-gen/vhdl/wishbone/EventCatcherIfcWishbone.vhd
+ghdl -i --std=08 ../../../src-gen/vhdl/wishbone/InterruptCollectorIfcPackage.vhd
+ghdl -i --std=08 ../../../src-gen/vhdl/wishbone/InterruptCollectorIfcWishbone.vhd
 
 echo "analyze ip sources"
 
 echo "analyze sources"
-ghdl -i --std=08 ../../../src/vhdl/EventCatcher.vhd
+ghdl -i --std=08 ../../../src/vhdl/InterruptCollector.vhd
 
 echo "analyze testbench"
 ghdl -i --std=08 ../../../submodules/simstm/src/tb_base_pkg.vhd

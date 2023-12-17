@@ -1,11 +1,22 @@
 <?xml version="1.0" ?>
-<project name="EventCatcherModelSim-wishbone">
+<project name="InterruptCollectorModelSim-wishbone">
    <property environment="env"/>
    <property name="MODELSIM_BIN_DIR" value="/opt/intelFPGA/20.1/modelsim_ase/bin"/>
    <property name="ROOT_DIR" value="./../"/>
    <property name="MODELSIM_RUN_DIR" value="${ROOT_DIR}/modelsim-wishbone"/>
    <property name="MODELSIM_LIBRARIES_DIR" value="${MODELSIM_RUN_DIR}/libraries"/>
    <property name="TOP_LEVEL_NAME" value="work.tb_top_wishbone"/>
+   
+   
+    <target name="make_eccelerators_lib" description="make eccelerators lib">
+        <exec executable="${MODELSIM_BIN_DIR}/vlib" failonerror="true">
+            <arg value="${MODELSIM_LIBRARIES_DIR}/eccelerators" />
+        </exec>
+        <exec executable="${MODELSIM_BIN_DIR}/vmap" failonerror="true">
+            <arg value="eccelerators"/>
+            <arg value="${MODELSIM_LIBRARIES_DIR}/eccelerators" />
+        </exec>
+    </target>
    
    <target name="make-lib" description="make work lib">
       <mkdir dir="${MODELSIM_LIBRARIES_DIR}"/>
@@ -50,9 +61,19 @@
      -do_compile_tb_bus_pkg.vhd,
      -do_compile_tb_signals_pkg.vhd,
      -do_compile_tb_simstm.vhd,
-     -do_compile_EventCatcherIfcPackage.vhd,
-     -do_compile_EventCatcherIfcWishbone.vhd,
-     -do_compile_EventCatcher.vhd,
+     
+     -do_compile_BusDividerIfcPackage.vhd,
+     -do_compile_BusDividerIfcWishbone.vhd,
+     -do_compile_BusJoinWishbone.vhd,  
+
+     
+     -do_compile_InterruptGeneratorIfcPackage.vhd,
+     -do_compile_InterruptGeneratorIfcWishbone.vhd,
+     -do_compile_InterruptGenerator.vhd,
+   	
+     -do_compile_InterruptCollectorIfcPackage.vhd,
+     -do_compile_InterruptCollectorIfcWishbone.vhd,
+     -do_compile_InterruptCollector.vhd,
      -do_compile_tb_top_wishbone.vhd"
          description="CompileAll"/>
          
@@ -67,6 +88,15 @@
       </exec>
    </target>
    
+   <target name="compile_eccelerators_lib" description="compile eccelerators_lib">
+      <exec executable="${MODELSIM_BIN_DIR}/vcom" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="./../../submodules/vhdl-eccelerators-basic-package/src/eccelerators_basic.vhd"/>
+         <arg value="-work" />
+         <arg value="eccelerators" />
+      </exec>
+   </target>
+
 
    <target name="-do_compile_tb_base_pkg.vhd" description="compile tb_pkg.vhd">
       <exec executable="${MODELSIM_BIN_DIR}/vcom" failonerror="true">
@@ -134,23 +164,71 @@
          <arg value="./../../submodules/simstm/src/tb_simstm.vhd"/>
       </exec>
    </target>
-   <target name="-do_compile_EventCatcherIfcWishbone.vhd" description="compile EventCatcherIfcWishbone.vhd">
+   
+   <target name="-do_compile_BusDividerIfcPackage.vhd" description="compile BusDividerIfcPackage.vhd">
       <exec executable="${MODELSIM_BIN_DIR}/vcom" failonerror="true">
          <arg value="-2008"/>
-         <arg value="./../../src-gen/vhdl/wishbone/EventCatcherIfcWishbone.vhd"/>
+         <arg value="./../../submodules/bus-divider/src-gen/vhdl/wishbone/BusDividerIfcPackage.vhd"/>
+      </exec>
+   </target>   
+   <target name="-do_compile_BusDividerIfcWishbone.vhd" description="compile BusDividerIfcWishbone.vhd">
+      <exec executable="${MODELSIM_BIN_DIR}/vcom" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="./../../submodules/bus-divider/src-gen/vhdl/wishbone/BusDividerIfcWishbone.vhd"/>
+      </exec>
+   </target>      
+
+    <target name="-do_compile_BusJoinWishbone.vhd" description="compile BusJoinWishbone.vhd">
+      <exec executable="${MODELSIM_BIN_DIR}/vcom" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="./../../submodules/bus-join/src/vhdl/BusJoinWishbone.vhd"/>
+      </exec>
+   </target>    
+   
+   
+   <target name="-do_compile_InterruptGeneratorIfcPackage.vhd" description="compile InterruptGeneratorIfcPackage.vhd">
+      <exec executable="${MODELSIM_BIN_DIR}/vcom" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="./../../submodules/interrupt-generator/src-gen/vhdl/wishbone/InterruptGeneratorIfcPackage.vhd"/>
+      </exec>
+   </target>   
+   <target name="-do_compile_InterruptGeneratorIfcWishbone.vhd" description="compile InterruptGeneratorIfcWishbone.vhd">
+      <exec executable="${MODELSIM_BIN_DIR}/vcom" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="./../../submodules/interrupt-generator/src-gen/vhdl/wishbone/InterruptGeneratorIfcWishbone.vhd"/>
+      </exec>
+   </target>       
+     
+    <target name="-do_compile_InterruptGenerator.vhd" description="compile InterruptGenerator.vhd">
+      <exec executable="${MODELSIM_BIN_DIR}/vcom" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="./../../submodules/interrupt-generator/src/vhdl/InterruptGenerator.vhd"/>
+      </exec>
+   </target>    
+   
+   
+   
+   
+   
+   
+   
+   <target name="-do_compile_InterruptCollectorIfcWishbone.vhd" description="compile InterruptCollectorIfcWishbone.vhd">
+      <exec executable="${MODELSIM_BIN_DIR}/vcom" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="./../../src-gen/vhdl/wishbone/InterruptCollectorIfcWishbone.vhd"/>
       </exec>
    </target>
-   <target name="-do_compile_EventCatcherIfcPackage.vhd" description="compile EventCatcherIfcPackage.vhd">
+   <target name="-do_compile_InterruptCollectorIfcPackage.vhd" description="compile InterruptCollectorIfcPackage.vhd">
       <exec executable="${MODELSIM_BIN_DIR}/vcom" failonerror="true">
          <arg value="-2008"/>
-         <arg value="./../../src-gen/vhdl/wishbone/EventCatcherIfcPackage.vhd"/>
+         <arg value="./../../src-gen/vhdl/wishbone/InterruptCollectorIfcPackage.vhd"/>
       </exec>
    </target>
 
-   <target name="-do_compile_EventCatcher.vhd" description="compile EventCatcher.vhd">
+   <target name="-do_compile_InterruptCollector.vhd" description="compile InterruptCollector.vhd">
       <exec executable="${MODELSIM_BIN_DIR}/vcom" failonerror="true">
          <arg value="-2008"/>
-         <arg value="./../../src/vhdl/EventCatcher.vhd"/>
+         <arg value="./../../src/vhdl/InterruptCollector.vhd"/>
       </exec>
    </target>
  

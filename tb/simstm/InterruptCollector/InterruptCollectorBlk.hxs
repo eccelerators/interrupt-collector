@@ -66,11 +66,8 @@ namespace Eccelerators.Library.IP
 		register InterruptMaskReg
 		{
 			Name = "Interrupt Mask Register";
-			Width = 32;
+			Width = 4;
 			Bits = [
-				Mask,
-				Mask,
-				Mask,
 				Mask
 			];
 			enum Mask
@@ -97,12 +94,8 @@ namespace Eccelerators.Library.IP
 		register InterruptRequestReg
 		{
 			Name = "Interrupt Request Register";
-			Width = 32;
-			WriteTransparentPulse = true;
+			Width = 4;
 			Bits = [
-				Request,
-				Request,
-				Request,
 				Request
 			];
 			enum Request
@@ -156,12 +149,8 @@ namespace Eccelerators.Library.IP
 		register InterruptServiceReg
 		{
 			Name = "Interrupt Service Register";
-			Width = 32;
-			WriteTransparentPulse = true;
+			Width = 4;
 			Bits = [
-				Service,
-				Service,
-				Service,
 				Service
 			];
 			enum Service

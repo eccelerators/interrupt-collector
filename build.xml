@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="EventCatcherIfc">
+<project name="InterruptCollectorIfc">
 
 	<condition property="is_windows">
 		<os family="windows" />
@@ -10,7 +10,7 @@
 	<property name="HXS_FILES"
 		value="
 		submodules/usual-objects/hxs/UsualObjects.hxs
-		hxs/EventCatcherBlk.hxs 
+		hxs/InterruptCollectorBlk.hxs 
 		hxs/${ant.project.name}.hxs	
 		" 		
 	/>
@@ -22,7 +22,7 @@
 	
 	
 	<basename property="eccelerators-book.basename" file="${basedir}" />
-	<property name="gen.filename.stem" value="eccelerators.library.ip.EventCatcherIfc"/>
+	<property name="gen.filename.stem" value="eccelerators.library.ip.${ant.project.name}"/>
 	<property name="fo-gen.pdf.filename" value="${gen.filename.stem}.pdf" />
 
 	<property name="sphinx.rst.folderpath" value="${basedir}/src/docs"/>

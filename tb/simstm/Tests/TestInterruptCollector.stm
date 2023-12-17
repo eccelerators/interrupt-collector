@@ -27,11 +27,11 @@
 --  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 --  SOFTWARE.
 -- ******************************************************************************
-signal TestEventCatcherOut 4
-signal TestEventCatcherIn 4
+signal TestInterruptCollectorOut 4
+signal TestInterruptCollectorIn 4
 
 
-TestEventCatcher:
+TestInterruptCollector:
 proc   
-    call $EventCatcherDefaultTest  
+    call $InterruptCollectorDefaultTest  
 end proc

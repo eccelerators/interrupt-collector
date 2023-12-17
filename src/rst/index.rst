@@ -5,8 +5,7 @@ Welcome to InterruptCollector's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   addons/addon
-   src-gen/Eccelerators.Library.Base.InterruptCollectorIfc-composite
+   src-gen/Eccelerators.Library.IP.InterruptCollectorIfc-composite
 
 
 Indices and tables
