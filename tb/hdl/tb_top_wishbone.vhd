@@ -139,13 +139,13 @@ begin
     Clk <= transport (not Clk) and (not SimDone)  after 10 ns / 2; -- 100MHz
     
     signals_in0.in_signal <= GeneratorFailure;
-    signals_in0.in_signal_1 <= (others => '0');
-    signals_in0.in_signal_2 <= signals_out1.out_signal_2;
-    signals_in0.in_signal_3 <= signals_out1.out_signal_3;
-    signals_in0.Interrupt_4 <= InterruptToCpu;
+    signals_in0.in_signal_1 <= x"00"; -- core number
+    signals_in0.in_signal_2 <= signals_out1.out_signal_2; -- cross signals for Core sync
+    signals_in0.in_signal_3 <= signals_out1.out_signal_3; -- cross interrupts for Core sync
+    signals_in0.Interrupt_4 <= InterruptToCpu; -- interrupt to be tested to all cores
     
     signals_in1.in_signal <= GeneratorFailure;
-    signals_in1.in_signal_1 <= (others => '0');
+    signals_in1.in_signal_1 <= x"01";
     signals_in1.in_signal_2 <= signals_out0.out_signal_2;
     signals_in1.in_signal_3 <= signals_out0.out_signal_3;
     signals_in1.Interrupt_4 <= InterruptToCpu;

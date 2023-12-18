@@ -36,11 +36,51 @@ include "Base/ReadModifyWrite.stm"
 include "InterruptCollector/InterruptCollector.stm"
 include "Tests/TestInterruptCollector.stm"
 
+include "../../submodules/interrupt-generator/src-gen/simstm/InterruptGeneratorIfc.stm"
+include "../../submodules/bus-divider/src-gen/simstm/BusDividerIfc.stm"
+
 
 bus wishbone 0
 bus avalon 1
 bus axi4lite 2
 var WaitTimeOut 10000 -- * 10000 * 10 ms = 100s timeout, loops poll in 10us intervals
+
+signal InGeneratorFailure 0
+signal InCoreNumber 1
+signal InCrossFromOtherCore 2 -- cross signals for Core sync
+signal InCrossInterruptFromOtherCore 3 -- cross interrupts for Core sync
+signal InterruptToCpu 4 -- interrupt to be tested to all cores
+
+
+signal OutCrossToOtherCore 2 -- cross signals for Core sync
+signal OutCrossInterruptToOtherCore 3 -- cross interrupts for Core sync
+
+var CoreNumber 0
+var RunCrossFromOtherCore 0
+
+var InterruptRequests 0
+var InterruptRequest0 0
+var InterruptRequest1 0
+var InterruptRequest2 0
+var InterruptRequest3 0
+var InterruptCount 0
+
+const EndedLoopPatience 100000
+var EndedLoopCount 100000
+
+const ChargedNumberOfInterrupts0 2500
+const ChargedNumberOfInterrupts1 2000
+const ChargedNumberOfInterrupts2 1500
+const ChargedNumberOfInterrupts3 1000
+
+const IntervalNsOfInterrupts0 1000
+const IntervalNsOfInterrupts1 1500
+const IntervalNsOfInterrupts2 2000
+const IntervalNsOfInterrupts3 2500
+
+var GeneratorStatus 0
+
+
 
 Main:
 proc
@@ -48,17 +88,111 @@ proc
 	bus pointer copy ReadModifyWriteBus16 wishbone
 	bus pointer copy ReadModifyWriteBus8 wishbone
 	bus pointer copy InterruptCollectorIfcBus wishbone
+	bus pointer copy InterruptGeneratorIfcBus wishbone
+	
+	signal read InCoreNumber CoreNumber
 	
 	call $InterruptCollectorIfcInit
+	
+	equ InterruptGeneratorIfcAddress 0x100
+	call $InterruptGeneratorIfcInit
 	
 	verbosity $INFO_2
 	trace 0
 	wait 1000
-	log message $INFO "Main test started"
+	if $CoreNumber = 0
+		log message $INFO "Core{}: Main test started" $CoreNumber
 		
-    call $TestInterruptCollector
-	
-	log message $INFO "Main test finished"
-	wait 1000
-	finish
+		bus write InterruptGeneratorIfcBus 32 $ChargedCountReg0Address $ChargedNumberOfInterrupts0
+		bus write InterruptGeneratorIfcBus 32 $ChargedCountReg1Address $ChargedNumberOfInterrupts1
+		bus write InterruptGeneratorIfcBus 32 $ChargedCountReg2Address $ChargedNumberOfInterrupts2
+		bus write InterruptGeneratorIfcBus 32 $ChargedCountReg3Address $ChargedNumberOfInterrupts3
+		
+		bus write InterruptGeneratorIfcBus 32 $IntervalReg0Address $IntervalNsOfInterrupts0
+		bus write InterruptGeneratorIfcBus 32 $IntervalReg1Address $IntervalNsOfInterrupts1
+		bus write InterruptGeneratorIfcBus 32 $IntervalReg2Address $IntervalNsOfInterrupts2
+		bus write InterruptGeneratorIfcBus 32 $IntervalReg3Address $IntervalNsOfInterrupts3
+        
+        bus write InterruptCollectorIfcBus 32 $InterruptMaskRegAddress 0b1111 -- enable all interrupts		
+		bus write InterruptGeneratorIfcBus 32 $ControlRegAddress 0b1111	-- start generation for all interrupts	
+		signal write OutCrossToOtherCore 1
+		
+    	equ EndedLoopCount $EndedLoopPatience	
+    	loop $EndedLoopCount	
+    		bus read InterruptGeneratorIfcBus 32 $StatusRegAddress GeneratorStatus
+    		if $GeneratorStatus = 0b10101010
+    			equ EndedLoopCount $EndedLoopPatience
+    		end if	
+    	end loop
+    	
+    	loop 1000	
+    		signal read InCrossFromOtherCore RunCrossFromOtherCore
+    		if $RunCrossFromOtherCore = 0
+    			equ EndedLoopCount 1000
+    		end if
+    		wait 100
+    	end loop    	
+		
+		log message $INFO "Core{}: Main test finished" $CoreNumber
+		wait 1000
+		finish
+    else
+        signal read InCrossFromOtherCore RunCrossFromOtherCore
+        signal write OutCrossToOtherCore 1
+        if $RunCrossFromOtherCore = 1
+	    	log message $INFO "Core{}: test started" $CoreNumber
+	    	
+	    	equ EndedLoopCount $EndedLoopPatience	
+	    	loop $EndedLoopCount	
+	    		bus read InterruptGeneratorIfcBus 32 $StatusRegAddress GeneratorStatus
+	    		if $GeneratorStatus = 0b10101010
+	    			equ EndedLoopCount $EndedLoopPatience
+	    		end if	
+	    	end loop
+	    	
+	    	signal write OutCrossToOtherCore 0
+	    
+	        log message $INFO "Core{}: test finished" $CoreNumber
+        end if
+	end if
 end proc
+
+InterruptA:
+interrupt
+    log message 0 "Core{}: Interrupt form Generator happened" $CoreNumber
+    
+    bus read InterruptCollectorIfcBus 32 $InterruptRequestRegAddress InterruptRequests
+    
+    equ InterruptRequest0 $InterruptRequests
+    and InterruptRequest0 0b0001
+    equ InterruptRequest1 $InterruptRequests
+    and InterruptRequest1 0b0010
+    equ InterruptRequest2 $InterruptRequests
+    and InterruptRequest2 0b0100
+    equ InterruptRequest3 $InterruptRequests
+    and InterruptRequest3 0b1000
+    
+    if $InterruptRequest0 = 0b0001 
+    	bus write InterruptCollectorIfcBus 32 $InterruptRequestRegAddress $InterruptRequest0
+    	bus read InterruptGeneratorIfcBus 32 $ActualCountReg0Address InterruptCount
+    	bus write InterruptGeneratorIfcBus 32 $ReferenceCountReg0Address $InterruptCount
+    elsif $InterruptRequest1 = 0b0010 
+    	bus write InterruptCollectorIfcBus 32 $InterruptRequestRegAddress $InterruptRequest1
+    	bus read InterruptGeneratorIfcBus 32 $ActualCountReg1Address InterruptCount
+    	bus write InterruptGeneratorIfcBus 32 $ReferenceCountReg1Address $InterruptCount
+    elsif $InterruptRequest2 = 0b0100 
+    	bus write InterruptCollectorIfcBus 32 $InterruptRequestRegAddress $InterruptRequest2
+    	bus read InterruptGeneratorIfcBus 32 $ActualCountReg2Address InterruptCount
+    	bus write InterruptGeneratorIfcBus 32 $ReferenceCountReg2Address $InterruptCount
+    elsif $InterruptRequest3 = 0b1000 
+    	bus write InterruptCollectorIfcBus 32 $InterruptRequestRegAddress $InterruptRequest3
+    	bus read InterruptGeneratorIfcBus 32 $ActualCountReg3Address InterruptCount
+    	bus write InterruptGeneratorIfcBus 32 $ReferenceCountReg3Address $InterruptCount
+    end if 		
+    
+end interrupt
+
+InterruptB:
+interrupt
+    log message 0 "Core{}: Cross signal interrupt happened" $CoreNumber
+end interrupt

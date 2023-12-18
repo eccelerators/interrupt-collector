@@ -83,6 +83,8 @@
          <arg value="ps"/>
          <arg value="-L"/>
          <arg value="work"/>
+         <arg value="-L"/>
+         <arg value="eccelerators"/>
          <arg value="${TOP_LEVEL_NAME}"/>
          <arg value="-i"/>
       </exec>
