@@ -36,7 +36,6 @@ namespace Eccelerators.Library.IP
 		Description = "
 			Interface containing a basic Interrupt Collector block.
 		";
-		AddressBusWidth = 16;
 		DataBusWidth = 32;
 		Blocks = [InterruptCollectorBlk];
 	}

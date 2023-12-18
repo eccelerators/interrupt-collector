@@ -118,14 +118,20 @@ architecture behavioural of tb_top_wishbone is
     signal GeneratorFailure : std_logic;
     signal InterruptToCpu : std_logic;
     
-    signal ChannelOperation : std_logic_vector(1 downto 0);
-    signal ChannelStatus : std_logic_vector(1 downto 0);
-    signal ChargedCount : array_of_std_logic_vector(1 downto 0)(31 downto 0);
-    signal ActualCount : array_of_std_logic_vector(1 downto 0)(31 downto 0);
-    signal FailureCount : array_of_std_logic_vector(1 downto 0)(31 downto 0);
-    signal Interval : array_of_std_logic_vector(1 downto 0)(31 downto 0);
-    signal ReferenceCount : array_of_std_logic_vector(1 downto 0)(31 downto 0);
-    signal WRegPulseReferenceCount: std_logic_vector(1 downto 0);
+    signal ChannelOperation : std_logic_vector(3 downto 0);
+    signal ChannelStatus : array_of_std_logic_vector(3 downto 0)(1 downto 0);
+    signal ChargedCount : array_of_std_logic_vector(3 downto 0)(31 downto 0);
+    signal ActualCount : array_of_std_logic_vector(3 downto 0)(31 downto 0);
+    signal FailureCount : array_of_std_logic_vector(3 downto 0)(31 downto 0);
+    signal Interval : array_of_std_logic_vector(3 downto 0)(31 downto 0);
+    signal ReferenceCount : array_of_std_logic_vector(3 downto 0)(31 downto 0);
+    signal WRegPulseReferenceCount: std_logic_vector(3 downto 0);
+    
+    signal Mask : std_logic_vector(3 downto 0);
+    signal RequestWritten : std_logic_vector(3 downto 0);
+    signal ServiceWritten : std_logic_vector(3 downto 0);
+    signal RequestToBeRead : std_logic_vector(3 downto 0);
+    signal ServiceToBeRead : std_logic_vector(3 downto 0);
     
 begin
 
@@ -220,7 +226,7 @@ begin
         );
 
     BusDividerIfcWishboneDown.Cyc <= JoinCyc;
-    BusDividerIfcWishboneDown.Adr <= JoinAdr;
+    BusDividerIfcWishboneDown.Adr <= JoinAdr(8 downto 0);
     BusDividerIfcWishboneDown.Sel <= JoinSel;
     BusDividerIfcWishboneDown.We <= JoinWe;
     BusDividerIfcWishboneDown.Stb <= JoinStb;
@@ -240,19 +246,16 @@ begin
             BusDividerBlkUp => BusDividerIfcBusDividerBlkUp
         );
                 
-    InterruptCollectorIfcWishboneDown.Adr <= BusDividerIfcBusDividerBlkDown.BusDelegate0Adr(InterruptCollectorIfcWishboneDown.Adr'LENGTH - 1 downto 0);
+    InterruptCollectorIfcWishboneDown.Adr <= BusDividerIfcBusDividerBlkDown.BusDelegate0Adr(InterruptCollectorIfcWishboneDown.Adr'left  downto 0);
     InterruptCollectorIfcWishboneDown.Sel <= BusDividerIfcBusDividerBlkDown.BusDelegate0Sel;
     InterruptCollectorIfcWishboneDown.We <= BusDividerIfcBusDividerBlkDown.BusDelegate0We;
     InterruptCollectorIfcWishboneDown.Stb <= BusDividerIfcBusDividerBlkDown.BusDelegate0Stb;
     InterruptCollectorIfcWishboneDown.Cyc <= BusDividerIfcBusDividerBlkDown.BusDelegate0Cyc;
+    InterruptCollectorIfcWishboneDown.DatIn <= BusDividerIfcBusDividerBlkDown.BusDelegate0DatIn;
     
     BusDividerIfcBusDividerBlkUp.BusDelegate0Ack <= InterruptCollectorIfcWishboneUp.Ack;
-    
-    InterruptCollectorIfcWishboneDown.DatIn <= BusDividerIfcBusDividerBlkUp.BusDelegate0DatOut;
-    BusDividerIfcBusDividerBlkDown.BusDelegate0DatIn <= InterruptCollectorIfcWishboneUp.DatOut;
+    BusDividerIfcBusDividerBlkUp.BusDelegate0DatOut <= InterruptCollectorIfcWishboneUp.DatOut;
 
-    
-    
     i_InterruptCollectorIfcWishbone : entity work.InterruptCollectorIfcWishbone
         port map(
             Clk => Clk,
@@ -263,7 +266,31 @@ begin
             InterruptCollectorBlkDown => InterruptCollectorIfcInterruptCollectorBlkDown,
             InterruptCollectorBlkUp => InterruptCollectorIfcInterruptCollectorBlkUp
         );
+                
+    Mask(3) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptMaskReg_Mask3;
+    Mask(2) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptMaskReg_Mask2;
+    Mask(1) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptMaskReg_Mask1;
+    Mask(0) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptMaskReg_Mask0;
+    
+    RequestWritten(3) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptRequestReg_Request3Written;
+    RequestWritten(2) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptRequestReg_Request2Written;
+    RequestWritten(1) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptRequestReg_Request1Written;
+    RequestWritten(0) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptRequestReg_Request0Written;
 
+    ServiceWritten(3) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptServiceReg_Service3Written;
+    ServiceWritten(2) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptServiceReg_Service2Written;
+    ServiceWritten(1) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptServiceReg_Service1Written;
+    ServiceWritten(0) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptServiceReg_Service0Written;
+    
+    InterruptCollectorIfcInterruptCollectorBlkUp.InterruptRequestReg_Request3ToBeRead <= RequestToBeRead(3);
+    InterruptCollectorIfcInterruptCollectorBlkUp.InterruptRequestReg_Request2ToBeRead <= RequestToBeRead(2);
+    InterruptCollectorIfcInterruptCollectorBlkUp.InterruptRequestReg_Request1ToBeRead <= RequestToBeRead(1);
+    InterruptCollectorIfcInterruptCollectorBlkUp.InterruptRequestReg_Request0ToBeRead <= RequestToBeRead(0);
+    
+    InterruptCollectorIfcInterruptCollectorBlkUp.InterruptServiceReg_Service3ToBeRead <= ServiceToBeRead(3);
+    InterruptCollectorIfcInterruptCollectorBlkUp.InterruptServiceReg_Service2ToBeRead <= ServiceToBeRead(2);
+    InterruptCollectorIfcInterruptCollectorBlkUp.InterruptServiceReg_Service1ToBeRead <= ServiceToBeRead(1);
+    InterruptCollectorIfcInterruptCollectorBlkUp.InterruptServiceReg_Service0ToBeRead <= ServiceToBeRead(0);
 
     i_InterruptCollector : entity work.InterruptCollector
         generic map (
@@ -274,23 +301,23 @@ begin
             Rst => Rst,
             InterruptIn => GeneratedInterrupt,
             InterruptOut => InterruptToCpu,
-            Mask => InterruptCollectorIfcInterruptCollectorBlkDown.Mask,
-            RequestWritten => InterruptCollectorIfcInterruptCollectorBlkDown.RequestWritten,
+            Mask => Mask,
+            RequestWritten => RequestWritten,
             WTransPulseInterruptRequestReg => InterruptCollectorIfcInterruptCollectorBlkDown.WTransPulseInterruptRequestReg,
-            RequestToBeRead => InterruptCollectorIfcInterruptCollectorBlkUp.RequestToBeRead,
-            ServiceWritten => InterruptCollectorIfcInterruptCollectorBlkDown.ServiceWritten,
+            RequestToBeRead => RequestToBeRead,
+            ServiceWritten => ServiceWritten,
             WTransPulseInterruptServiceReg => InterruptCollectorIfcInterruptCollectorBlkDown.WTransPulseInterruptServiceReg,
-            ServiceToBeRead => InterruptCollectorIfcInterruptCollectorBlkUp.ServiceToBeRead
+            ServiceToBeRead => ServiceToBeRead
         );
         
-    InterruptGeneratorIfcWishboneDown.Adr <= BusDividerIfcBusDividerBlkDown.BusDelegate1Adr(InterruptGeneratorIfcWishboneDown.Adr'LENGTH - 1 downto 0);
+    InterruptGeneratorIfcWishboneDown.Adr <= BusDividerIfcBusDividerBlkDown.BusDelegate1Adr(InterruptGeneratorIfcWishboneDown.Adr'left downto 0);
     InterruptGeneratorIfcWishboneDown.Sel <= BusDividerIfcBusDividerBlkDown.BusDelegate1Sel;
-    InterruptGeneratorIfcWishboneDown.DatIn <= BusDividerIfcBusDividerBlkDown.BusDelegate1DatOut;
+    InterruptGeneratorIfcWishboneDown.DatIn <= BusDividerIfcBusDividerBlkDown.BusDelegate1DatIn;
     InterruptGeneratorIfcWishboneDown.We <= BusDividerIfcBusDividerBlkDown.BusDelegate1We;
     InterruptGeneratorIfcWishboneDown.Stb <= BusDividerIfcBusDividerBlkDown.BusDelegate1Stb;
     InterruptGeneratorIfcWishboneDown.Cyc <= BusDividerIfcBusDividerBlkDown.BusDelegate1Cyc;
     
-    BusDividerIfcBusDividerBlkUp.BusDelegate1DatIn <= InterruptCollectorIfcWishboneUp.DatOut;
+    BusDividerIfcBusDividerBlkUp.BusDelegate1DatOut <= InterruptCollectorIfcWishboneUp.DatOut;
     BusDividerIfcBusDividerBlkUp.BusDelegate1Ack <= InterruptCollectorIfcWishboneUp.Ack;
     
     
