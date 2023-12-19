@@ -317,8 +317,8 @@ begin
     InterruptGeneratorIfcWishboneDown.Stb <= BusDividerIfcBusDividerBlkDown.BusDelegate1Stb;
     InterruptGeneratorIfcWishboneDown.Cyc <= BusDividerIfcBusDividerBlkDown.BusDelegate1Cyc;
     
-    BusDividerIfcBusDividerBlkUp.BusDelegate1DatOut <= InterruptCollectorIfcWishboneUp.DatOut;
-    BusDividerIfcBusDividerBlkUp.BusDelegate1Ack <= InterruptCollectorIfcWishboneUp.Ack;
+    BusDividerIfcBusDividerBlkUp.BusDelegate1DatOut <= InterruptGeneratorIfcWishboneUp.DatOut;
+    BusDividerIfcBusDividerBlkUp.BusDelegate1Ack <= InterruptGeneratorIfcWishboneUp.Ack;
     
     
     i_InterruptGeneratorIfcWishbone : entity work.InterruptGeneratorIfcWishbone

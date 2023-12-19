@@ -77,8 +77,8 @@ namespace Eccelerators.Library.IP
 			{
 				Width = 1;
 				Values = [
-					InterruptCollectorBlk.InterruptMaskReg.Mask.InterruptEnabled,
-					InterruptCollectorBlk.InterruptMaskReg.Mask.InterruptDisabled
+					InterruptCollectorBlk.InterruptMaskReg.Mask.InterruptDisabled,
+					InterruptCollectorBlk.InterruptMaskReg.Mask.InterruptEnabled
 				];
 				value InterruptEnabled
 				{
@@ -110,10 +110,10 @@ namespace Eccelerators.Library.IP
 				Behaviour = BitBehaviour.Transparent;
 				Width = 1;
 				Values = [
-					Pending,
 					NotPending,
-					Confirmed,
-					NotConfirmed
+					Pending,
+					NotConfirmed,
+					Confirmed				
 				];
 				value Pending
 				{
@@ -169,10 +169,10 @@ namespace Eccelerators.Library.IP
 				Behaviour = BitBehaviour.Transparent;
 				Width = 1;
 				Values = [
-					InProcess,
 					Ended,
-					Confirmed,
-					NotConfirmed
+					InProcess,
+					NotConfirmed,
+					Confirmed		
 				];
 				value InProcess
 				{

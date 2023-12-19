@@ -27,17 +27,13 @@
 --  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 --  SOFTWARE.
 -- ******************************************************************************
-include "../../src-gen/simstm/InterruptCollectorIfc.stm"
 
 include "Base/Base.stm"
 include "Base/Array.stm"
 include "Base/ReadModifyWrite.stm"
-
-include "InterruptCollector/InterruptCollector.stm"
-include "Tests/TestInterruptCollector.stm"
-
 include "../../submodules/interrupt-generator/src-gen/simstm/InterruptGeneratorIfc.stm"
 include "../../submodules/bus-divider/src-gen/simstm/BusDividerIfc.stm"
+include "../../src-gen/simstm/InterruptCollectorIfc.stm"
 
 
 bus wishbone 0
@@ -56,7 +52,6 @@ signal OutCrossToOtherCore 2 -- cross signals for Core sync
 signal OutCrossInterruptToOtherCore 3 -- cross interrupts for Core sync
 
 var CoreNumber 0
-var RunCrossFromOtherCore 0
 
 var InterruptRequests 0
 var InterruptRequest0 0
@@ -64,9 +59,6 @@ var InterruptRequest1 0
 var InterruptRequest2 0
 var InterruptRequest3 0
 var InterruptCount 0
-
-const EndedLoopPatience 100000
-var EndedLoopCount 100000
 
 const ChargedNumberOfInterrupts0 2500
 const ChargedNumberOfInterrupts1 2000
@@ -77,10 +69,6 @@ const IntervalNsOfInterrupts0 1000
 const IntervalNsOfInterrupts1 1500
 const IntervalNsOfInterrupts2 2000
 const IntervalNsOfInterrupts3 2500
-
-var GeneratorStatus 0
-
-
 
 Main:
 proc
@@ -97,7 +85,7 @@ proc
 	equ InterruptGeneratorIfcAddress 0x100
 	call $InterruptGeneratorIfcInit
 	
-	verbosity $INFO_2
+	verbosity $INFO_5
 	trace 0
 	wait 1000
 	if $CoreNumber = 0
@@ -116,50 +104,31 @@ proc
         bus write InterruptCollectorIfcBus 32 $InterruptMaskRegAddress 0b1111 -- enable all interrupts		
 		bus write InterruptGeneratorIfcBus 32 $ControlRegAddress 0b1111	-- start generation for all interrupts	
 		signal write OutCrossToOtherCore 1
-		
-    	equ EndedLoopCount $EndedLoopPatience	
-    	loop $EndedLoopCount	
-    		bus read InterruptGeneratorIfcBus 32 $StatusRegAddress GeneratorStatus
-    		if $GeneratorStatus = 0b10101010
-    			equ EndedLoopCount $EndedLoopPatience
-    		end if	
-    	end loop
-    	
-    	loop 1000	
-    		signal read InCrossFromOtherCore RunCrossFromOtherCore
-    		if $RunCrossFromOtherCore = 0
-    			equ EndedLoopCount 1000
-    		end if
-    		wait 100
-    	end loop    	
-		
+		    	
+    	call $WaitForGeneratorStatusAllEnded
+    	call $WaitForNotRunCrossFromOtherCore
+    			
 		log message $INFO "Core{}: Main test finished" $CoreNumber
 		wait 1000
 		finish
     else
-        signal read InCrossFromOtherCore RunCrossFromOtherCore
+        call $WaitForRunCrossFromOtherCore
         signal write OutCrossToOtherCore 1
-        if $RunCrossFromOtherCore = 1
-	    	log message $INFO "Core{}: test started" $CoreNumber
-	    	
-	    	equ EndedLoopCount $EndedLoopPatience	
-	    	loop $EndedLoopCount	
-	    		bus read InterruptGeneratorIfcBus 32 $StatusRegAddress GeneratorStatus
-	    		if $GeneratorStatus = 0b10101010
-	    			equ EndedLoopCount $EndedLoopPatience
-	    		end if	
-	    	end loop
-	    	
-	    	signal write OutCrossToOtherCore 0
-	    
-	        log message $INFO "Core{}: test finished" $CoreNumber
-        end if
+              
+    	log message $INFO "Core{}: test started" $CoreNumber
+    	
+    	call $WaitForGeneratorStatusAllEnded
+    	
+    	signal write OutCrossToOtherCore 0
+    
+        log message $INFO "Core{}: test finished" $CoreNumber
+
 	end if
 end proc
 
 InterruptA:
 interrupt
-    log message 0 "Core{}: Interrupt form Generator happened" $CoreNumber
+    log message $INFO_5 "Core{}: Interrupt from Generator happened" $CoreNumber
     
     bus read InterruptCollectorIfcBus 32 $InterruptRequestRegAddress InterruptRequests
     
@@ -194,5 +163,46 @@ end interrupt
 
 InterruptB:
 interrupt
-    log message 0 "Core{}: Cross signal interrupt happened" $CoreNumber
+    log message $INFO_5 "Core{}: Cross signal interrupt happened" $CoreNumber
 end interrupt
+
+var GeneratorStatus 0
+WaitForGeneratorStatusAllEnded:
+proc
+    loop 10000
+        wait 100
+    	bus read InterruptGeneratorIfcBus 32 $StatusRegAddress GeneratorStatus
+		if $GeneratorStatus = 0b10101010
+			return
+		end if
+    end loop
+    log message $ERROR "Generator Status All Ended not reached in resonable time !"
+    abort
+end proc
+
+var RunCrossFromOtherCore 0
+WaitForRunCrossFromOtherCore:
+proc
+    loop 10000
+        wait 100
+    	signal read InCrossFromOtherCore RunCrossFromOtherCore
+    	if $RunCrossFromOtherCore = 1
+			return
+		end if
+    end loop
+    log message $ERROR "Run Cross From Other Core not activated in reasonable time !"
+    abort
+end proc
+
+WaitForNotRunCrossFromOtherCore:
+proc
+    loop 10000
+        wait 100
+    	signal read InCrossFromOtherCore RunCrossFromOtherCore
+    	if $RunCrossFromOtherCore = 1
+			return
+		end if
+    end loop
+    log message $ERROR "Run Cross From Other Core not deactivated in reasonable time !"
+    abort
+end proc
