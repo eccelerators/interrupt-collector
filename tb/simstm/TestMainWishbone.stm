@@ -100,13 +100,15 @@ proc
 		bus write InterruptGeneratorIfcBus 32 $IntervalReg1Address $IntervalNsOfInterrupts1
 		bus write InterruptGeneratorIfcBus 32 $IntervalReg2Address $IntervalNsOfInterrupts2
 		bus write InterruptGeneratorIfcBus 32 $IntervalReg3Address $IntervalNsOfInterrupts3
-        
+ 
+		signal write OutCrossToOtherCore 1
+		
+        wait 100
         bus write InterruptCollectorIfcBus 32 $InterruptMaskRegAddress 0b1111 -- enable all interrupts		
 		bus write InterruptGeneratorIfcBus 32 $ControlRegAddress 0b1111	-- start generation for all interrupts	
-		signal write OutCrossToOtherCore 1
-		    	
+	    	
     	call $WaitForGeneratorStatusAllEnded
-    	call $WaitForNotRunCrossFromOtherCore
+    	call $WaitForNotRunCrossFromOtherCore 
     			
 		log message $INFO "Core{}: Main test finished" $CoreNumber
 		wait 1000
