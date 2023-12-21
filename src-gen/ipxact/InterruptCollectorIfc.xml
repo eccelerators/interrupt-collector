@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ipxact:component xmlns:ipxact="http://www.accellera.org/XMLSchema/IPXACT/1685-2014" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.accellera.org/XMLSchema/IPXACT/1685-2014 http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd">
+    <ipxact:vendor>eccelerators.com</ipxact:vendor>
+    <ipxact:library>interface</ipxact:library>
+    <ipxact:name>InterruptCollectorIfc</ipxact:name>
+    <ipxact:version>0.0.1</ipxact:version>
+    <ipxact:memoryMaps>
+        <ipxact:memoryMap>
+            <ipxact:name>InterruptCollectorBlk</ipxact:name>
+            <ipxact:displayName>Interrupt Collector Block</ipxact:displayName>
+            <ipxact:description>
+			This block defines a basic interrupt collector for **level triggered** interrupt sources.
+			Usually edge triggered sources e.g., timer pulses can be converted to level triggered 
+			ones by catching them in the user logic. 
+
+			Constraints:
+            
+            1. Allow interrupt processing by multiple CPUs without need for spinlocks.
+			2. Enable forwarding an interrupt to the CPU(s) by a mask for each source.
+			3. Provide control pulses to notify the user logic when a interrupt service for an 
+			   interrupt request has been started and has been ended. 
+			4. Use the control pulses to reset the interrupt request fo a source or do it by 
+			   a write or read access directly to the user logic e.g. reading the receive data 
+			   register of an UART. 
+			   
+            Interrupt Collector details:
+			 
+			.. figure:: resources/InterruptCollectorUserLogic.png
+			   :scale: 50
+			   
+			   Interrupt Collector details
+			   												 			 
+			</ipxact:description>
+            <ipxact:addressBlock>
+                <ipxact:name>InterruptMaskReg</ipxact:name>
+                <ipxact:displayName>Interrupt Mask Register</ipxact:displayName>
+                <ipxact:description></ipxact:description>
+                <ipxact:baseAddress>0</ipxact:baseAddress>
+                <ipxact:range>4</ipxact:range>
+                <ipxact:width>8</ipxact:width>
+                <ipxact:register>
+                    <ipxact:name>InterruptMaskReg</ipxact:name>
+                    <ipxact:displayName>Interrupt Mask Register</ipxact:displayName>
+                    <ipxact:addressOffset>0x00</ipxact:addressOffset>
+                    <ipxact:size>32</ipxact:size>
+                    <ipxact:volatile>true</ipxact:volatile>
+                    <ipxact:access>read-write</ipxact:access>
+                    <ipxact:field>
+                        <ipxact:name>Mask3</ipxact:name>
+                        <ipxact:bitOffset>3</ipxact:bitOffset>
+                        <ipxact:bitWidth>1</ipxact:bitWidth>
+                        <ipxact:volatile>false</ipxact:volatile>
+                        <ipxact:access>read-write</ipxact:access>
+                        <ipxact:enumeratedValues>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Mask3_InterruptDisabled</ipxact:name>
+<ipxact:description>Interrupt is not forwarded to CPU(s).</ipxact:description>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Mask3_InterruptEnabled</ipxact:name>
+<ipxact:description>Interrupt is forwarded to CPU(s).</ipxact:description>
+<ipxact:value>0x8</ipxact:value>
+                            </ipxact:enumeratedValue>
+                        </ipxact:enumeratedValues>
+                    </ipxact:field>
+                    <ipxact:field>
+                        <ipxact:name>Mask2</ipxact:name>
+                        <ipxact:bitOffset>2</ipxact:bitOffset>
+                        <ipxact:bitWidth>1</ipxact:bitWidth>
+                        <ipxact:volatile>false</ipxact:volatile>
+                        <ipxact:access>read-write</ipxact:access>
+                        <ipxact:enumeratedValues>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Mask2_InterruptDisabled</ipxact:name>
+<ipxact:description>Interrupt is not forwarded to CPU(s).</ipxact:description>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Mask2_InterruptEnabled</ipxact:name>
+<ipxact:description>Interrupt is forwarded to CPU(s).</ipxact:description>
+<ipxact:value>0x4</ipxact:value>
+                            </ipxact:enumeratedValue>
+                        </ipxact:enumeratedValues>
+                    </ipxact:field>
+                    <ipxact:field>
+                        <ipxact:name>Mask1</ipxact:name>
+                        <ipxact:bitOffset>1</ipxact:bitOffset>
+                        <ipxact:bitWidth>1</ipxact:bitWidth>
+                        <ipxact:volatile>false</ipxact:volatile>
+                        <ipxact:access>read-write</ipxact:access>
+                        <ipxact:enumeratedValues>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Mask1_InterruptDisabled</ipxact:name>
+<ipxact:description>Interrupt is not forwarded to CPU(s).</ipxact:description>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Mask1_InterruptEnabled</ipxact:name>
+<ipxact:description>Interrupt is forwarded to CPU(s).</ipxact:description>
+<ipxact:value>0x2</ipxact:value>
+                            </ipxact:enumeratedValue>
+                        </ipxact:enumeratedValues>
+                    </ipxact:field>
+                    <ipxact:field>
+                        <ipxact:name>Mask0</ipxact:name>
+                        <ipxact:bitOffset>0</ipxact:bitOffset>
+                        <ipxact:bitWidth>1</ipxact:bitWidth>
+                        <ipxact:volatile>false</ipxact:volatile>
+                        <ipxact:access>read-write</ipxact:access>
+                        <ipxact:enumeratedValues>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Mask0_InterruptDisabled</ipxact:name>
+<ipxact:description>Interrupt is not forwarded to CPU(s).</ipxact:description>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Mask0_InterruptEnabled</ipxact:name>
+<ipxact:description>Interrupt is forwarded to CPU(s).</ipxact:description>
+<ipxact:value>0x1</ipxact:value>
+                            </ipxact:enumeratedValue>
+                        </ipxact:enumeratedValues>
+                    </ipxact:field>
+                </ipxact:register>
+            </ipxact:addressBlock>
+            <ipxact:addressBlock>
+                <ipxact:name>InterruptRequestReg</ipxact:name>
+                <ipxact:displayName>Interrupt Request Register</ipxact:displayName>
+                <ipxact:description></ipxact:description>
+                <ipxact:baseAddress>4</ipxact:baseAddress>
+                <ipxact:range>4</ipxact:range>
+                <ipxact:width>8</ipxact:width>
+                <ipxact:register>
+                    <ipxact:name>InterruptRequestReg</ipxact:name>
+                    <ipxact:displayName>Interrupt Request Register</ipxact:displayName>
+                    <ipxact:addressOffset>0x04</ipxact:addressOffset>
+                    <ipxact:size>32</ipxact:size>
+                    <ipxact:volatile>true</ipxact:volatile>
+                    <ipxact:access>read-write</ipxact:access>
+                    <ipxact:field>
+                        <ipxact:name>Request3</ipxact:name>
+                        <ipxact:bitOffset>3</ipxact:bitOffset>
+                        <ipxact:resets>
+                            <ipxact:reset resetTypeRef="Async">
+<ipxact:value>0x00000000</ipxact:value>
+<ipxact:mask>0x00000008</ipxact:mask>
+                            </ipxact:reset>
+                        </ipxact:resets>
+                        <ipxact:bitWidth>1</ipxact:bitWidth>
+                        <ipxact:volatile>true</ipxact:volatile>
+                        <ipxact:access>read-write</ipxact:access>
+                        <ipxact:enumeratedValues>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Request3_NotPending</ipxact:name>
+<ipxact:description>An Interrupt is not pending.</ipxact:description>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Request3_Pending</ipxact:name>
+<ipxact:description>An Interrupt is pending.</ipxact:description>
+<ipxact:value>0x8</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Request3_NotConfirmed</ipxact:name>
+<ipxact:displayName>Writing this value has no effect.</ipxact:displayName>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Request3_Confirmed</ipxact:name>
+<ipxact:displayName>Notifies HW that a pending interrupt has been recognized by SW.</ipxact:displayName>
+<ipxact:description>
+						SW confirms that a respective interrupt service routine has been entered.
+						The value isn't stored, thus there is no need to reset it to '0' again.	
+						Solely the write action is sufficient.	
+						</ipxact:description>
+<ipxact:value>0x8</ipxact:value>
+                            </ipxact:enumeratedValue>
+                        </ipxact:enumeratedValues>
+                    </ipxact:field>
+                    <ipxact:field>
+                        <ipxact:name>Request2</ipxact:name>
+                        <ipxact:bitOffset>2</ipxact:bitOffset>
+                        <ipxact:resets>
+                            <ipxact:reset resetTypeRef="Async">
+<ipxact:value>0x00000000</ipxact:value>
+<ipxact:mask>0x00000004</ipxact:mask>
+                            </ipxact:reset>
+                        </ipxact:resets>
+                        <ipxact:bitWidth>1</ipxact:bitWidth>
+                        <ipxact:volatile>true</ipxact:volatile>
+                        <ipxact:access>read-write</ipxact:access>
+                        <ipxact:enumeratedValues>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Request2_NotPending</ipxact:name>
+<ipxact:description>An Interrupt is not pending.</ipxact:description>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Request2_Pending</ipxact:name>
+<ipxact:description>An Interrupt is pending.</ipxact:description>
+<ipxact:value>0x4</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Request2_NotConfirmed</ipxact:name>
+<ipxact:displayName>Writing this value has no effect.</ipxact:displayName>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Request2_Confirmed</ipxact:name>
+<ipxact:displayName>Notifies HW that a pending interrupt has been recognized by SW.</ipxact:displayName>
+<ipxact:description>
+						SW confirms that a respective interrupt service routine has been entered.
+						The value isn't stored, thus there is no need to reset it to '0' again.	
+						Solely the write action is sufficient.	
+						</ipxact:description>
+<ipxact:value>0x4</ipxact:value>
+                            </ipxact:enumeratedValue>
+                        </ipxact:enumeratedValues>
+                    </ipxact:field>
+                    <ipxact:field>
+                        <ipxact:name>Request1</ipxact:name>
+                        <ipxact:bitOffset>1</ipxact:bitOffset>
+                        <ipxact:resets>
+                            <ipxact:reset resetTypeRef="Async">
+<ipxact:value>0x00000000</ipxact:value>
+<ipxact:mask>0x00000002</ipxact:mask>
+                            </ipxact:reset>
+                        </ipxact:resets>
+                        <ipxact:bitWidth>1</ipxact:bitWidth>
+                        <ipxact:volatile>true</ipxact:volatile>
+                        <ipxact:access>read-write</ipxact:access>
+                        <ipxact:enumeratedValues>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Request1_NotPending</ipxact:name>
+<ipxact:description>An Interrupt is not pending.</ipxact:description>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Request1_Pending</ipxact:name>
+<ipxact:description>An Interrupt is pending.</ipxact:description>
+<ipxact:value>0x2</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Request1_NotConfirmed</ipxact:name>
+<ipxact:displayName>Writing this value has no effect.</ipxact:displayName>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Request1_Confirmed</ipxact:name>
+<ipxact:displayName>Notifies HW that a pending interrupt has been recognized by SW.</ipxact:displayName>
+<ipxact:description>
+						SW confirms that a respective interrupt service routine has been entered.
+						The value isn't stored, thus there is no need to reset it to '0' again.	
+						Solely the write action is sufficient.	
+						</ipxact:description>
+<ipxact:value>0x2</ipxact:value>
+                            </ipxact:enumeratedValue>
+                        </ipxact:enumeratedValues>
+                    </ipxact:field>
+                    <ipxact:field>
+                        <ipxact:name>Request0</ipxact:name>
+                        <ipxact:bitOffset>0</ipxact:bitOffset>
+                        <ipxact:resets>
+                            <ipxact:reset resetTypeRef="Async">
+<ipxact:value>0x00000000</ipxact:value>
+<ipxact:mask>0x00000001</ipxact:mask>
+                            </ipxact:reset>
+                        </ipxact:resets>
+                        <ipxact:bitWidth>1</ipxact:bitWidth>
+                        <ipxact:volatile>true</ipxact:volatile>
+                        <ipxact:access>read-write</ipxact:access>
+                        <ipxact:enumeratedValues>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Request0_NotPending</ipxact:name>
+<ipxact:description>An Interrupt is not pending.</ipxact:description>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Request0_Pending</ipxact:name>
+<ipxact:description>An Interrupt is pending.</ipxact:description>
+<ipxact:value>0x1</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Request0_NotConfirmed</ipxact:name>
+<ipxact:displayName>Writing this value has no effect.</ipxact:displayName>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Request0_Confirmed</ipxact:name>
+<ipxact:displayName>Notifies HW that a pending interrupt has been recognized by SW.</ipxact:displayName>
+<ipxact:description>
+						SW confirms that a respective interrupt service routine has been entered.
+						The value isn't stored, thus there is no need to reset it to '0' again.	
+						Solely the write action is sufficient.	
+						</ipxact:description>
+<ipxact:value>0x1</ipxact:value>
+                            </ipxact:enumeratedValue>
+                        </ipxact:enumeratedValues>
+                    </ipxact:field>
+                </ipxact:register>
+            </ipxact:addressBlock>
+            <ipxact:addressBlock>
+                <ipxact:name>InterruptServiceReg</ipxact:name>
+                <ipxact:displayName>Interrupt Service Register</ipxact:displayName>
+                <ipxact:description></ipxact:description>
+                <ipxact:baseAddress>8</ipxact:baseAddress>
+                <ipxact:range>4</ipxact:range>
+                <ipxact:width>8</ipxact:width>
+                <ipxact:register>
+                    <ipxact:name>InterruptServiceReg</ipxact:name>
+                    <ipxact:displayName>Interrupt Service Register</ipxact:displayName>
+                    <ipxact:addressOffset>0x08</ipxact:addressOffset>
+                    <ipxact:size>32</ipxact:size>
+                    <ipxact:volatile>true</ipxact:volatile>
+                    <ipxact:access>read-write</ipxact:access>
+                    <ipxact:field>
+                        <ipxact:name>Service3</ipxact:name>
+                        <ipxact:bitOffset>3</ipxact:bitOffset>
+                        <ipxact:resets>
+                            <ipxact:reset resetTypeRef="Async">
+<ipxact:value>0x00000000</ipxact:value>
+<ipxact:mask>0x00000008</ipxact:mask>
+                            </ipxact:reset>
+                        </ipxact:resets>
+                        <ipxact:bitWidth>1</ipxact:bitWidth>
+                        <ipxact:volatile>true</ipxact:volatile>
+                        <ipxact:access>read-write</ipxact:access>
+                        <ipxact:enumeratedValues>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Service3_Ended</ipxact:name>
+<ipxact:description>The Interrupt service has ended.</ipxact:description>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Service3_InProcess</ipxact:name>
+<ipxact:description>The Interrupt is in service.</ipxact:description>
+<ipxact:value>0x8</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Service3_NotConfirmed</ipxact:name>
+<ipxact:displayName>Writing this value has no effect.</ipxact:displayName>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Service3_Confirmed</ipxact:name>
+<ipxact:displayName>Notifies HW that a pending interrupt has been recognized by SW.</ipxact:displayName>
+<ipxact:description>
+						SW confirms that a respective interrupt service routine has been processed completely.
+						The value isn't stored, thus there is no need to reset it to '0' again.	
+						Solely the write action is sufficient.	
+						</ipxact:description>
+<ipxact:value>0x8</ipxact:value>
+                            </ipxact:enumeratedValue>
+                        </ipxact:enumeratedValues>
+                    </ipxact:field>
+                    <ipxact:field>
+                        <ipxact:name>Service2</ipxact:name>
+                        <ipxact:bitOffset>2</ipxact:bitOffset>
+                        <ipxact:resets>
+                            <ipxact:reset resetTypeRef="Async">
+<ipxact:value>0x00000000</ipxact:value>
+<ipxact:mask>0x00000004</ipxact:mask>
+                            </ipxact:reset>
+                        </ipxact:resets>
+                        <ipxact:bitWidth>1</ipxact:bitWidth>
+                        <ipxact:volatile>true</ipxact:volatile>
+                        <ipxact:access>read-write</ipxact:access>
+                        <ipxact:enumeratedValues>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Service2_Ended</ipxact:name>
+<ipxact:description>The Interrupt service has ended.</ipxact:description>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Service2_InProcess</ipxact:name>
+<ipxact:description>The Interrupt is in service.</ipxact:description>
+<ipxact:value>0x4</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Service2_NotConfirmed</ipxact:name>
+<ipxact:displayName>Writing this value has no effect.</ipxact:displayName>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Service2_Confirmed</ipxact:name>
+<ipxact:displayName>Notifies HW that a pending interrupt has been recognized by SW.</ipxact:displayName>
+<ipxact:description>
+						SW confirms that a respective interrupt service routine has been processed completely.
+						The value isn't stored, thus there is no need to reset it to '0' again.	
+						Solely the write action is sufficient.	
+						</ipxact:description>
+<ipxact:value>0x4</ipxact:value>
+                            </ipxact:enumeratedValue>
+                        </ipxact:enumeratedValues>
+                    </ipxact:field>
+                    <ipxact:field>
+                        <ipxact:name>Service1</ipxact:name>
+                        <ipxact:bitOffset>1</ipxact:bitOffset>
+                        <ipxact:resets>
+                            <ipxact:reset resetTypeRef="Async">
+<ipxact:value>0x00000000</ipxact:value>
+<ipxact:mask>0x00000002</ipxact:mask>
+                            </ipxact:reset>
+                        </ipxact:resets>
+                        <ipxact:bitWidth>1</ipxact:bitWidth>
+                        <ipxact:volatile>true</ipxact:volatile>
+                        <ipxact:access>read-write</ipxact:access>
+                        <ipxact:enumeratedValues>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Service1_Ended</ipxact:name>
+<ipxact:description>The Interrupt service has ended.</ipxact:description>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Service1_InProcess</ipxact:name>
+<ipxact:description>The Interrupt is in service.</ipxact:description>
+<ipxact:value>0x2</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Service1_NotConfirmed</ipxact:name>
+<ipxact:displayName>Writing this value has no effect.</ipxact:displayName>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Service1_Confirmed</ipxact:name>
+<ipxact:displayName>Notifies HW that a pending interrupt has been recognized by SW.</ipxact:displayName>
+<ipxact:description>
+						SW confirms that a respective interrupt service routine has been processed completely.
+						The value isn't stored, thus there is no need to reset it to '0' again.	
+						Solely the write action is sufficient.	
+						</ipxact:description>
+<ipxact:value>0x2</ipxact:value>
+                            </ipxact:enumeratedValue>
+                        </ipxact:enumeratedValues>
+                    </ipxact:field>
+                    <ipxact:field>
+                        <ipxact:name>Service0</ipxact:name>
+                        <ipxact:bitOffset>0</ipxact:bitOffset>
+                        <ipxact:resets>
+                            <ipxact:reset resetTypeRef="Async">
+<ipxact:value>0x00000000</ipxact:value>
+<ipxact:mask>0x00000001</ipxact:mask>
+                            </ipxact:reset>
+                        </ipxact:resets>
+                        <ipxact:bitWidth>1</ipxact:bitWidth>
+                        <ipxact:volatile>true</ipxact:volatile>
+                        <ipxact:access>read-write</ipxact:access>
+                        <ipxact:enumeratedValues>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Service0_Ended</ipxact:name>
+<ipxact:description>The Interrupt service has ended.</ipxact:description>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Service0_InProcess</ipxact:name>
+<ipxact:description>The Interrupt is in service.</ipxact:description>
+<ipxact:value>0x1</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Service0_NotConfirmed</ipxact:name>
+<ipxact:displayName>Writing this value has no effect.</ipxact:displayName>
+<ipxact:value>0x0</ipxact:value>
+                            </ipxact:enumeratedValue>
+                            <ipxact:enumeratedValue>
+<ipxact:name>Service0_Confirmed</ipxact:name>
+<ipxact:displayName>Notifies HW that a pending interrupt has been recognized by SW.</ipxact:displayName>
+<ipxact:description>
+						SW confirms that a respective interrupt service routine has been processed completely.
+						The value isn't stored, thus there is no need to reset it to '0' again.	
+						Solely the write action is sufficient.	
+						</ipxact:description>
+<ipxact:value>0x1</ipxact:value>
+                            </ipxact:enumeratedValue>
+                        </ipxact:enumeratedValues>
+                    </ipxact:field>
+                </ipxact:register>
+            </ipxact:addressBlock>
+        </ipxact:memoryMap>
+    </ipxact:memoryMaps>
+    <ipxact:resetTypes>
+        <ipxact:resetType>
+            <ipxact:name>Async</ipxact:name>
+            <ipxact:displayName>Interrupt Collector Interface</ipxact:displayName>
+            <ipxact:description>
+			Interface containing a basic Interrupt Collector block.
+		</ipxact:description>
+        </ipxact:resetType>
+    </ipxact:resetTypes>
+</ipxact:component>

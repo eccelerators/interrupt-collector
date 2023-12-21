@@ -1,0 +1,980 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Eccelerators Library IP specification</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="#d5e1" title="Eccelerators Library IP specification"><link rel="next" href="#Eccelerators-Library-IP-InterruptCollectorIfc-composite" title="Chapter&nbsp;1.&nbsp;EventCatcherIfc"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="book"><div class="titlepage"><div><div><h1 class="title"><a name="d5e1"></a>Eccelerators Library IP specification</h1></div></div><hr></div>
+
+<div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="Eccelerators-Library-IP-InterruptCollectorIfc-composite"></a>Chapter&nbsp;1.&nbsp;EventCatcherIfc</h1></div></div></div>
+
+<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="Eccelerators.Library.IP.InterruptCollectorIfc-composite"></a>Interrupt Collector Interface (InterruptCollectorIfc)</h2></div></div></div><p>Interface containing a basic Interrupt Collector block.</p><div class="table"><a name="d5e8"></a><p class="title"><b>Table&nbsp;1.1.&nbsp;Blocks of Interrupt Collector Interface</b></p><div class="table-contents"><table summary="Blocks of Interrupt Collector Interface" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="73" class="col2"><col width="567" class="col3"></colgroup><tbody><tr><td colspan="3">
+            <p>Blocks of Interrupt Collector Interface</p>
+          </td></tr><tr><td>
+            <p>Block Address</p>
+          </td><td>
+            <p>ID</p>
+          </td><td>
+            <p>Block Name</p>
+          </td></tr><tr><td>
+            <p>
+              <code class="code">0x00</code>
+            </p>
+          </td><td><a name="acbbf44f56a2"></a>
+            <p>InterruptCollectorBlk</p>
+          </td><td>
+            <p>
+              <a class="link" href="#ad6dcef073ec">Interrupt Collector Block</a>
+            </p>
+          </td></tr></tbody></table></div></div><br class="table-break"><p></p><div class="table"><a name="d5e35"></a><p class="title"><b>Table&nbsp;1.2.&nbsp;Resets of Interrupt Collector Interface</b></p><div class="table-contents"><table summary="Resets of Interrupt Collector Interface" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="640" class="col2"></colgroup><tbody><tr><td colspan="2">
+            <p>Resets of Registers of Interrupt Collector Interface</p>
+          </td></tr><tr><td>
+            <p>ID</p>
+          </td><td>
+            <p>Reset Name</p>
+          </td></tr><tr><td>
+            <p>Async</p>
+          </td><td><a name="a6ed5018216f"></a>
+            <p>BusReset: Asynchronous Bus Reset</p>
+          </td></tr></tbody></table></div></div><br class="table-break"><p></p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="interrupt-collector-block-interruptcollectorblk"></a>Interrupt Collector Block (InterruptCollectorBlk)</h3></div></div></div><p>This block defines a basic interrupt collector for <span class="strong"><strong>level triggered</strong></span> interrupt sources.
+Usually edge triggered sources e.g., timer pulses can be converted to level triggered
+ones by catching them in the user logic.</p><p>Constraints:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Allow interrupt processing by multiple CPUs without need for spinlocks.</p></li><li class="listitem"><p>Enable forwarding an interrupt to the CPU(s) by a mask for each source.</p></li><li class="listitem"><p>Provide control pulses to notify the user logic when a interrupt service for an
+interrupt request has been started and has been ended.</p></li><li class="listitem"><p>Use the control pulses to reset the interrupt request fo a source or do it by
+a write or read access directly to the user logic e.g. reading the receive data
+register of an UART.</p></li></ol></div><p>Interrupt Collector details:</p><div class="figure"><a name="d5e70"></a><p class="title"><b>Figure&nbsp;1.1.&nbsp;Interrupt Collector details</b></p><div class="figure-contents"><div class="mediaobject"><img src="resources/InterruptCollectorUserLogic.png" width="270" alt="Interrupt Collector details"></div></div></div><br class="figure-break"><div class="table"><a name="d5e75"></a><p class="title"><b>Table&nbsp;1.3.&nbsp;Registers or Delegates of Interrupt Collector Block</b></p><div class="table-contents"><table summary="Registers or Delegates of Interrupt Collector Block" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="66" class="col2"><col width="574" class="col3"></colgroup><tbody><tr><td colspan="3">
+              <p>Registers or Delegates of Interrupt Collector Block</p>
+            </td></tr><tr><td colspan="2">
+              <p>
+                <code class="code">0x00</code>
+              </p>
+              <p>
+                <code class="code">..</code>
+              </p>
+              <p>
+                <code class="code">0x0b</code>
+              </p>
+            </td><td><a name="ad6dcef073ec"></a>
+              <p>
+                <a class="link" href="#acbbf44f56a2">Interrupt Collector Block</a>
+              </p>
+            </td></tr><tr><td>
+              <p>Address</p>
+            </td><td>
+              <p>ID</p>
+            </td><td>
+              <p>Name</p>
+            </td></tr><tr><td>
+              <p>
+                <code class="code">0x00</code>
+              </p>
+            </td><td><a name="ab85dd1aed3e"></a>
+              <p>InterruptMaskReg</p>
+            </td><td>
+              <p>
+                <a class="link" href="#a979d295fb35">Interrupt Mask Register</a>
+              </p>
+            </td></tr><tr><td>
+              <p>
+                <code class="code">0x04</code>
+              </p>
+            </td><td><a name="a009d9b0fe97"></a>
+              <p>InterruptRequestReg</p>
+            </td><td>
+              <p>
+                <a class="link" href="#a9fa5fc587a1">Interrupt Request Register</a>
+              </p>
+            </td></tr><tr><td>
+              <p>
+                <code class="code">0x08</code>
+              </p>
+            </td><td><a name="a0784af55386"></a>
+              <p>InterruptServiceReg</p>
+            </td><td>
+              <p>
+                <a class="link" href="#a16a6daf6e92">Interrupt Service Register</a>
+              </p>
+            </td></tr></tbody></table></div></div><br class="table-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="interrupt-mask-register-interruptmaskreg"></a>Interrupt Mask Register (InterruptMaskReg)</h4></div></div></div><div class="table"><a name="d5e132"></a><p class="title"><b>Table&nbsp;1.4.&nbsp;Bits of Interrupt Mask Register</b></p><div class="table-contents"><table summary="Bits of Interrupt Mask Register" border="1" width="100%"><colgroup><col width="21" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="591" class="col4"></colgroup><tbody><tr><td colspan="4">
+                <p>Bits of Interrupt Mask Register</p>
+              </td></tr><tr><td colspan="3">
+                <p>
+                  <code class="code">0x00</code>
+                </p>
+              </td><td><a name="a979d295fb35"></a>
+                <p>
+                  <a class="link" href="#ab85dd1aed3e">Interrupt Mask Register (InterruptMaskReg)</a>
+                </p>
+              </td></tr><tr><td>
+                <p>Bits</p>
+              </td><td>
+                <p>ID</p>
+              </td><td>
+                <p>Type</p>
+              </td><td>
+                <p>Description</p>
+              </td></tr><tr><td>
+                <p>03</p>
+              </td><td>
+                <p>Mask3</p>
+              </td><td><a name="ad472cc988c6"></a>
+                <p>RW</p>
+              </td><td>
+                <div class="table"><a name="d5e167"></a><p class="title"><b>Table&nbsp;1.5.&nbsp;Values of Mask3</b></p><div class="table-contents"><table summary="Values of Mask3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="aca553bbc6bb"></a>
+                          <p>InterruptDisabled</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Interrupt is not forwarded to CPU(s).</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="ac167b2e5b41"></a>
+                          <p>InterruptEnabled</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Interrupt is forwarded to CPU(s).</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e205"></a><p class="title"><b>Table&nbsp;1.6.&nbsp;Resets of Mask3</b></p><div class="table-contents"><table summary="Resets of Mask3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a2acd9f746ab"></a>
+                          <p>BusReset</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Default Bus Reset</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>02</p>
+              </td><td>
+                <p>Mask2</p>
+              </td><td><a name="ac64c54d42e0"></a>
+                <p>RW</p>
+              </td><td>
+                <div class="table"><a name="d5e231"></a><p class="title"><b>Table&nbsp;1.7.&nbsp;Values of Mask2</b></p><div class="table-contents"><table summary="Values of Mask2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a783b5e3a296"></a>
+                          <p>InterruptDisabled</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Interrupt is not forwarded to CPU(s).</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a7909bafb92a"></a>
+                          <p>InterruptEnabled</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Interrupt is forwarded to CPU(s).</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e269"></a><p class="title"><b>Table&nbsp;1.8.&nbsp;Resets of Mask2</b></p><div class="table-contents"><table summary="Resets of Mask2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="ae443d10c030"></a>
+                          <p>BusReset</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Default Bus Reset</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>01</p>
+              </td><td>
+                <p>Mask1</p>
+              </td><td><a name="aad07d2177a5"></a>
+                <p>RW</p>
+              </td><td>
+                <div class="table"><a name="d5e295"></a><p class="title"><b>Table&nbsp;1.9.&nbsp;Values of Mask1</b></p><div class="table-contents"><table summary="Values of Mask1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a41171c59145"></a>
+                          <p>InterruptDisabled</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Interrupt is not forwarded to CPU(s).</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a2835bf8080e"></a>
+                          <p>InterruptEnabled</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Interrupt is forwarded to CPU(s).</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e333"></a><p class="title"><b>Table&nbsp;1.10.&nbsp;Resets of Mask1</b></p><div class="table-contents"><table summary="Resets of Mask1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="ac460c914526"></a>
+                          <p>BusReset</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Default Bus Reset</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>00</p>
+              </td><td>
+                <p>Mask0</p>
+              </td><td><a name="a9844edf1b58"></a>
+                <p>RW</p>
+              </td><td>
+                <div class="table"><a name="d5e359"></a><p class="title"><b>Table&nbsp;1.11.&nbsp;Values of Mask0</b></p><div class="table-contents"><table summary="Values of Mask0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a3a7b3ad8cf1"></a>
+                          <p>InterruptDisabled</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Interrupt is not forwarded to CPU(s).</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="ab6de1ecc52a"></a>
+                          <p>InterruptEnabled</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Interrupt is forwarded to CPU(s).</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e397"></a><p class="title"><b>Table&nbsp;1.12.&nbsp;Resets of Mask0</b></p><div class="table-contents"><table summary="Resets of Mask0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="ab49f1675ea9"></a>
+                          <p>BusReset</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Default Bus Reset</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="interrupt-request-register-interruptrequestreg"></a>Interrupt Request Register (InterruptRequestReg)</h4></div></div></div><div class="table"><a name="d5e417"></a><p class="title"><b>Table&nbsp;1.13.&nbsp;Bits of Interrupt Request Register</b></p><div class="table-contents"><table summary="Bits of Interrupt Request Register" border="1" width="100%"><colgroup><col width="21" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="591" class="col4"></colgroup><tbody><tr><td colspan="4">
+                <p>Bits of Interrupt Request Register</p>
+              </td></tr><tr><td colspan="3">
+                <p>
+                  <code class="code">0x04</code>
+                </p>
+              </td><td><a name="a9fa5fc587a1"></a>
+                <p>
+                  <a class="link" href="#a009d9b0fe97">Interrupt Request Register (InterruptRequestReg)</a>
+                </p>
+              </td></tr><tr><td>
+                <p>Bits</p>
+              </td><td>
+                <p>ID</p>
+              </td><td>
+                <p>Type</p>
+              </td><td>
+                <p>Description</p>
+              </td></tr><tr><td>
+                <p>03</p>
+              </td><td>
+                <p>Request3</p>
+              </td><td><a name="af91926a5691"></a>
+                <p>R/W</p>
+              </td><td>
+                <div class="table"><a name="d5e452"></a><p class="title"><b>Table&nbsp;1.14.&nbsp;Values of Request3</b></p><div class="table-contents"><table summary="Values of Request3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a38f887ee786"></a>
+                          <p>NotPending</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>An Interrupt is not pending.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a5f1cc719d3c"></a>
+                          <p>Pending</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>An Interrupt is pending.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a62a6ab1a6bb"></a>
+                          <p>NotConfirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Writing this value has no effect.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a92d35ff8c78"></a>
+                          <p>Confirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Notifies HW that a pending interrupt has been recognized by SW.</p>
+                          <p>SW confirms that a respective interrupt service routine has been entered.
+The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#8217; again.
+Solely the write action is sufficient.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e511"></a><p class="title"><b>Table&nbsp;1.15.&nbsp;Resets of Request3</b></p><div class="table-contents"><table summary="Resets of Request3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Init Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Impact</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0b0</code>
+                          </p>
+                        </td><td><a name="af16d19e0e41"></a>
+                          <p>Async</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>BusReset: Asynchronous Bus Reset</p>
+                          <p>The bit Request is set to NotPending after reset in the usually attached InterruptCollector HW block.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>02</p>
+              </td><td>
+                <p>Request2</p>
+              </td><td><a name="ae9251ef3f3e"></a>
+                <p>R/W</p>
+              </td><td>
+                <div class="table"><a name="d5e547"></a><p class="title"><b>Table&nbsp;1.16.&nbsp;Values of Request2</b></p><div class="table-contents"><table summary="Values of Request2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="ab50f8225529"></a>
+                          <p>NotPending</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>An Interrupt is not pending.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="ab7a8cbdb45a"></a>
+                          <p>Pending</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>An Interrupt is pending.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a9d9cd6edb07"></a>
+                          <p>NotConfirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Writing this value has no effect.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a34d83ecbdf6"></a>
+                          <p>Confirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Notifies HW that a pending interrupt has been recognized by SW.</p>
+                          <p>SW confirms that a respective interrupt service routine has been entered.
+The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#8217; again.
+Solely the write action is sufficient.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e606"></a><p class="title"><b>Table&nbsp;1.17.&nbsp;Resets of Request2</b></p><div class="table-contents"><table summary="Resets of Request2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Init Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Impact</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0b0</code>
+                          </p>
+                        </td><td><a name="ab295718a6c2"></a>
+                          <p>Async</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>BusReset: Asynchronous Bus Reset</p>
+                          <p>The bit Request is set to NotPending after reset in the usually attached InterruptCollector HW block.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>01</p>
+              </td><td>
+                <p>Request1</p>
+              </td><td><a name="aa8de9a6172b"></a>
+                <p>R/W</p>
+              </td><td>
+                <div class="table"><a name="d5e642"></a><p class="title"><b>Table&nbsp;1.18.&nbsp;Values of Request1</b></p><div class="table-contents"><table summary="Values of Request1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="acb5705395db"></a>
+                          <p>NotPending</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>An Interrupt is not pending.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a36ff2dc7627"></a>
+                          <p>Pending</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>An Interrupt is pending.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a2c587c7137b"></a>
+                          <p>NotConfirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Writing this value has no effect.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a394c11e1fdc"></a>
+                          <p>Confirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Notifies HW that a pending interrupt has been recognized by SW.</p>
+                          <p>SW confirms that a respective interrupt service routine has been entered.
+The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#8217; again.
+Solely the write action is sufficient.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e701"></a><p class="title"><b>Table&nbsp;1.19.&nbsp;Resets of Request1</b></p><div class="table-contents"><table summary="Resets of Request1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Init Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Impact</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0b0</code>
+                          </p>
+                        </td><td><a name="a4ae2195ff08"></a>
+                          <p>Async</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>BusReset: Asynchronous Bus Reset</p>
+                          <p>The bit Request is set to NotPending after reset in the usually attached InterruptCollector HW block.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>00</p>
+              </td><td>
+                <p>Request0</p>
+              </td><td><a name="a7cd2a795bc8"></a>
+                <p>R/W</p>
+              </td><td>
+                <div class="table"><a name="d5e737"></a><p class="title"><b>Table&nbsp;1.20.&nbsp;Values of Request0</b></p><div class="table-contents"><table summary="Values of Request0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a661d4ec9be1"></a>
+                          <p>NotPending</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>An Interrupt is not pending.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="abd7c4c75779"></a>
+                          <p>Pending</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>An Interrupt is pending.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="ac81036fdc72"></a>
+                          <p>NotConfirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Writing this value has no effect.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="ac9217bd64f2"></a>
+                          <p>Confirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Notifies HW that a pending interrupt has been recognized by SW.</p>
+                          <p>SW confirms that a respective interrupt service routine has been entered.
+The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#8217; again.
+Solely the write action is sufficient.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e796"></a><p class="title"><b>Table&nbsp;1.21.&nbsp;Resets of Request0</b></p><div class="table-contents"><table summary="Resets of Request0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Init Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Impact</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0b0</code>
+                          </p>
+                        </td><td><a name="aceec35076f4"></a>
+                          <p>Async</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>BusReset: Asynchronous Bus Reset</p>
+                          <p>The bit Request is set to NotPending after reset in the usually attached InterruptCollector HW block.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="interrupt-service-register-interruptservicereg"></a>Interrupt Service Register (InterruptServiceReg)</h4></div></div></div><div class="table"><a name="d5e826"></a><p class="title"><b>Table&nbsp;1.22.&nbsp;Bits of Interrupt Service Register</b></p><div class="table-contents"><table summary="Bits of Interrupt Service Register" border="1" width="100%"><colgroup><col width="21" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="591" class="col4"></colgroup><tbody><tr><td colspan="4">
+                <p>Bits of Interrupt Service Register</p>
+              </td></tr><tr><td colspan="3">
+                <p>
+                  <code class="code">0x08</code>
+                </p>
+              </td><td><a name="a16a6daf6e92"></a>
+                <p>
+                  <a class="link" href="#a0784af55386">Interrupt Service Register (InterruptServiceReg)</a>
+                </p>
+              </td></tr><tr><td>
+                <p>Bits</p>
+              </td><td>
+                <p>ID</p>
+              </td><td>
+                <p>Type</p>
+              </td><td>
+                <p>Description</p>
+              </td></tr><tr><td>
+                <p>03</p>
+              </td><td>
+                <p>Service3</p>
+              </td><td><a name="af1320e9bb8a"></a>
+                <p>R/W</p>
+              </td><td>
+                <div class="table"><a name="d5e861"></a><p class="title"><b>Table&nbsp;1.23.&nbsp;Values of Service3</b></p><div class="table-contents"><table summary="Values of Service3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="aca287a4ded0"></a>
+                          <p>Ended</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>The Interrupt service has ended.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="ad6cb5ce6e35"></a>
+                          <p>InProcess</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>The Interrupt is in service.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="aecba6972c5d"></a>
+                          <p>NotConfirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Writing this value has no effect.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a9c57e70115a"></a>
+                          <p>Confirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Notifies HW that a pending interrupt has been recognized by SW.</p>
+                          <p>SW confirms that a respective interrupt service routine has been processed completely.
+The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#8217; again.
+Solely the write action is sufficient.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e920"></a><p class="title"><b>Table&nbsp;1.24.&nbsp;Resets of Service3</b></p><div class="table-contents"><table summary="Resets of Service3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Init Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Impact</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0b0</code>
+                          </p>
+                        </td><td><a name="af5e2f276b73"></a>
+                          <p>Async</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>BusReset: Asynchronous Bus Reset</p>
+                          <p>The bit Service is set to Ended after reset in the usually attached InterruptCollector HW block.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>02</p>
+              </td><td>
+                <p>Service2</p>
+              </td><td><a name="a7033788576a"></a>
+                <p>R/W</p>
+              </td><td>
+                <div class="table"><a name="d5e956"></a><p class="title"><b>Table&nbsp;1.25.&nbsp;Values of Service2</b></p><div class="table-contents"><table summary="Values of Service2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="acdeb40df602"></a>
+                          <p>Ended</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>The Interrupt service has ended.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="ad36fd407624"></a>
+                          <p>InProcess</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>The Interrupt is in service.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a2e95db6e4ad"></a>
+                          <p>NotConfirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Writing this value has no effect.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a5bde0dbad9b"></a>
+                          <p>Confirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Notifies HW that a pending interrupt has been recognized by SW.</p>
+                          <p>SW confirms that a respective interrupt service routine has been processed completely.
+The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#8217; again.
+Solely the write action is sufficient.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e1015"></a><p class="title"><b>Table&nbsp;1.26.&nbsp;Resets of Service2</b></p><div class="table-contents"><table summary="Resets of Service2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Init Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Impact</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0b0</code>
+                          </p>
+                        </td><td><a name="a23f703eca70"></a>
+                          <p>Async</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>BusReset: Asynchronous Bus Reset</p>
+                          <p>The bit Service is set to Ended after reset in the usually attached InterruptCollector HW block.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>01</p>
+              </td><td>
+                <p>Service1</p>
+              </td><td><a name="a2530402f1ba"></a>
+                <p>R/W</p>
+              </td><td>
+                <div class="table"><a name="d5e1051"></a><p class="title"><b>Table&nbsp;1.27.&nbsp;Values of Service1</b></p><div class="table-contents"><table summary="Values of Service1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="ab619737c353"></a>
+                          <p>Ended</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>The Interrupt service has ended.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a7a7f1eac5bd"></a>
+                          <p>InProcess</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>The Interrupt is in service.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a03cba95450f"></a>
+                          <p>NotConfirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Writing this value has no effect.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="aced747f42f9"></a>
+                          <p>Confirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Notifies HW that a pending interrupt has been recognized by SW.</p>
+                          <p>SW confirms that a respective interrupt service routine has been processed completely.
+The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#8217; again.
+Solely the write action is sufficient.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e1110"></a><p class="title"><b>Table&nbsp;1.28.&nbsp;Resets of Service1</b></p><div class="table-contents"><table summary="Resets of Service1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Init Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Impact</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0b0</code>
+                          </p>
+                        </td><td><a name="a73295d61641"></a>
+                          <p>Async</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>BusReset: Asynchronous Bus Reset</p>
+                          <p>The bit Service is set to Ended after reset in the usually attached InterruptCollector HW block.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>00</p>
+              </td><td>
+                <p>Service0</p>
+              </td><td><a name="a612b79783c6"></a>
+                <p>R/W</p>
+              </td><td>
+                <div class="table"><a name="d5e1146"></a><p class="title"><b>Table&nbsp;1.29.&nbsp;Values of Service0</b></p><div class="table-contents"><table summary="Values of Service0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="aabc77a017f6"></a>
+                          <p>Ended</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>The Interrupt service has ended.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="ad0dc3cf0e1f"></a>
+                          <p>InProcess</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>The Interrupt is in service.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a4c7500b9cea"></a>
+                          <p>NotConfirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Writing this value has no effect.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a6c65fb781ce"></a>
+                          <p>Confirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Notifies HW that a pending interrupt has been recognized by SW.</p>
+                          <p>SW confirms that a respective interrupt service routine has been processed completely.
+The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#8217; again.
+Solely the write action is sufficient.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e1205"></a><p class="title"><b>Table&nbsp;1.30.&nbsp;Resets of Service0</b></p><div class="table-contents"><table summary="Resets of Service0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Init Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Impact</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0b0</code>
+                          </p>
+                        </td><td><a name="a37fde8c92ff"></a>
+                          <p>Async</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>BusReset: Asynchronous Bus Reset</p>
+                          <p>The bit Service is set to Ended after reset in the usually attached InterruptCollector HW block.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr></tbody></table></div></div><br class="table-break"></div></div></div>
+</div>
+</div></body></html>
