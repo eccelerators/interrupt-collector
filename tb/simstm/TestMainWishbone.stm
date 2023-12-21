@@ -80,6 +80,18 @@ const IntervalNsOfInterrupts1 1500
 const IntervalNsOfInterrupts2 2000
 const IntervalNsOfInterrupts3 2500
 
+var ActualCount0 0
+var ActualCount1 0
+var ActualCount2 0
+var ActualCount3 0
+var ActualCount 0
+
+var FailureCount0 0
+var FailureCount1 0
+var FailureCount2 0
+var FailureCount3 0
+var FailureCount 0
+
 Main:
 proc
 	bus pointer copy ReadModifyWriteBus32 wishbone
@@ -120,11 +132,42 @@ proc
     	call $WaitForGeneratorStatusAllEnded
     	call $WaitForNotRunCrossFromOtherCore 
     	
-        log message $INFO_4 " "
-    	log message $INFO_4 "Core0 finally: Interrupts in total: {} " $InterruptACallCount
-	    log message $INFO_4 "Core0: Interrupts in total: {}, Source0: {}, Source1: {}, Source2: {}, Source3: {} " $InterruptACallCount $IntASrc0Count $IntASrc1Count $IntASrc2Count $IntASrc3Count
-    			
+    	wait 1000
+    	
+    	log message $INFO_4 " "
+	    log message $INFO_4 "Core0 finally: Interrupts in total: {}, Source0: {}, Source1: {}, Source2: {}, Source3: {} " $InterruptACallCount $IntASrc0Count $IntASrc1Count $IntASrc2Count $IntASrc3Count
+
+		bus read InterruptGeneratorIfcBus 32 $ActualCountReg0Address ActualCount0
+		bus read InterruptGeneratorIfcBus 32 $ActualCountReg1Address ActualCount1
+		bus read InterruptGeneratorIfcBus 32 $ActualCountReg2Address ActualCount2
+		bus read InterruptGeneratorIfcBus 32 $ActualCountReg3Address ActualCount3
+		
+		equ ActualCount $ActualCount0
+		add ActualCount $ActualCount1
+		add ActualCount $ActualCount2
+		add ActualCount $ActualCount3
+
+		log message $INFO_4 " "
+		log message $INFO_4 "Total counts finally: ActualSum: {}, Actual0: {}, Actual1: {}, Actual2: {}, Actual3: {} " $ActualCount $ActualCount0 $ActualCount1 $ActualCount2 $ActualCount3
+
+		bus read InterruptGeneratorIfcBus 32 $FailureCountReg0Address FailureCount0
+		bus read InterruptGeneratorIfcBus 32 $FailureCountReg1Address FailureCount1
+		bus read InterruptGeneratorIfcBus 32 $FailureCountReg2Address FailureCount2
+		bus read InterruptGeneratorIfcBus 32 $FailureCountReg3Address FailureCount3
+		
+		equ FailureCount $FailureCount0
+		add FailureCount $FailureCount1
+		add FailureCount $FailureCount2
+		add FailureCount $FailureCount3
+		
+		log message $INFO_4 "Total failure count finally: FailureSum: {}, Failures0: {}, Failures1: {}, Failures2: {}, Failures3: {} " $FailureCount $FailureCount0 $FailureCount1 $FailureCount2 $FailureCount3
+		log message $INFO_4 " "
+		    			
+		wait 1000
+		
 		log message $INFO "Core0: Main test finished"
+		log message $INFO_4 " "
+		
 		wait 1000
 		finish
     else
@@ -137,9 +180,10 @@ proc
     	
     	signal write OutCrossToOtherCore 0
     	
-        log message $INFO_4 " "
-    	log message $INFO_4 "Core1 finally: Interrupts in total: {} " $InterruptACallCount
-	    log message $INFO_4 "Core1: Interrupts in total: {}, Source0: {}, Source1: {}, Source2: {}, Source3: {} " $InterruptACallCount $IntASrc0Count $IntASrc1Count $IntASrc2Count $IntASrc3Count    	
+    	wait 400
+    	
+    	log message $INFO_4 " "
+	    log message $INFO_4 "Core1 finally: Interrupts in total: {}, Source0: {}, Source1: {}, Source2: {}, Source3: {} " $InterruptACallCount $IntASrc0Count $IntASrc1Count $IntASrc2Count $IntASrc3Count    	
 
         log message $INFO "Core1: test finished"
         
@@ -202,9 +246,9 @@ interrupt
     
     if $InterruptACallModResult = 0 
         if $CoreNumber = 0
-	    	log message $INFO_4 "Core0: Interrupts in total: {}, Source0: {}, Source1: {}, Source2: {}, Source3: {} " $InterruptACallCount $IntASrc0Count $IntASrc1Count $IntASrc2Count $IntASrc3Count
+	    	log message $INFO_4 "Core0 currently: Interrupts in total: {}, Source0: {}, Source1: {}, Source2: {}, Source3: {} " $InterruptACallCount $IntASrc0Count $IntASrc1Count $IntASrc2Count $IntASrc3Count
     	else
-	    	log message $INFO_4 "Core1: Interrupts in total: {}, Source0: {}, Source1: {}, Source2: {}, Source3: {} " $InterruptACallCount $IntASrc0Count $IntASrc1Count $IntASrc2Count $IntASrc3Count    	
+	    	log message $INFO_4 "Core1 currently: Interrupts in total: {}, Source0: {}, Source1: {}, Source2: {}, Source3: {} " $InterruptACallCount $IntASrc0Count $IntASrc1Count $IntASrc2Count $IntASrc3Count    	
     	end if
     end if 
     
