@@ -35,7 +35,7 @@ environments, particularly in sectors like server infrastructures, embedded syst
 
 Interrupt Collector details:
 			 
-.. figure:: resources/InterruptCollectorUserLogic.png
+.. figure:: hxs/resources/InterruptCollectorUserLogic.png
   :scale: 50
 			   
 	Interrupt Collector details
