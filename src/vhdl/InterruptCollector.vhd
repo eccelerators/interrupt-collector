@@ -59,12 +59,9 @@ architecture RTL of InterruptCollector is
     
     signal Request : std_logic_vector(BIT_WIDTH - 1 downto 0);
     signal Service : std_logic_vector(BIT_WIDTH - 1 downto 0);
-    signal MaskedRequest : std_logic_vector(BIT_WIDTH - 1 downto 0);
 
 begin
 
-    MaskedRequest <= Mask and Request;
-    InterruptOut <= '1' when unsigned(MaskedRequest) /= 0 else '0'; 
     RequestToBeRead <= Request;
     ServiceToBeRead <= Service;
     
@@ -73,20 +70,34 @@ begin
         if Rst then
             Request <= (others => '0');
             Service <= (others => '0');
+            InterruptOut <= '0';
         elsif rising_edge(Clk) then
+        
+            if unsigned(Mask and Request) /= 0 then
+                InterruptOut <= '1'; -- default assignment
+            end if;
+            
             for i in 0 to BIT_WIDTH - 1 loop
+            
                 if Service(i) then
-                    Request(i) <= '0';
+                    Request(i) <= '0'; -- same request can only be set again after its service has ended
                 elsif InterruptIn(i) then
-                    Request(i) <= '1';
+                    Request(i) <= '1'; 
                 end if;
+                
                 if RequestWritten(i) and WTransPulseInterruptRequestReg then
                     Service(i) <= '1';
+                    Request(i) <= '0';
+                    InterruptOut <= '0'; -- deactivate for at least one clock after each service entry
+                                         -- to allow dispatching other pending requests to other cpu cores  
                 end if;
+                
                 if ServiceWritten(i) and WTransPulseInterruptServiceReg then
                     Service(i) <= '0';
-                end if;                     
+                end if;        
+                             
             end loop;
+            
         end if;  
     end process;
     

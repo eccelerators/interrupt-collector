@@ -60,10 +60,20 @@ var InterruptRequest2 0
 var InterruptRequest3 0
 var InterruptCount 0
 
-const ChargedNumberOfInterrupts0 2500
-const ChargedNumberOfInterrupts1 2000
-const ChargedNumberOfInterrupts2 1500
-const ChargedNumberOfInterrupts3 1000
+var InterruptACallCount 0
+const InterruptACallDiv 0x20
+var InterruptACallDivResult 0
+var InterruptACallModResult 0
+
+var IntASrc0Count 0
+var IntASrc1Count 0
+var IntASrc2Count 0
+var IntASrc3Count 0
+
+const ChargedNumberOfInterrupts0 0x280
+const ChargedNumberOfInterrupts1 0x200
+const ChargedNumberOfInterrupts2 0x180
+const ChargedNumberOfInterrupts3 0x100
 
 const IntervalNsOfInterrupts0 1000
 const IntervalNsOfInterrupts1 1500
@@ -85,11 +95,11 @@ proc
 	equ InterruptGeneratorIfcAddress 0x100
 	call $InterruptGeneratorIfcInit
 	
-	verbosity $INFO_5
+	verbosity $INFO_4
 	trace 0
 	wait 1000
 	if $CoreNumber = 0
-		log message $INFO "Core{}: Main test started" $CoreNumber
+		log message $INFO "Core0: Main test started"
 		
 		bus write InterruptGeneratorIfcBus 32 $ChargedCountReg0Address $ChargedNumberOfInterrupts0
 		bus write InterruptGeneratorIfcBus 32 $ChargedCountReg1Address $ChargedNumberOfInterrupts1
@@ -109,29 +119,43 @@ proc
 	    	
     	call $WaitForGeneratorStatusAllEnded
     	call $WaitForNotRunCrossFromOtherCore 
+    	
+        log message $INFO_4 " "
+    	log message $INFO_4 "Core0 finally: Interrupts in total: {} " $InterruptACallCount
+	    log message $INFO_4 "Core0: Interrupts in total: {}, Source0: {}, Source1: {}, Source2: {}, Source3: {} " $InterruptACallCount $IntASrc0Count $IntASrc1Count $IntASrc2Count $IntASrc3Count
     			
-		log message $INFO "Core{}: Main test finished" $CoreNumber
+		log message $INFO "Core0: Main test finished"
 		wait 1000
 		finish
     else
         call $WaitForRunCrossFromOtherCore
         signal write OutCrossToOtherCore 1
               
-    	log message $INFO "Core{}: test started" $CoreNumber
+    	log message $INFO "Core1: test started"
     	
     	call $WaitForGeneratorStatusAllEnded
     	
     	signal write OutCrossToOtherCore 0
-    
-        log message $INFO "Core{}: test finished" $CoreNumber
+    	
+        log message $INFO_4 " "
+    	log message $INFO_4 "Core1 finally: Interrupts in total: {} " $InterruptACallCount
+	    log message $INFO_4 "Core1: Interrupts in total: {}, Source0: {}, Source1: {}, Source2: {}, Source3: {} " $InterruptACallCount $IntASrc0Count $IntASrc1Count $IntASrc2Count $IntASrc3Count    	
+
+        log message $INFO "Core1: test finished"
+        
+        loop 100000
+        	wait 10000
+        end loop
 
 	end if
 end proc
 
 InterruptA:
 interrupt
-    log message $INFO_5 "Core{}: Interrupt from Generator happened" $CoreNumber
+    log message $INFO_5 "Core {}: Interrupt from Generator happened" $CoreNumber
     
+    add InterruptACallCount 1
+
     bus read InterruptCollectorIfcBus 32 $InterruptRequestRegAddress InterruptRequests
     
     equ InterruptRequest0 $InterruptRequests
@@ -147,19 +171,42 @@ interrupt
     	bus write InterruptCollectorIfcBus 32 $InterruptRequestRegAddress $InterruptRequest0
     	bus read InterruptGeneratorIfcBus 32 $ActualCountReg0Address InterruptCount
     	bus write InterruptGeneratorIfcBus 32 $ReferenceCountReg0Address $InterruptCount
+    	bus write InterruptCollectorIfcBus 32 $InterruptServiceRegAddress $InterruptRequest0
+    	add IntASrc0Count 1
     elsif $InterruptRequest1 = 0b0010 
     	bus write InterruptCollectorIfcBus 32 $InterruptRequestRegAddress $InterruptRequest1
     	bus read InterruptGeneratorIfcBus 32 $ActualCountReg1Address InterruptCount
     	bus write InterruptGeneratorIfcBus 32 $ReferenceCountReg1Address $InterruptCount
+    	bus write InterruptCollectorIfcBus 32 $InterruptServiceRegAddress $InterruptRequest1
+    	add IntASrc1Count 1
     elsif $InterruptRequest2 = 0b0100 
     	bus write InterruptCollectorIfcBus 32 $InterruptRequestRegAddress $InterruptRequest2
     	bus read InterruptGeneratorIfcBus 32 $ActualCountReg2Address InterruptCount
     	bus write InterruptGeneratorIfcBus 32 $ReferenceCountReg2Address $InterruptCount
+    	bus write InterruptCollectorIfcBus 32 $InterruptServiceRegAddress $InterruptRequest2
+    	add IntASrc2Count 1
     elsif $InterruptRequest3 = 0b1000 
     	bus write InterruptCollectorIfcBus 32 $InterruptRequestRegAddress $InterruptRequest3
     	bus read InterruptGeneratorIfcBus 32 $ActualCountReg3Address InterruptCount
     	bus write InterruptGeneratorIfcBus 32 $ReferenceCountReg3Address $InterruptCount
-    end if 		
+    	bus write InterruptCollectorIfcBus 32 $InterruptServiceRegAddress $InterruptRequest3
+    	add IntASrc3Count 1
+    end if 
+    
+    equ InterruptACallDivResult	$InterruptACallCount
+    div InterruptACallDivResult $InterruptACallDiv
+    mul InterruptACallDivResult $InterruptACallDiv
+       
+    equ InterruptACallModResult	$InterruptACallCount
+    sub InterruptACallModResult $InterruptACallDivResult
+    
+    if $InterruptACallModResult = 0 
+        if $CoreNumber = 0
+	    	log message $INFO_4 "Core0: Interrupts in total: {}, Source0: {}, Source1: {}, Source2: {}, Source3: {} " $InterruptACallCount $IntASrc0Count $IntASrc1Count $IntASrc2Count $IntASrc3Count
+    	else
+	    	log message $INFO_4 "Core1: Interrupts in total: {}, Source0: {}, Source1: {}, Source2: {}, Source3: {} " $InterruptACallCount $IntASrc0Count $IntASrc1Count $IntASrc2Count $IntASrc3Count    	
+    	end if
+    end if 
     
 end interrupt
 
@@ -201,7 +248,7 @@ proc
     loop 10000
         wait 100
     	signal read InCrossFromOtherCore RunCrossFromOtherCore
-    	if $RunCrossFromOtherCore = 1
+    	if $RunCrossFromOtherCore = 0
 			return
 		end if
     end loop

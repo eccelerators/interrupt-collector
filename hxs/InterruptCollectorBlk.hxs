@@ -61,17 +61,16 @@ namespace Eccelerators.Library.IP
 			InterruptRequestReg,
 			InterruptServiceReg
 		];
-		Size = 0x10;
-
+		
 		register InterruptMaskReg
 		{
 			Name = "Interrupt Mask Register";
 			Width = 32;
 			Bits = [
-				Mask,
-				Mask,
-				Mask,
-				Mask
+				Mask(Id="Mask0"),
+				Mask(Id="Mask1"),
+				Mask(Id="Mask2"),
+				Mask(Id="Mask3")
 			];
 			enum Mask
 			{
@@ -80,17 +79,19 @@ namespace Eccelerators.Library.IP
 					InterruptCollectorBlk.InterruptMaskReg.Mask.InterruptDisabled,
 					InterruptCollectorBlk.InterruptMaskReg.Mask.InterruptEnabled
 				];
+				
+				value InterruptDisabled
+				{
+					Value = 0x0;
+					Description = "Interrupt is not forwarded to CPU(s).";
+				}
+				
 				value InterruptEnabled
 				{
 					Value = 0x1;
 					Description = "Interrupt is forwarded to CPU(s).";
 				}
 			
-				value InterruptDisabled
-				{
-					Value = 0x0;
-					Description = "Interrupt is not forwarded to CPU(s).";
-				}
 			}
 		}
 	
@@ -100,10 +101,10 @@ namespace Eccelerators.Library.IP
 			Width = 32;
 			WriteTransparentPulse = true;
 			Bits = [
-				Request,
-				Request,
-				Request,
-				Request
+				Request(Id="Request0"),
+				Request(Id="Request1"),
+				Request(Id="Request2"),
+				Request(Id="Request3")
 			];
 			enum Request
 			{
@@ -115,12 +116,6 @@ namespace Eccelerators.Library.IP
 					NotConfirmed,
 					Confirmed				
 				];
-				value Pending
-				{
-					Value = 0x1;
-					Behaviour = ValueBehaviour.Read;
-					Description = "An Interrupt is pending.";
-				}
 			
 				value NotPending
 				{
@@ -128,6 +123,21 @@ namespace Eccelerators.Library.IP
 					Behaviour = ValueBehaviour.Read;
 					Description = "An Interrupt is not pending.";
 				}
+				
+				value Pending
+				{
+					Value = 0x1;
+					Behaviour = ValueBehaviour.Read;
+					Description = "An Interrupt is pending.";
+				}
+				
+				value NotConfirmed
+				{
+					Name = "Writing this value has no effect.";
+					Behaviour = ValueBehaviour.Write;
+					Value = 0x0;
+				}
+				
 				value Confirmed
 				{
 					Value = 0x1;
@@ -139,12 +149,7 @@ namespace Eccelerators.Library.IP
 						Solely the write action is sufficient.	
 						";
 				}
-				value NotConfirmed
-				{
-					Name = "Writing this value has no effect.";
-					Behaviour = ValueBehaviour.Write;
-					Value = 0x0;
-				}
+
 				Resets = {
 				0b0:  BusReset.Async (Behaviour = ResetBehaviour.Read,  
 						Description = "
@@ -159,10 +164,10 @@ namespace Eccelerators.Library.IP
 			Width = 32;
 			WriteTransparentPulse = true;
 			Bits = [
-				Service,
-				Service,
-				Service,
-				Service
+				Service(Id="Service0"),
+				Service(Id="Service1"),
+				Service(Id="Service2"),
+				Service(Id="Service3")
 			];
 			enum Service
 			{
@@ -174,19 +179,28 @@ namespace Eccelerators.Library.IP
 					NotConfirmed,
 					Confirmed		
 				];
-				value InProcess
-				{
-					Value = 0x1;
-					Behaviour = ValueBehaviour.Read;
-					Description = "The Interrupt is in service.";
-				}
-			
+				
 				value Ended
 				{
 					Value = 0x0;
 					Behaviour = ValueBehaviour.Read;
 					Description = "The Interrupt service has ended.";
 				}
+				
+				value InProcess
+				{
+					Value = 0x1;
+					Behaviour = ValueBehaviour.Read;
+					Description = "The Interrupt is in service.";
+				}
+							
+				value NotConfirmed
+				{
+					Name = "Writing this value has no effect.";
+					Behaviour = ValueBehaviour.Write;
+					Value = 0x0;
+				}
+				
 				value Confirmed
 				{
 					Value = 0x1;
@@ -198,12 +212,7 @@ namespace Eccelerators.Library.IP
 						Solely the write action is sufficient.	
 						";
 				}
-				value NotConfirmed
-				{
-					Name = "Writing this value has no effect.";
-					Behaviour = ValueBehaviour.Write;
-					Value = 0x0;
-				}
+
 				Resets = {
 				0b0:  BusReset.Async (Behaviour = ResetBehaviour.Read,  
 						Description = "

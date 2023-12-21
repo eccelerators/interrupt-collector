@@ -64,9 +64,9 @@
      
      -do_compile_BusDividerIfcPackage.vhd,
      -do_compile_BusDividerIfcWishbone.vhd,
-     -do_compile_BusJoinWishbone.vhd,  
+     -do_compile_BusJoinWishbone.vhd,
+     -do_compile_InterruptDispatcher.vhd,   
 
-     
      -do_compile_InterruptGeneratorIfcPackage.vhd,
      -do_compile_InterruptGeneratorIfcWishbone.vhd,
      -do_compile_InterruptGenerator.vhd,
@@ -187,6 +187,12 @@
       </exec>
    </target>    
    
+    <target name="-do_compile_InterruptDispatcher.vhd" description="compile InterruptDispatcher.vhd">
+      <exec executable="${MODELSIM_BIN_DIR}/vcom" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="./../../submodules/interrupt-dispatcher/src/vhdl/InterruptDispatcher.vhd"/>
+      </exec>
+   </target> 
    
    <target name="-do_compile_InterruptGeneratorIfcPackage.vhd" description="compile InterruptGeneratorIfcPackage.vhd">
       <exec executable="${MODELSIM_BIN_DIR}/vcom" failonerror="true">

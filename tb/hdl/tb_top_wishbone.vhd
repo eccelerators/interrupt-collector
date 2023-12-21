@@ -77,6 +77,9 @@ architecture behavioural of tb_top_wishbone is
     signal bus_down1 : t_bus_down;
     signal bus_up1 : t_bus_up;        
     
+    signal InterruptToDispatch : std_logic;
+    signal InterruptsToCpus : std_logic_vector(1 downto 0);
+    
     signal InterruptCollectorIfcWishboneDown : T_InterruptCollectorIfcWishboneDown;
     signal InterruptCollectorIfcWishboneUp : T_InterruptCollectorIfcWishboneUp;    
     
@@ -116,7 +119,6 @@ architecture behavioural of tb_top_wishbone is
     
     signal GeneratedInterrupt : std_logic_vector(3 downto 0);
     signal GeneratorFailure : std_logic;
-    signal InterruptToCpu : std_logic;
     
     signal ChannelOperation : std_logic_vector(3 downto 0);
     signal ChannelStatus : array_of_std_logic_vector(3 downto 0)(1 downto 0);
@@ -142,13 +144,13 @@ begin
     signals_in0.in_signal_1 <= x"00"; -- core number
     signals_in0.in_signal_2 <= signals_out1.out_signal_2; -- cross signals for Core sync
     signals_in0.in_signal_3 <= signals_out1.out_signal_3; -- cross interrupts for Core sync
-    signals_in0.Interrupt_4 <= InterruptToCpu; -- interrupt to be tested to all cores
+    signals_in0.Interrupt_4 <= InterruptsToCpus(0);
     
     signals_in1.in_signal <= GeneratorFailure;
     signals_in1.in_signal_1 <= x"01";
     signals_in1.in_signal_2 <= signals_out0.out_signal_2;
     signals_in1.in_signal_3 <= signals_out0.out_signal_3;
-    signals_in1.Interrupt_4 <= InterruptToCpu;
+    signals_in1.Interrupt_4 <= InterruptsToCpus(1);
     
     i0_tb_simstm : entity work.tb_simstm
         generic map (
@@ -185,6 +187,19 @@ begin
             bus_down => bus_down1,
             bus_up => bus_up1
         );
+        
+        
+    i_InterruptDispatcher : entity work.InterruptDispatcher
+        generic map(
+            NUMBER_OF_OUTPUTS => 2
+        )
+        port map(
+            Clk => Clk,
+            Rst => Rst,
+            InterruptInToDispatch => InterruptToDispatch,
+            InterruptsOutToCpus => InterruptsToCpus
+        );
+
         
     Cyc(1) <= bus_down1.wishbone.cyc;
     Cyc(0) <= bus_down0.wishbone.cyc;
@@ -267,30 +282,30 @@ begin
             InterruptCollectorBlkUp => InterruptCollectorIfcInterruptCollectorBlkUp
         );
                 
-    Mask(3) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptMaskReg_Mask3;
-    Mask(2) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptMaskReg_Mask2;
-    Mask(1) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptMaskReg_Mask1;
-    Mask(0) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptMaskReg_Mask0;
+    Mask(3) <= InterruptCollectorIfcInterruptCollectorBlkDown.Mask3;
+    Mask(2) <= InterruptCollectorIfcInterruptCollectorBlkDown.Mask2;
+    Mask(1) <= InterruptCollectorIfcInterruptCollectorBlkDown.Mask1;
+    Mask(0) <= InterruptCollectorIfcInterruptCollectorBlkDown.Mask0;
     
-    RequestWritten(3) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptRequestReg_Request3Written;
-    RequestWritten(2) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptRequestReg_Request2Written;
-    RequestWritten(1) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptRequestReg_Request1Written;
-    RequestWritten(0) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptRequestReg_Request0Written;
+    RequestWritten(3) <= InterruptCollectorIfcInterruptCollectorBlkDown.Request3Written;
+    RequestWritten(2) <= InterruptCollectorIfcInterruptCollectorBlkDown.Request2Written;
+    RequestWritten(1) <= InterruptCollectorIfcInterruptCollectorBlkDown.Request1Written;
+    RequestWritten(0) <= InterruptCollectorIfcInterruptCollectorBlkDown.Request0Written;
 
-    ServiceWritten(3) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptServiceReg_Service3Written;
-    ServiceWritten(2) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptServiceReg_Service2Written;
-    ServiceWritten(1) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptServiceReg_Service1Written;
-    ServiceWritten(0) <= InterruptCollectorIfcInterruptCollectorBlkDown.InterruptServiceReg_Service0Written;
+    ServiceWritten(3) <= InterruptCollectorIfcInterruptCollectorBlkDown.Service3Written;
+    ServiceWritten(2) <= InterruptCollectorIfcInterruptCollectorBlkDown.Service2Written;
+    ServiceWritten(1) <= InterruptCollectorIfcInterruptCollectorBlkDown.Service1Written;
+    ServiceWritten(0) <= InterruptCollectorIfcInterruptCollectorBlkDown.Service0Written;
     
-    InterruptCollectorIfcInterruptCollectorBlkUp.InterruptRequestReg_Request3ToBeRead <= RequestToBeRead(3);
-    InterruptCollectorIfcInterruptCollectorBlkUp.InterruptRequestReg_Request2ToBeRead <= RequestToBeRead(2);
-    InterruptCollectorIfcInterruptCollectorBlkUp.InterruptRequestReg_Request1ToBeRead <= RequestToBeRead(1);
-    InterruptCollectorIfcInterruptCollectorBlkUp.InterruptRequestReg_Request0ToBeRead <= RequestToBeRead(0);
+    InterruptCollectorIfcInterruptCollectorBlkUp.Request3ToBeRead <= RequestToBeRead(3);
+    InterruptCollectorIfcInterruptCollectorBlkUp.Request2ToBeRead <= RequestToBeRead(2);
+    InterruptCollectorIfcInterruptCollectorBlkUp.Request1ToBeRead <= RequestToBeRead(1);
+    InterruptCollectorIfcInterruptCollectorBlkUp.Request0ToBeRead <= RequestToBeRead(0);
     
-    InterruptCollectorIfcInterruptCollectorBlkUp.InterruptServiceReg_Service3ToBeRead <= ServiceToBeRead(3);
-    InterruptCollectorIfcInterruptCollectorBlkUp.InterruptServiceReg_Service2ToBeRead <= ServiceToBeRead(2);
-    InterruptCollectorIfcInterruptCollectorBlkUp.InterruptServiceReg_Service1ToBeRead <= ServiceToBeRead(1);
-    InterruptCollectorIfcInterruptCollectorBlkUp.InterruptServiceReg_Service0ToBeRead <= ServiceToBeRead(0);
+    InterruptCollectorIfcInterruptCollectorBlkUp.Service3ToBeRead <= ServiceToBeRead(3);
+    InterruptCollectorIfcInterruptCollectorBlkUp.Service2ToBeRead <= ServiceToBeRead(2);
+    InterruptCollectorIfcInterruptCollectorBlkUp.Service1ToBeRead <= ServiceToBeRead(1);
+    InterruptCollectorIfcInterruptCollectorBlkUp.Service0ToBeRead <= ServiceToBeRead(0);
 
     i_InterruptCollector : entity work.InterruptCollector
         generic map (
@@ -300,7 +315,7 @@ begin
             Clk => Clk,
             Rst => Rst,
             InterruptIn => GeneratedInterrupt,
-            InterruptOut => InterruptToCpu,
+            InterruptOut => InterruptToDispatch,
             Mask => Mask,
             RequestWritten => RequestWritten,
             WTransPulseInterruptRequestReg => InterruptCollectorIfcInterruptCollectorBlkDown.WTransPulseInterruptRequestReg,
@@ -374,7 +389,7 @@ begin
                         
     i_InterruptGenerator : entity work.InterruptGenerator
         generic map(
-            ClkPeriodInNs => 100
+            ClkPeriodInNs => 10
         )
         port map(
             Clk => Clk,

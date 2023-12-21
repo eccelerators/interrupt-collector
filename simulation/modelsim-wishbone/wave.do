@@ -19,6 +19,8 @@ add wave -noupdate /tb_top_wishbone/signals_in1
 add wave -noupdate /tb_top_wishbone/signals_out1
 add wave -noupdate /tb_top_wishbone/bus_down1
 add wave -noupdate /tb_top_wishbone/bus_up1
+add wave -noupdate /tb_top_wishbone/InterruptToDispatch
+add wave -noupdate /tb_top_wishbone/InterruptsToCpus
 add wave -noupdate /tb_top_wishbone/InterruptCollectorIfcWishboneDown
 add wave -noupdate /tb_top_wishbone/InterruptCollectorIfcWishboneUp
 add wave -noupdate /tb_top_wishbone/InterruptCollectorIfcInterruptCollectorBlkDown
@@ -52,7 +54,6 @@ add wave -noupdate /tb_top_wishbone/JoinDatIn
 add wave -noupdate /tb_top_wishbone/JoinAck
 add wave -noupdate /tb_top_wishbone/GeneratedInterrupt
 add wave -noupdate /tb_top_wishbone/GeneratorFailure
-add wave -noupdate /tb_top_wishbone/InterruptToCpu
 add wave -noupdate /tb_top_wishbone/ChannelOperation
 add wave -noupdate /tb_top_wishbone/ChannelStatus
 add wave -noupdate /tb_top_wishbone/ChargedCount
@@ -66,6 +67,32 @@ add wave -noupdate /tb_top_wishbone/RequestWritten
 add wave -noupdate /tb_top_wishbone/ServiceWritten
 add wave -noupdate /tb_top_wishbone/RequestToBeRead
 add wave -noupdate /tb_top_wishbone/ServiceToBeRead
+add wave -noupdate /tb_top_wishbone/i0_tb_simstm/clk
+add wave -noupdate /tb_top_wishbone/i0_tb_simstm/rst
+add wave -noupdate /tb_top_wishbone/i0_tb_simstm/simdone
+add wave -noupdate /tb_top_wishbone/i0_tb_simstm/executing_line
+add wave -noupdate /tb_top_wishbone/i0_tb_simstm/executing_file
+add wave -noupdate /tb_top_wishbone/i0_tb_simstm/marker
+add wave -noupdate /tb_top_wishbone/i0_tb_simstm/signals_out
+add wave -noupdate /tb_top_wishbone/i0_tb_simstm/signals_in
+add wave -noupdate /tb_top_wishbone/i0_tb_simstm/bus_down
+add wave -noupdate /tb_top_wishbone/i0_tb_simstm/bus_up
+add wave -noupdate /tb_top_wishbone/i1_tb_simstm/clk
+add wave -noupdate /tb_top_wishbone/i1_tb_simstm/rst
+add wave -noupdate /tb_top_wishbone/i1_tb_simstm/simdone
+add wave -noupdate /tb_top_wishbone/i1_tb_simstm/executing_line
+add wave -noupdate /tb_top_wishbone/i1_tb_simstm/executing_file
+add wave -noupdate /tb_top_wishbone/i1_tb_simstm/marker
+add wave -noupdate /tb_top_wishbone/i1_tb_simstm/signals_out
+add wave -noupdate /tb_top_wishbone/i1_tb_simstm/signals_in
+add wave -noupdate /tb_top_wishbone/i1_tb_simstm/bus_down
+add wave -noupdate /tb_top_wishbone/i1_tb_simstm/bus_up
+add wave -noupdate /tb_top_wishbone/i_InterruptDispatcher/Clk
+add wave -noupdate /tb_top_wishbone/i_InterruptDispatcher/Rst
+add wave -noupdate /tb_top_wishbone/i_InterruptDispatcher/InterruptInToDispatch
+add wave -noupdate -expand /tb_top_wishbone/i_InterruptDispatcher/InterruptsOutToCpus
+add wave -noupdate /tb_top_wishbone/i_InterruptDispatcher/SelectedOut
+add wave -noupdate /tb_top_wishbone/i_InterruptDispatcher/InterruptInSequence
 add wave -noupdate /tb_top_wishbone/i_BusJoinWishbone/Clk
 add wave -noupdate /tb_top_wishbone/i_BusJoinWishbone/Rst
 add wave -noupdate /tb_top_wishbone/i_BusJoinWishbone/Cyc
@@ -102,6 +129,20 @@ add wave -noupdate /tb_top_wishbone/i_BusDividerIfcWishbone/PreWishboneUp
 add wave -noupdate /tb_top_wishbone/i_BusDividerIfcWishbone/BusDividerBlkDatOut
 add wave -noupdate /tb_top_wishbone/i_BusDividerIfcWishbone/BusDividerBlkAck
 add wave -noupdate /tb_top_wishbone/i_BusDividerIfcWishbone/BusDividerBlkMatch
+add wave -noupdate /tb_top_wishbone/i_InterruptCollectorIfcWishbone/Clk
+add wave -noupdate /tb_top_wishbone/i_InterruptCollectorIfcWishbone/Rst
+add wave -noupdate /tb_top_wishbone/i_InterruptCollectorIfcWishbone/WishboneDown
+add wave -noupdate /tb_top_wishbone/i_InterruptCollectorIfcWishbone/WishboneUp
+add wave -noupdate /tb_top_wishbone/i_InterruptCollectorIfcWishbone/Trace
+add wave -noupdate /tb_top_wishbone/i_InterruptCollectorIfcWishbone/InterruptCollectorBlkDown
+add wave -noupdate /tb_top_wishbone/i_InterruptCollectorIfcWishbone/InterruptCollectorBlkUp
+add wave -noupdate /tb_top_wishbone/i_InterruptCollectorIfcWishbone/BlockMatch
+add wave -noupdate /tb_top_wishbone/i_InterruptCollectorIfcWishbone/UnoccupiedAck
+add wave -noupdate /tb_top_wishbone/i_InterruptCollectorIfcWishbone/TimeoutAck
+add wave -noupdate /tb_top_wishbone/i_InterruptCollectorIfcWishbone/PreWishboneUp
+add wave -noupdate /tb_top_wishbone/i_InterruptCollectorIfcWishbone/InterruptCollectorBlkDatOut
+add wave -noupdate /tb_top_wishbone/i_InterruptCollectorIfcWishbone/InterruptCollectorBlkAck
+add wave -noupdate /tb_top_wishbone/i_InterruptCollectorIfcWishbone/InterruptCollectorBlkMatch
 add wave -noupdate /tb_top_wishbone/i_InterruptCollector/Clk
 add wave -noupdate /tb_top_wishbone/i_InterruptCollector/Rst
 add wave -noupdate /tb_top_wishbone/i_InterruptCollector/InterruptIn
@@ -115,7 +156,20 @@ add wave -noupdate /tb_top_wishbone/i_InterruptCollector/WTransPulseInterruptSer
 add wave -noupdate /tb_top_wishbone/i_InterruptCollector/ServiceToBeRead
 add wave -noupdate /tb_top_wishbone/i_InterruptCollector/Request
 add wave -noupdate /tb_top_wishbone/i_InterruptCollector/Service
-add wave -noupdate /tb_top_wishbone/i_InterruptCollector/MaskedRequest
+add wave -noupdate /tb_top_wishbone/i_InterruptGeneratorIfcWishbone/Clk
+add wave -noupdate /tb_top_wishbone/i_InterruptGeneratorIfcWishbone/Rst
+add wave -noupdate /tb_top_wishbone/i_InterruptGeneratorIfcWishbone/WishboneDown
+add wave -noupdate /tb_top_wishbone/i_InterruptGeneratorIfcWishbone/WishboneUp
+add wave -noupdate /tb_top_wishbone/i_InterruptGeneratorIfcWishbone/Trace
+add wave -noupdate /tb_top_wishbone/i_InterruptGeneratorIfcWishbone/InterruptGeneratorBlkDown
+add wave -noupdate /tb_top_wishbone/i_InterruptGeneratorIfcWishbone/InterruptGeneratorBlkUp
+add wave -noupdate /tb_top_wishbone/i_InterruptGeneratorIfcWishbone/BlockMatch
+add wave -noupdate /tb_top_wishbone/i_InterruptGeneratorIfcWishbone/UnoccupiedAck
+add wave -noupdate /tb_top_wishbone/i_InterruptGeneratorIfcWishbone/TimeoutAck
+add wave -noupdate /tb_top_wishbone/i_InterruptGeneratorIfcWishbone/PreWishboneUp
+add wave -noupdate /tb_top_wishbone/i_InterruptGeneratorIfcWishbone/InterruptGeneratorBlkDatOut
+add wave -noupdate /tb_top_wishbone/i_InterruptGeneratorIfcWishbone/InterruptGeneratorBlkAck
+add wave -noupdate /tb_top_wishbone/i_InterruptGeneratorIfcWishbone/InterruptGeneratorBlkMatch
 add wave -noupdate /tb_top_wishbone/i_InterruptGenerator/Clk
 add wave -noupdate /tb_top_wishbone/i_InterruptGenerator/Rst
 add wave -noupdate /tb_top_wishbone/i_InterruptGenerator/InterruptOut
@@ -129,11 +183,11 @@ add wave -noupdate /tb_top_wishbone/i_InterruptGenerator/Interval
 add wave -noupdate /tb_top_wishbone/i_InterruptGenerator/ReferenceCount
 add wave -noupdate /tb_top_wishbone/i_InterruptGenerator/WRegPulseReferenceCount
 add wave -noupdate /tb_top_wishbone/i_InterruptGenerator/IntervalCount
-add wave -noupdate /tb_top_wishbone/i_InterruptGenerator/IntervalEnable
+add wave -noupdate -expand /tb_top_wishbone/i_InterruptGenerator/IntervalEnable
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {0 ps} 0}
-quietly wave cursor active 0
-configure wave -namecolwidth 150
+WaveRestoreCursors {{Cursor 1} {316644212 ps} 0}
+quietly wave cursor active 1
+configure wave -namecolwidth 352
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
@@ -145,6 +199,6 @@ configure wave -gridoffset 0
 configure wave -gridperiod 1
 configure wave -griddelta 40
 configure wave -timeline 0
-configure wave -timelineunits ns
+configure wave -timelineunits ps
 update
-WaveRestoreZoom {6887881108 ps} {6887916784 ps}
+WaveRestoreZoom {0 ps} {311088586 ps}

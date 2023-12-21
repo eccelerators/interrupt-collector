@@ -25,3 +25,6 @@
 [submodule "submodules/vhdl-eccelerators-basic-package"]
 	path = submodules/vhdl-eccelerators-basic-package
 	url = git@github.com:eccelerators/vhdl-eccelerators-basic-package.git
+[submodule "submodules/interrupt-dispatcher"]
+	path = submodules/interrupt-dispatcher
+	url = git@github.com:eccelerators/interrupt-dispatcher.git
