@@ -1,20 +1,3 @@
-Welcome to InterruptCollector's documentation!
-==============================================
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   src-gen/Eccelerators.Library.IP.InterruptCollectorIfc-composite
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`
-
-
 Interrupt-Collector by Eccelerators
 ===================================
 
@@ -49,4 +32,3 @@ Overall, the Interrupt-Collector is a testament to the advanced technological
 strides in the realm of computer hardware, pivotal in crafting more efficient and adaptable 
 computing systems. Such innovations are integral to the evolution of high-performance computing 
 environments, particularly in sectors like server infrastructures, embedded systems, and intricate data processing units.
-
