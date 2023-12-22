@@ -33,6 +33,14 @@
       </exec>
    </target>
    
+   <target name="clean_eccelerators_lib" description="clean eccelerators lib">
+      <delete>
+         <fileset dir="${MODELSIM_LIBRARIES_DIR}/eccelerators">
+            <include name="**/*"/>
+         </fileset>
+      </delete>
+   </target>
+   
    <target name="clean-lib" description="clean libs">
       <delete>
          <fileset dir="${MODELSIM_LIBRARIES_DIR}/work">
@@ -42,6 +50,9 @@
    </target>
    
    	<target name="all" depends="
+   	    clean_eccelerators_lib,
+   	    make_eccelerators_lib,
+   	    compile_eccelerators_lib,
 		clean-lib,
 		make-lib,
 		compile,

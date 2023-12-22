@@ -93,26 +93,29 @@ repository:
   git clone --recurse-submodules git@github.com:eccelerators/interrupt-collector.git
   
   
-Next, we generate the HxS artifacts if having a valid HxS-license or Evaluation license:
+HxS sources are now in the hxs folder `hxs folder <https://github.com/eccelerators/interrupt-collector/tree/fill/hxs>`_.
+
+We generate the HxS artifacts if having a valid HxS-license or Evaluation license:
 
 .. code-block:: BASH
 
   cd interrupt-collector
   ant all
   
-Otherwise use the artifacts already present in the `src-gen folder <https://github.com/eccelerators/interrupt-collector/tree/fill/src-gen>`_
+Otherwise we use the artifacts already present in the `src-gen folder <https://github.com/eccelerators/interrupt-collector/tree/fill/src-gen>`_
 
 
 Ghdl
 :::::::
 
-Assuming GHDL is already installed, to simulate the design run:
+Assuming GHDL(4.0.0 or later) is already installed, to simulate the design we run:
 
 .. code-block:: BASH
 
   cd interrupt-collector/simulation/ghdl-wishbone
   ./run.sh
 
+A successful simulation will yield an output similar to this:
 
 .. code-block:: TEXT
 
@@ -136,19 +139,27 @@ Assuming GHDL is already installed, to simulate the design run:
   ./work/tb_top_wishbone:info: simulation stopped by --stop-time @9990391400ps
 
 
-
-
-
-Following that, we establish a Python3 virtual environment and install the necessary
-dependencies:
-
-    python3 -m venv .venv
-    source .venv/bin/activate
-    pip3 install -r requirements.txt
-
-
 ModelSim
 :::::::
+
+Assuming ModelSim is already installed, to simulate the design we run:
+
+.. code-block:: BASH
+
+  cd interrupt-collector/simulation/modelsim_wishbone
+  ant all
+  
+Possibly the path to the ModelSim executable may have to be adapted in the ant build.xml file.
+  
+In the ModelSim window command line section we run:
+  
+.. code-block:: TEXT
+
+  run -all
+
+Using ModelSim Starter edition it may take up to 5 minutes until the output of a successful simulation 
+will yield like this: 
+
 
 With the setup complete, we are now ready to build all the artifacts required for
 simulation:
@@ -172,17 +183,7 @@ src-gen/docbook-html  Holds the HTML version of the documentation (Docbook).
 src-gen/html-sphinx  Holds the HTML version of the documentation (Sphinx).
 src-gen/rst Stores the reStructuredText (rst) files, typically used for
   more textual documentation.
-
-The simulation is executed with the following command:
-
-    ~$ make sim
-
-A successful simulation will yield an output similar to this:
-
-    + ./crccalculatortestbench --stop-time=100000ns
-    simstm/src/tb_simstm.vhd:1245:21:@1000300ps:(assertion note): test finished with no errors!!
-    
-    
+   
 
 Conclusion
 ----------
