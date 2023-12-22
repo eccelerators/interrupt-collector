@@ -72,7 +72,7 @@ General
 :::::::
 
 In this article, we focussed on an individual IP component rather than a complete
-FPGA design. Consequently, instead of creating a bitstream, we employ GHDL for
+FPGA design. Consequently, instead of creating a bitstream, we employ GHDL or ModelSim for
 simulation purposes. Our IP is simulated using the SimStm framework, a tool we
 developed for simulation and testing.
 
@@ -105,6 +105,39 @@ Otherwise use the artifacts already present in the `src-gen folder <https://gith
 
 Ghdl
 :::::::
+
+Assuming GHDL is already installed, to simulate the design run:
+
+.. code-block:: BASH
+
+  cd interrupt-collector/simulation/ghdl-wishbone
+  ./run.sh
+
+
+.. code-block:: TEXT
+
+  ...
+  
+  Core1 currently: Interrupts in total: 0x0360, Source0: 0x0142, Source1: 0xEE, Source2: 0xB3, Source3: 0x7D 
+  Core0 currently: Interrupts in total: 0x0380, Source0: 0x013E, Source1: 0xFF, Source2: 0xC0, Source3: 0x83 
+  Core1 currently: Interrupts in total: 0x0380, Source0: 0x0142, Source1: 0x0101, Source2: 0xC0, Source3: 0x7D 
+ 
+  Core1 finally: Interrupts in total: 0x0380, Source0: 0x0142, Source1: 0x0101, Source2: 0xC0, Source3: 0x7D 
+  Core1: test finished
+ 
+  Core0 finally: Interrupts in total: 0x0380, Source0: 0x013E, Source1: 0xFF, Source2: 0xC0, Source3: 0x83 
+ 
+  Total counts finally: ActualSum: 0x0700, Actual0: 0x0280, Actual1: 0x0200, Actual2: 0x0180, Actual3: 0x0100 
+  Total failure count finally: FailureSum: 0x00, Failures0: 0x00, Failures1: 0x00, Failures2: 0x00, Failures3: 0x00 
+ 
+  Core0: Main test finished
+ 
+  ../../../submodules/simstm/src/tb_simstm.vhd:1245:21:@773216100ps:(assertion note): test finished with no errors!!
+  ./work/tb_top_wishbone:info: simulation stopped by --stop-time @9990391400ps
+
+
+
+
 
 Following that, we establish a Python3 virtual environment and install the necessary
 dependencies:
