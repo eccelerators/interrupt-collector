@@ -187,7 +187,7 @@ src-gen/rst Stores the reStructuredText (rst) files, typically used for
 Hardware/Software interface
 ---------------------------
   
-.. include:: src-gne/rst/Eccelerators.Library.IP.InterruptCollectorIfc-composite.rst
+.. include:: src-gen/rst/Eccelerators.Library.IP.InterruptCollectorIfc-composite.rst
    
 
 Conclusion
