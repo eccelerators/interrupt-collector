@@ -1,4 +1,4 @@
-.. contents:: Interrupt-Collector
+.. contents:: **Interrupt-Collector**
    :depth: 2
 
 Introduction
