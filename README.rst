@@ -1,8 +1,5 @@
-.. toctree::
-   :maxdepth: 2
-
-
-	src-gen/rst/Eccelerators.Library.IP.InterruptCollectorIfc-composite.rst
+.. contents::
+   :depth: 2
 
 
 Interrupt-Collector
