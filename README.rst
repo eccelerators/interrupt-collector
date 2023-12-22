@@ -78,9 +78,8 @@ including the VHDL register interface and its documentation. For this process,
 we've set up a Linux environment, specifically using Ubuntu 22.04. The first step
 involves installing Ant.
 
-.. literalinclude:: configuration.json
-  :language: BASH
-  
+.. code-block:: BASH
+
   sudo apt-get install ant -y
 
 Next, we clone the actual `interrupt-collector <https://github.com/eccelerators/interrupt-collector/>`_
