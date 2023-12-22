@@ -34,6 +34,7 @@ to the CPU or the multiprocessor system. The User Block demonstrates the realiza
 Both blocks are scalable in terms of the number of serviced interrupt inputs.
 
 .. figure:: hxs/resources/InterruptCollectorOverview.png
+   :scale: 50
    
    Interrupt Collector Overview
 
