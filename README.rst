@@ -1,5 +1,6 @@
-.. contents:: :depth: 2
-   **Interrupt-Collector**
+.. contents:: 
+	:depth: 2
+   	Interrupt-Collector
 
 Introduction
 ------------
