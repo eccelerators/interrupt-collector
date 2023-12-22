@@ -80,7 +80,7 @@ involves installing Ant.
 
     ~$ sudo apt-get install ant -y
 
-Next, we clone the actual `crc-calculator` repository from the [Eccelerators GitHub]
+Next, we clone the actual `interrupt-collector <https://github.com/eccelerators/interrupt-collector/>`_.
 repository:
 
     ~$ git clone --recurse-submodules git@github.com:eccelerators/crc-calculator.git
