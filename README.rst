@@ -183,6 +183,11 @@ src-gen/docbook-html  Holds the HTML version of the documentation (Docbook).
 src-gen/html-sphinx  Holds the HTML version of the documentation (Sphinx).
 src-gen/rst Stores the reStructuredText (rst) files, typically used for
   more textual documentation.
+
+Hardware/Software interface
+---------------------------
+  
+.. include:: src-gne/rst/Eccelerators.Library.IP.InterruptCollectorIfc-composite.rst
    
 
 Conclusion
