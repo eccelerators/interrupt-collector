@@ -1,8 +1,9 @@
-Interrupt-Collector
-===================
-
 .. toctree::
    :maxdepth: 2
+
+
+Interrupt-Collector
+===================
 
 **Introduction**
 ----------------
