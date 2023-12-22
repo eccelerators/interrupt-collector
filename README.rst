@@ -2,6 +2,9 @@
    :maxdepth: 2
 
 
+	src-gen/rst/Eccelerators.Library.IP.InterruptCollectorIfc-composite.rst
+
+
 Interrupt-Collector
 ===================
 
