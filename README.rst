@@ -39,18 +39,18 @@ Both blocks are scalable in terms of the number of serviced interrupt inputs.
    Interrupt Collector Overview
 
 Upon the arrival of an interrupt event at an input, an interrupt is triggered to the CPU system. 
-This leads to the execution of an interrupt routine by software on exactly one CPU of the system. The routine reads the Request Register 
+This leads to the execution of an interrupt routine by software on exactly one CPU of the system. The routine reads the *Request-Register*
 in the interrupt collector, selects one of the reported interrupt requests for processing, and acknowledges 
-this by setting the corresponding bit in the Request Register. 
-This interrupt request is then reset in the Request Register and appears in the Service Register. After completing the tasks in the interrupt 
-service routine, the CPU writes to the corresponding bit in the Service Register, thereby signaling the end of the interrupt routine 
-to the interrupt collector. Only from this point can the corresponding Interrupt Request Register be set again by the same interrupt.
+this by setting the corresponding bit in the Request-Register. 
+This interrupt request is then reset in the Request-Register and appears in the *Service-Register*. After completing the tasks in the interrupt 
+service routine, the CPU sets to the corresponding bit in the Service-Register, thereby signaling the end of the interrupt routine 
+to the interrupt collector. Only from this point can the corresponding Request-Register bit be set again by the same interrupt input.
 
-The actual triggering of an interrupt to the CPU system can be enabled or disabled in the Mask Register for each input. 
+The actual triggering of an interrupt to the CPU system can be enabled or disabled in the *Mask-Register* for each input. 
 After each acknowledged request, the interrupt line to the CPU system is briefly deactivated to allow for the processing 
 of further interrupts by other CPUs of the system. 
 
-The priority and synchrony of the individual interrupt inputs can be adjusted by the user in the User Logic.
+The priority and synchrony of the individual interrupt inputs can be adjusted by the user in the User-Logic.
 
 **Testbench**
 ----------------------------------------------
