@@ -2,7 +2,7 @@ Interrupt Collector by Eccelerators
 ===================================
 
 .. contents:: 
-   :depth: 8
+   :depth: 3
 
 Introduction
 ------------
@@ -187,7 +187,7 @@ src-gen/rst Stores the reStructuredText (rst) files, typically used for
 Hardware/Software interface
 ---------------------------
   
-.. include:: src-gen/rst/Eccelerators.Library.IP.InterruptCollectorIfc-composite.rst
+HxS sources are now in the hxs folder `file <https://github.com/eccelerators/interrupt-collector/tree/fill/src-gen/rst/Eccelerators.Library.IP.InterruptCollectorIfc-composite.rst>`_.  
    
 
 Conclusion
