@@ -1,20 +1,16 @@
-.. contents::
+.. contents:: Interrupt-Collector
    :depth: 2
 
-
-Interrupt-Collector
-===================
-
-**Introduction**
-----------------
+Introduction
+------------
 
 The *Interrupt-Collector*, offered by Eccelerators, is a key IP block (Intellectual Property Block). 
 Its main role is to aggregate interrupts from different sources and route them to the interrupt input of a CPU (Central Processing Unit) 
 or a multiprocessor system. This functionality is crucial in complex environments where numerous devices or 
 processes operate simultaneously, necessitating the CPU's attention.
 
-**Functionality**
------------------
+Functionality
+-------------
 
 The distinctiveness of the Interrupt-Collector is evident in the type of interrupt sources it can manage. 
 It is specifically designed for level-triggered interrupt sources, meaning the interrupt stays active as long as 
@@ -56,8 +52,8 @@ of further interrupts by other CPUs of the system.
 
 The priority and synchrony of the individual interrupt inputs can be adjusted by the user in the User-Logic.
 
-**Testbench**
-----------------------------------------------
+Testbench
+---------
 
 
 .. figure:: src/rst/resources/InterruptCollectorTestbench.png
@@ -66,8 +62,8 @@ The priority and synchrony of the individual interrupt inputs can be adjusted by
    Interrupt Collector Testbench
 
 
-**Simulation**
-----------------------------------------------
+Simulation
+----------
 
 In this article, we focussed on an individual IP component rather than a complete
 FPGA design. Consequently, instead of creating a bitstream, we employ GHDL for
@@ -127,8 +123,8 @@ A successful simulation will yield an output similar to this:
     
     
 
-**Conclusion**
----------------
+Conclusion
+----------
 
 Overall, the Interrupt-Collector is a testament to the advanced technological 
 strides in the realm of computer hardware, pivotal in crafting more efficient and adaptable 
