@@ -91,9 +91,19 @@ repository:
 .. code-block:: BASH
 
   git clone --recurse-submodules git@github.com:eccelerators/interrupt-collector.git
+  
+  
+Next, we generate the HxS artifacts if having a valid HxS-license or Evaluation license:
+
+.. code-block:: BASH
+
+  cd interrupt-collector
+  ant all
+  
+Otherwise use the artifacts already present in the `src-gen folder <https://github.com/eccelerators/interrupt-collector/src-gen/>`_
 
 
-GHDL
+Ghdl
 :::::::
 
 Following that, we establish a Python3 virtual environment and install the necessary
@@ -104,7 +114,7 @@ dependencies:
     pip3 install -r requirements.txt
 
 
-MODELSIM
+ModelSim
 :::::::
 
 With the setup complete, we are now ready to build all the artifacts required for
