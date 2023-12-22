@@ -85,7 +85,9 @@ involves installing Ant.
 Next, we clone the actual `interrupt-collector <https://github.com/eccelerators/interrupt-collector/>`_
 repository:
 
-    git clone --recurse-submodules git@github.com:eccelerators/interrupt-collector.git
+.. code-block:: BASH
+
+  git clone --recurse-submodules git@github.com:eccelerators/interrupt-collector.git
 
 Following that, we establish a Python3 virtual environment and install the necessary
 dependencies:
