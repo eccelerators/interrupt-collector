@@ -78,19 +78,22 @@ including the VHDL register interface and its documentation. For this process,
 we've set up a Linux environment, specifically using Ubuntu 22.04. The first step
 involves installing Ant.
 
-    ~$ sudo apt-get install ant -y
+.. literalinclude:: configuration.json
+  :language: BASH
+  
+  sudo apt-get install ant -y
 
-Next, we clone the actual `interrupt-collector <https://github.com/eccelerators/interrupt-collector/>`_.
+Next, we clone the actual `interrupt-collector <https://github.com/eccelerators/interrupt-collector/>`_
 repository:
 
-    ~$ git clone --recurse-submodules git@github.com:eccelerators/crc-calculator.git
+    git clone --recurse-submodules git@github.com:eccelerators/interrupt-collector.git
 
 Following that, we establish a Python3 virtual environment and install the necessary
 dependencies:
 
-    ~$ python3 -m venv .venv
-    ~$ source .venv/bin/activate
-    ~$ pip3 install -r requirements.txt
+    python3 -m venv .venv
+    source .venv/bin/activate
+    pip3 install -r requirements.txt
 
 With the setup complete, we are now ready to build all the artifacts required for
 simulation:
