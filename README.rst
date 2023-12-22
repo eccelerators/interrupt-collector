@@ -101,19 +101,19 @@ simulation:
 The HxS files are located in the `hxs` directory. The VHDL files related to the
 IP and its simulation are organized within the following directory structure:
 
-* __src/vhdl__ This folder contains the primary VHDL source files for the IP.
-* __src-gen/vhdl__ Here, you'll find generated VHDL files specific to
+src/vhdl This folder contains the primary VHDL source files for the IP.
+src-gen/vhdl Here, you'll find generated VHDL files specific to
   the AXI4-Lite interface.
-* __tb/vhdl__ This directory houses the VHDL files used for testbenching and
+tb/vhdl This directory houses the VHDL files used for testbenching and
   simulation.
 
 Additionally, the documentation for this IP, generated in various formats, is
 located in these folders:
 
-* __src-gen/docbook-pdf__ Contains the documentation in PDF format.
-* __src-gen/docbook-html__ Holds the HTML version of the documentation (Docbook).
-* __src-gen/html-sphinx__ Holds the HTML version of the documentation (Sphinx).
-* __src-gen/rst__ Stores the reStructuredText (rst) files, typically used for
+src-gen/docbook-pdf Contains the documentation in PDF format.
+src-gen/docbook-html  Holds the HTML version of the documentation (Docbook).
+src-gen/html-sphinx  Holds the HTML version of the documentation (Sphinx).
+src-gen/rst Stores the reStructuredText (rst) files, typically used for
   more textual documentation.
 
 The simulation is executed with the following command:
