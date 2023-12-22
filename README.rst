@@ -85,7 +85,7 @@ involves installing Ant.
 
   sudo apt-get install ant -y
 
-Next, we clone the actual `interrupt-collector <https://github.com/eccelerators/interrupt-collector/>`_
+Next, we clone the actual `interrupt-collector <https://github.com/eccelerators/interrupt-collector>`_
 repository:
 
 .. code-block:: BASH
@@ -100,7 +100,7 @@ Next, we generate the HxS artifacts if having a valid HxS-license or Evaluation 
   cd interrupt-collector
   ant all
   
-Otherwise use the artifacts already present in the `src-gen folder <https://github.com/eccelerators/interrupt-collector/src-gen/>`_
+Otherwise use the artifacts already present in the `src-gen folder <https://github.com/eccelerators/interrupt-collector/tree/fill/src-gen>`_
 
 
 Ghdl
