@@ -2,7 +2,7 @@ Interrupt Collector by Eccelerators
 ===================================
 
 .. contents:: 
-   :depth: 2
+   :depth: 3
 
 Introduction
 ------------
@@ -68,6 +68,9 @@ Testbench
 Simulation
 ----------
 
+General
+:::::::
+
 In this article, we focussed on an individual IP component rather than a complete
 FPGA design. Consequently, instead of creating a bitstream, we employ GHDL for
 simulation purposes. Our IP is simulated using the SimStm framework, a tool we
@@ -89,12 +92,20 @@ repository:
 
   git clone --recurse-submodules git@github.com:eccelerators/interrupt-collector.git
 
+
+GHDL
+:::::::
+
 Following that, we establish a Python3 virtual environment and install the necessary
 dependencies:
 
     python3 -m venv .venv
     source .venv/bin/activate
     pip3 install -r requirements.txt
+
+
+MODELSIM
+:::::::
 
 With the setup complete, we are now ready to build all the artifacts required for
 simulation:
