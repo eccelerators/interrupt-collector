@@ -1,5 +1,5 @@
-Interrupt-Collector by Eccelerators
-===================================
+Interrupt-Collector
+===================
 
 **Introduction**
 ----------------
@@ -33,12 +33,9 @@ The accompanying diagram illustrates the implementation, including the connectio
 to the CPU or the multiprocessor system. The User Block demonstrates the realization of the interrupt logic. 
 Both blocks are scalable in terms of the number of serviced interrupt inputs.
 
-Interrupt Collector overview:
- 
-.. figure:: hxs/resources/InterruptCollectorUserLogic.png
-   :scale: 50
+.. figure:: hxs/resources/InterruptCollectorOverview.png
    
-   Interrupt Collector overview
+   Interrupt Collector Overview
 
 Upon the arrival of an interrupt event at an input, an interrupt is triggered to the CPU system. 
 This leads to the execution of an interrupt routine by software on exactly one CPU of the system. The routine reads the Request Register 
@@ -54,11 +51,18 @@ of further interrupts by other CPUs of the system.
 
 The priority and synchrony of the individual interrupt inputs can be adjusted by the user in the User Logic.
 
-
-
-**Compatibility with Edge-Triggered Sources**
+**Testbench**
 ----------------------------------------------
 
+
+.. figure:: src/rst/resources/InterruptCollectorTestbench.png
+   :scale: 50
+   
+   Interrupt Collector Testbench
+
+
+**Simulation**
+----------------------------------------------
 
 
 **Conclusion**
