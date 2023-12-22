@@ -68,3 +68,13 @@ Overall, the Interrupt-Collector is a testament to the advanced technological
 strides in the realm of computer hardware, pivotal in crafting more efficient and adaptable 
 computing systems. Such innovations are integral to the evolution of high-performance computing 
 environments, particularly in sectors like server infrastructures, embedded systems, and intricate data processing units.
+
+Interrupt Collector details:
+			 
+.. figure:: hxs/resources/InterruptCollectorUserLogic.png
+  :scale: 50
+			   
+	Interrupt Collector details
+
+abc
+
