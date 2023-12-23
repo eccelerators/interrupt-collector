@@ -1,0 +1,301 @@
+-- ******************************************************************************
+-- 
+--                   /------o
+--             eccelerators
+--          o------/
+-- 
+--  This file is an Eccelerators GmbH sample project.
+-- 
+--  MIT License:
+--  Copyright (c) 2023 Eccelerators GmbH
+-- 
+--  Permission is hereby granted, free of charge, to any person obtaining a copy
+--  of this software and associated documentation files (the "Software"), to deal
+--  in the Software without restriction, including without limitation the rights
+--  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+--  copies of the Software, and to permit persons to whom the Software is
+--  furnished to do so, subject to the following conditions:
+-- 
+--  The above copyright notice and this permission notice shall be included in all
+--  copies or substantial portions of the Software.
+-- 
+--  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+--  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+--  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+--  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+--  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+--  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+--  SOFTWARE.
+-- ******************************************************************************
+
+include "Base/Base.stm"
+include "Base/Array.stm"
+include "Base/ReadModifyWrite.stm"
+include "../../submodules/interrupt-generator/src-gen/simstm/InterruptGeneratorIfc.stm"
+include "../../submodules/bus-divider/src-gen/simstm/BusDividerIfc.stm"
+include "../../src-gen/simstm/InterruptCollectorIfc.stm"
+
+
+bus wishbone 0
+bus avalon 1
+bus axi4lite 2
+var WaitTimeOut 10000 -- * 10000 * 10 ms = 100s timeout, loops poll in 10us intervals
+
+signal InGeneratorFailure 0
+signal InCoreNumber 1
+signal InCrossFromOtherCore 2 -- cross signals for Core sync
+signal InCrossInterruptFromOtherCore 3 -- cross interrupts for Core sync
+signal InterruptToCpu 4 -- interrupt to be tested to all cores
+
+
+signal OutCrossToOtherCore 2 -- cross signals for Core sync
+signal OutCrossInterruptToOtherCore 3 -- cross interrupts for Core sync
+
+var CoreNumber 0
+
+var InterruptRequests 0
+var InterruptRequest0 0
+var InterruptRequest1 0
+var InterruptRequest2 0
+var InterruptRequest3 0
+var InterruptCount 0
+
+var InterruptACallCount 0
+const InterruptACallDiv 0x20
+var InterruptACallDivResult 0
+var InterruptACallModResult 0
+
+var IntASrc0Count 0
+var IntASrc1Count 0
+var IntASrc2Count 0
+var IntASrc3Count 0
+
+const ChargedNumberOfInterrupts0 0x280
+const ChargedNumberOfInterrupts1 0x200
+const ChargedNumberOfInterrupts2 0x180
+const ChargedNumberOfInterrupts3 0x100
+
+const IntervalNsOfInterrupts0 1000
+const IntervalNsOfInterrupts1 1500
+const IntervalNsOfInterrupts2 2000
+const IntervalNsOfInterrupts3 2500
+
+var ActualCount0 0
+var ActualCount1 0
+var ActualCount2 0
+var ActualCount3 0
+var ActualCount 0
+
+var FailureCount0 0
+var FailureCount1 0
+var FailureCount2 0
+var FailureCount3 0
+var FailureCount 0
+
+Main:
+proc
+	bus pointer copy ReadModifyWriteBus32 wishbone
+	bus pointer copy ReadModifyWriteBus16 wishbone
+	bus pointer copy ReadModifyWriteBus8 wishbone
+	bus pointer copy InterruptCollectorIfcBus wishbone
+	bus pointer copy InterruptGeneratorIfcBus wishbone
+	
+	signal read InCoreNumber CoreNumber
+	
+	call $InterruptCollectorIfcInit
+	
+	equ InterruptGeneratorIfcAddress 0x100
+	call $InterruptGeneratorIfcInit
+	
+	verbosity $INFO_4
+	trace 0
+	wait 1000
+	if $CoreNumber = 0
+		log message $INFO "Core0: Main test started"
+		
+		bus write InterruptGeneratorIfcBus 32 $ChargedCountReg0Address $ChargedNumberOfInterrupts0
+		bus write InterruptGeneratorIfcBus 32 $ChargedCountReg1Address $ChargedNumberOfInterrupts1
+		bus write InterruptGeneratorIfcBus 32 $ChargedCountReg2Address $ChargedNumberOfInterrupts2
+		bus write InterruptGeneratorIfcBus 32 $ChargedCountReg3Address $ChargedNumberOfInterrupts3
+		
+		bus write InterruptGeneratorIfcBus 32 $IntervalReg0Address $IntervalNsOfInterrupts0
+		bus write InterruptGeneratorIfcBus 32 $IntervalReg1Address $IntervalNsOfInterrupts1
+		bus write InterruptGeneratorIfcBus 32 $IntervalReg2Address $IntervalNsOfInterrupts2
+		bus write InterruptGeneratorIfcBus 32 $IntervalReg3Address $IntervalNsOfInterrupts3
+ 
+		signal write OutCrossToOtherCore 1
+		
+        wait 100
+        bus write InterruptCollectorIfcBus 32 $InterruptMaskRegAddress 0b1111 -- enable all interrupts		
+		bus write InterruptGeneratorIfcBus 32 $ControlRegAddress 0b1111	-- start generation for all interrupts	
+	    	
+    	call $WaitForGeneratorStatusAllEnded
+    	call $WaitForNotRunCrossFromOtherCore 
+    	
+    	wait 1000
+    	
+    	log message $INFO_4 " "
+	    log message $INFO_4 "Core0 finally: Interrupts in total: {}, Source0: {}, Source1: {}, Source2: {}, Source3: {} " $InterruptACallCount $IntASrc0Count $IntASrc1Count $IntASrc2Count $IntASrc3Count
+
+		bus read InterruptGeneratorIfcBus 32 $ActualCountReg0Address ActualCount0
+		bus read InterruptGeneratorIfcBus 32 $ActualCountReg1Address ActualCount1
+		bus read InterruptGeneratorIfcBus 32 $ActualCountReg2Address ActualCount2
+		bus read InterruptGeneratorIfcBus 32 $ActualCountReg3Address ActualCount3
+		
+		equ ActualCount $ActualCount0
+		add ActualCount $ActualCount1
+		add ActualCount $ActualCount2
+		add ActualCount $ActualCount3
+
+		log message $INFO_4 " "
+		log message $INFO_4 "Total counts finally: ActualSum: {}, Actual0: {}, Actual1: {}, Actual2: {}, Actual3: {} " $ActualCount $ActualCount0 $ActualCount1 $ActualCount2 $ActualCount3
+
+		bus read InterruptGeneratorIfcBus 32 $FailureCountReg0Address FailureCount0
+		bus read InterruptGeneratorIfcBus 32 $FailureCountReg1Address FailureCount1
+		bus read InterruptGeneratorIfcBus 32 $FailureCountReg2Address FailureCount2
+		bus read InterruptGeneratorIfcBus 32 $FailureCountReg3Address FailureCount3
+		
+		equ FailureCount $FailureCount0
+		add FailureCount $FailureCount1
+		add FailureCount $FailureCount2
+		add FailureCount $FailureCount3
+		
+		log message $INFO_4 "Total failure count finally: FailureSum: {}, Failures0: {}, Failures1: {}, Failures2: {}, Failures3: {} " $FailureCount $FailureCount0 $FailureCount1 $FailureCount2 $FailureCount3
+		log message $INFO_4 " "
+		    			
+		wait 1000
+		
+		log message $INFO "Core0: Main test finished"
+		log message $INFO_4 " "
+		
+		wait 1000
+		finish
+    else
+        call $WaitForRunCrossFromOtherCore
+        signal write OutCrossToOtherCore 1
+              
+    	log message $INFO "Core1: test started"
+    	
+    	call $WaitForGeneratorStatusAllEnded
+    	
+    	signal write OutCrossToOtherCore 0
+    	
+    	wait 400
+    	
+    	log message $INFO_4 " "
+	    log message $INFO_4 "Core1 finally: Interrupts in total: {}, Source0: {}, Source1: {}, Source2: {}, Source3: {} " $InterruptACallCount $IntASrc0Count $IntASrc1Count $IntASrc2Count $IntASrc3Count    	
+
+        log message $INFO "Core1: test finished"
+        
+        loop 100000
+        	wait 10000
+        end loop
+
+	end if
+end proc
+
+InterruptA:
+interrupt
+    log message $INFO_5 "Core {}: Interrupt from Generator happened" $CoreNumber
+    
+    add InterruptACallCount 1
+
+    bus read InterruptCollectorIfcBus 32 $InterruptRequestRegAddress InterruptRequests
+    
+    equ InterruptRequest0 $InterruptRequests
+    and InterruptRequest0 0b0001
+    equ InterruptRequest1 $InterruptRequests
+    and InterruptRequest1 0b0010
+    equ InterruptRequest2 $InterruptRequests
+    and InterruptRequest2 0b0100
+    equ InterruptRequest3 $InterruptRequests
+    and InterruptRequest3 0b1000
+    
+    if $InterruptRequest0 = 0b0001 
+    	bus write InterruptCollectorIfcBus 32 $InterruptRequestRegAddress $InterruptRequest0
+    	bus read InterruptGeneratorIfcBus 32 $ActualCountReg0Address InterruptCount
+    	bus write InterruptGeneratorIfcBus 32 $ReferenceCountReg0Address $InterruptCount
+    	bus write InterruptCollectorIfcBus 32 $InterruptServiceRegAddress $InterruptRequest0
+    	add IntASrc0Count 1
+    elsif $InterruptRequest1 = 0b0010 
+    	bus write InterruptCollectorIfcBus 32 $InterruptRequestRegAddress $InterruptRequest1
+    	bus read InterruptGeneratorIfcBus 32 $ActualCountReg1Address InterruptCount
+    	bus write InterruptGeneratorIfcBus 32 $ReferenceCountReg1Address $InterruptCount
+    	bus write InterruptCollectorIfcBus 32 $InterruptServiceRegAddress $InterruptRequest1
+    	add IntASrc1Count 1
+    elsif $InterruptRequest2 = 0b0100 
+    	bus write InterruptCollectorIfcBus 32 $InterruptRequestRegAddress $InterruptRequest2
+    	bus read InterruptGeneratorIfcBus 32 $ActualCountReg2Address InterruptCount
+    	bus write InterruptGeneratorIfcBus 32 $ReferenceCountReg2Address $InterruptCount
+    	bus write InterruptCollectorIfcBus 32 $InterruptServiceRegAddress $InterruptRequest2
+    	add IntASrc2Count 1
+    elsif $InterruptRequest3 = 0b1000 
+    	bus write InterruptCollectorIfcBus 32 $InterruptRequestRegAddress $InterruptRequest3
+    	bus read InterruptGeneratorIfcBus 32 $ActualCountReg3Address InterruptCount
+    	bus write InterruptGeneratorIfcBus 32 $ReferenceCountReg3Address $InterruptCount
+    	bus write InterruptCollectorIfcBus 32 $InterruptServiceRegAddress $InterruptRequest3
+    	add IntASrc3Count 1
+    end if 
+    
+    equ InterruptACallDivResult	$InterruptACallCount
+    div InterruptACallDivResult $InterruptACallDiv
+    mul InterruptACallDivResult $InterruptACallDiv
+       
+    equ InterruptACallModResult	$InterruptACallCount
+    sub InterruptACallModResult $InterruptACallDivResult
+    
+    if $InterruptACallModResult = 0 
+        if $CoreNumber = 0
+	    	log message $INFO_4 "Core0 currently: Interrupts in total: {}, Source0: {}, Source1: {}, Source2: {}, Source3: {} " $InterruptACallCount $IntASrc0Count $IntASrc1Count $IntASrc2Count $IntASrc3Count
+    	else
+	    	log message $INFO_4 "Core1 currently: Interrupts in total: {}, Source0: {}, Source1: {}, Source2: {}, Source3: {} " $InterruptACallCount $IntASrc0Count $IntASrc1Count $IntASrc2Count $IntASrc3Count    	
+    	end if
+    end if 
+    
+end interrupt
+
+InterruptB:
+interrupt
+    log message $INFO_5 "Core{}: Cross signal interrupt happened" $CoreNumber
+end interrupt
+
+var GeneratorStatus 0
+WaitForGeneratorStatusAllEnded:
+proc
+    loop 10000
+        wait 100
+    	bus read InterruptGeneratorIfcBus 32 $StatusRegAddress GeneratorStatus
+		if $GeneratorStatus = 0b10101010
+			return
+		end if
+    end loop
+    log message $ERROR "Generator Status All Ended not reached in resonable time !"
+    abort
+end proc
+
+var RunCrossFromOtherCore 0
+WaitForRunCrossFromOtherCore:
+proc
+    loop 10000
+        wait 100
+    	signal read InCrossFromOtherCore RunCrossFromOtherCore
+    	if $RunCrossFromOtherCore = 1
+			return
+		end if
+    end loop
+    log message $ERROR "Run Cross From Other Core not activated in reasonable time !"
+    abort
+end proc
+
+WaitForNotRunCrossFromOtherCore:
+proc
+    loop 10000
+        wait 100
+    	signal read InCrossFromOtherCore RunCrossFromOtherCore
+    	if $RunCrossFromOtherCore = 0
+			return
+		end if
+    end loop
+    log message $ERROR "Run Cross From Other Core not deactivated in reasonable time !"
+    abort
+end proc

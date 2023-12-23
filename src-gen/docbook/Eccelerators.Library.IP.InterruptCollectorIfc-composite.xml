@@ -1,0 +1,1911 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns="http://docbook.org/ns/docbook" xml:id="Eccelerators.Library.IP.InterruptCollectorIfc-composite" version="5.0">
+  <title>Interrupt Collector Interface (InterruptCollectorIfc)</title>
+  <para>Interface containing a basic Interrupt Collector block.</para>
+  <table>
+    <title>Blocks of Interrupt Collector Interface</title>
+    <tgroup cols="3">
+      <colspec colnum="1" colwidth="59" colname="col1"/>
+      <colspec colnum="2" colwidth="73" colname="col2"/>
+      <colspec colnum="3" colwidth="567" colname="col3"/>
+      <tbody>
+        <row>
+          <entry namest="col1" nameend="col3">
+            <para>Blocks of Interrupt Collector Interface</para>
+          </entry>
+        </row>
+        <row>
+          <entry>
+            <para>Block Address</para>
+          </entry>
+          <entry>
+            <para>ID</para>
+          </entry>
+          <entry>
+            <para>Block Name</para>
+          </entry>
+        </row>
+        <row>
+          <entry>
+            <para>
+              <code>0x00</code>
+            </para>
+          </entry>
+          <entry xml:id="acbbf44f56a2">
+            <para>InterruptCollectorBlk</para>
+          </entry>
+          <entry>
+            <para>
+              <link linkend="ad6dcef073ec">Interrupt Collector Block</link>
+            </para>
+          </entry>
+        </row>
+      </tbody>
+    </tgroup>
+  </table>
+  <para/>
+  <table>
+    <title>Resets of Interrupt Collector Interface</title>
+    <tgroup cols="2">
+      <colspec colnum="1" colwidth="59" colname="col1"/>
+      <colspec colnum="2" colwidth="640" colname="col2"/>
+      <tbody>
+        <row>
+          <entry namest="col1" nameend="col2">
+            <para>Resets of Registers of Interrupt Collector Interface</para>
+          </entry>
+        </row>
+        <row>
+          <entry>
+            <para>ID</para>
+          </entry>
+          <entry>
+            <para>Reset Name</para>
+          </entry>
+        </row>
+        <row>
+          <entry>
+            <para>Async</para>
+          </entry>
+          <entry xml:id="a6ed5018216f">
+            <para>BusReset: Asynchronous Bus Reset</para>
+          </entry>
+        </row>
+      </tbody>
+    </tgroup>
+  </table>
+  <para/>
+  <section xml:id="interrupt-collector-block-interruptcollectorblk">
+    <title>Interrupt Collector Block (InterruptCollectorBlk)</title>
+    <para>This block defines a basic interrupt collector for <emphasis role="strong">level triggered</emphasis> interrupt sources.
+Usually edge triggered sources e.g., timer pulses can be converted to level triggered
+ones by catching them in the user logic.</para>
+    <para>Constraints:</para>
+    <orderedlist>
+      <listitem>
+        <para>Allow interrupt processing by multiple CPUs without need for spinlocks.</para>
+      </listitem>
+      <listitem>
+        <para>Enable forwarding an interrupt to the CPU(s) by a mask for each source.</para>
+      </listitem>
+      <listitem>
+        <para>Provide control pulses to notify the user logic when a interrupt service for an
+interrupt request has been started and has been ended.</para>
+      </listitem>
+      <listitem>
+        <para>Use the control pulses to reset the interrupt request fo a source or do it by
+a write or read access directly to the user logic e.g. reading the receive data
+register of an UART.</para>
+      </listitem>
+    </orderedlist>
+    <para>Interrupt Collector details:</para>
+    <figure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="resources/InterruptCollectorUserLogic.png" scale="50"/>
+        </imageobject>
+      </mediaobject>
+      <title>Interrupt Collector details</title>
+    </figure>
+    <table>
+      <title>Registers or Delegates of Interrupt Collector Block</title>
+      <tgroup cols="3">
+        <colspec colnum="1" colwidth="59" colname="col1"/>
+        <colspec colnum="2" colwidth="66" colname="col2"/>
+        <colspec colnum="3" colwidth="574" colname="col3"/>
+        <tbody>
+          <row>
+            <entry namest="col1" nameend="col3">
+              <para>Registers or Delegates of Interrupt Collector Block</para>
+            </entry>
+          </row>
+          <row>
+            <entry namest="col1" nameend="col2">
+              <para>
+                <code>0x00</code>
+              </para>
+              <para>
+                <code>..</code>
+              </para>
+              <para>
+                <code>0x0b</code>
+              </para>
+            </entry>
+            <entry xml:id="ad6dcef073ec">
+              <para>
+                <link linkend="acbbf44f56a2">Interrupt Collector Block</link>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>Address</para>
+            </entry>
+            <entry>
+              <para>ID</para>
+            </entry>
+            <entry>
+              <para>Name</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>
+                <code>0x00</code>
+              </para>
+            </entry>
+            <entry xml:id="ab85dd1aed3e">
+              <para>InterruptMaskReg</para>
+            </entry>
+            <entry>
+              <para>
+                <link linkend="a979d295fb35">Interrupt Mask Register</link>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>
+                <code>0x04</code>
+              </para>
+            </entry>
+            <entry xml:id="a009d9b0fe97">
+              <para>InterruptRequestReg</para>
+            </entry>
+            <entry>
+              <para>
+                <link linkend="a9fa5fc587a1">Interrupt Request Register</link>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>
+                <code>0x08</code>
+              </para>
+            </entry>
+            <entry xml:id="a0784af55386">
+              <para>InterruptServiceReg</para>
+            </entry>
+            <entry>
+              <para>
+                <link linkend="a16a6daf6e92">Interrupt Service Register</link>
+              </para>
+            </entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+    <section xml:id="interrupt-mask-register-interruptmaskreg">
+      <title>Interrupt Mask Register (InterruptMaskReg)</title>
+      <table>
+        <title>Bits of Interrupt Mask Register</title>
+        <tgroup cols="4">
+          <colspec colnum="1" colwidth="21" colname="col1"/>
+          <colspec colnum="2" colwidth="59" colname="col2"/>
+          <colspec colnum="3" colwidth="28" colname="col3"/>
+          <colspec colnum="4" colwidth="591" colname="col4"/>
+          <tbody>
+            <row>
+              <entry namest="col1" nameend="col4">
+                <para>Bits of Interrupt Mask Register</para>
+              </entry>
+            </row>
+            <row>
+              <entry namest="col1" nameend="col3">
+                <para>
+                  <code>0x00</code>
+                </para>
+              </entry>
+              <entry xml:id="a979d295fb35">
+                <para>
+                  <link linkend="ab85dd1aed3e">Interrupt Mask Register (InterruptMaskReg)</link>
+                </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Bits</para>
+              </entry>
+              <entry>
+                <para>ID</para>
+              </entry>
+              <entry>
+                <para>Type</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>03</para>
+              </entry>
+              <entry>
+                <para>Mask3</para>
+              </entry>
+              <entry xml:id="ad472cc988c6">
+                <para>RW</para>
+              </entry>
+              <entry>
+                <table>
+                  <title>Values of Mask3</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Type</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="aca553bbc6bb">
+                          <para>InterruptDisabled</para>
+                        </entry>
+                        <entry>
+                          <para>RW</para>
+                        </entry>
+                        <entry>
+                          <para>Interrupt is not forwarded to CPU(s).</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="ac167b2e5b41">
+                          <para>InterruptEnabled</para>
+                        </entry>
+                        <entry>
+                          <para>RW</para>
+                        </entry>
+                        <entry>
+                          <para>Interrupt is forwarded to CPU(s).</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+                <para/>
+                <table>
+                  <title>Resets of Mask3</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a2acd9f746ab">
+                          <para>BusReset</para>
+                        </entry>
+                        <entry>
+                          <para>RW</para>
+                        </entry>
+                        <entry>
+                          <para>Default Bus Reset</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>02</para>
+              </entry>
+              <entry>
+                <para>Mask2</para>
+              </entry>
+              <entry xml:id="ac64c54d42e0">
+                <para>RW</para>
+              </entry>
+              <entry>
+                <table>
+                  <title>Values of Mask2</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Type</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a783b5e3a296">
+                          <para>InterruptDisabled</para>
+                        </entry>
+                        <entry>
+                          <para>RW</para>
+                        </entry>
+                        <entry>
+                          <para>Interrupt is not forwarded to CPU(s).</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a7909bafb92a">
+                          <para>InterruptEnabled</para>
+                        </entry>
+                        <entry>
+                          <para>RW</para>
+                        </entry>
+                        <entry>
+                          <para>Interrupt is forwarded to CPU(s).</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+                <para/>
+                <table>
+                  <title>Resets of Mask2</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="ae443d10c030">
+                          <para>BusReset</para>
+                        </entry>
+                        <entry>
+                          <para>RW</para>
+                        </entry>
+                        <entry>
+                          <para>Default Bus Reset</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>01</para>
+              </entry>
+              <entry>
+                <para>Mask1</para>
+              </entry>
+              <entry xml:id="aad07d2177a5">
+                <para>RW</para>
+              </entry>
+              <entry>
+                <table>
+                  <title>Values of Mask1</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Type</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a41171c59145">
+                          <para>InterruptDisabled</para>
+                        </entry>
+                        <entry>
+                          <para>RW</para>
+                        </entry>
+                        <entry>
+                          <para>Interrupt is not forwarded to CPU(s).</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a2835bf8080e">
+                          <para>InterruptEnabled</para>
+                        </entry>
+                        <entry>
+                          <para>RW</para>
+                        </entry>
+                        <entry>
+                          <para>Interrupt is forwarded to CPU(s).</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+                <para/>
+                <table>
+                  <title>Resets of Mask1</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="ac460c914526">
+                          <para>BusReset</para>
+                        </entry>
+                        <entry>
+                          <para>RW</para>
+                        </entry>
+                        <entry>
+                          <para>Default Bus Reset</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>00</para>
+              </entry>
+              <entry>
+                <para>Mask0</para>
+              </entry>
+              <entry xml:id="a9844edf1b58">
+                <para>RW</para>
+              </entry>
+              <entry>
+                <table>
+                  <title>Values of Mask0</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Type</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a3a7b3ad8cf1">
+                          <para>InterruptDisabled</para>
+                        </entry>
+                        <entry>
+                          <para>RW</para>
+                        </entry>
+                        <entry>
+                          <para>Interrupt is not forwarded to CPU(s).</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="ab6de1ecc52a">
+                          <para>InterruptEnabled</para>
+                        </entry>
+                        <entry>
+                          <para>RW</para>
+                        </entry>
+                        <entry>
+                          <para>Interrupt is forwarded to CPU(s).</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+                <para/>
+                <table>
+                  <title>Resets of Mask0</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="ab49f1675ea9">
+                          <para>BusReset</para>
+                        </entry>
+                        <entry>
+                          <para>RW</para>
+                        </entry>
+                        <entry>
+                          <para>Default Bus Reset</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+              </entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+    <section xml:id="interrupt-request-register-interruptrequestreg">
+      <title>Interrupt Request Register (InterruptRequestReg)</title>
+      <table>
+        <title>Bits of Interrupt Request Register</title>
+        <tgroup cols="4">
+          <colspec colnum="1" colwidth="21" colname="col1"/>
+          <colspec colnum="2" colwidth="59" colname="col2"/>
+          <colspec colnum="3" colwidth="28" colname="col3"/>
+          <colspec colnum="4" colwidth="591" colname="col4"/>
+          <tbody>
+            <row>
+              <entry namest="col1" nameend="col4">
+                <para>Bits of Interrupt Request Register</para>
+              </entry>
+            </row>
+            <row>
+              <entry namest="col1" nameend="col3">
+                <para>
+                  <code>0x04</code>
+                </para>
+              </entry>
+              <entry xml:id="a9fa5fc587a1">
+                <para>
+                  <link linkend="a009d9b0fe97">Interrupt Request Register (InterruptRequestReg)</link>
+                </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Bits</para>
+              </entry>
+              <entry>
+                <para>ID</para>
+              </entry>
+              <entry>
+                <para>Type</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>03</para>
+              </entry>
+              <entry>
+                <para>Request3</para>
+              </entry>
+              <entry xml:id="af91926a5691">
+                <para>R/W</para>
+              </entry>
+              <entry>
+                <table>
+                  <title>Values of Request3</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Type</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a38f887ee786">
+                          <para>NotPending</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>An Interrupt is not pending.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a5f1cc719d3c">
+                          <para>Pending</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>An Interrupt is pending.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a62a6ab1a6bb">
+                          <para>NotConfirmed</para>
+                        </entry>
+                        <entry>
+                          <para>W</para>
+                        </entry>
+                        <entry>
+                          <para>Writing this value has no effect.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a92d35ff8c78">
+                          <para>Confirmed</para>
+                        </entry>
+                        <entry>
+                          <para>W</para>
+                        </entry>
+                        <entry>
+                          <para>Notifies HW that a pending interrupt has been recognized by SW.</para>
+                          <para>SW confirms that a respective interrupt service routine has been entered.
+The value isn’t stored, thus there is no need to reset it to ‘0’ again.
+Solely the write action is sufficient.</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+                <para/>
+                <table>
+                  <title>Resets of Request3</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Init Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Impact</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0b0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="af16d19e0e41">
+                          <para>Async</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>BusReset: Asynchronous Bus Reset</para>
+                          <para>The bit Request is set to NotPending after reset in the usually attached InterruptCollector HW block.</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>02</para>
+              </entry>
+              <entry>
+                <para>Request2</para>
+              </entry>
+              <entry xml:id="ae9251ef3f3e">
+                <para>R/W</para>
+              </entry>
+              <entry>
+                <table>
+                  <title>Values of Request2</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Type</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="ab50f8225529">
+                          <para>NotPending</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>An Interrupt is not pending.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="ab7a8cbdb45a">
+                          <para>Pending</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>An Interrupt is pending.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a9d9cd6edb07">
+                          <para>NotConfirmed</para>
+                        </entry>
+                        <entry>
+                          <para>W</para>
+                        </entry>
+                        <entry>
+                          <para>Writing this value has no effect.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a34d83ecbdf6">
+                          <para>Confirmed</para>
+                        </entry>
+                        <entry>
+                          <para>W</para>
+                        </entry>
+                        <entry>
+                          <para>Notifies HW that a pending interrupt has been recognized by SW.</para>
+                          <para>SW confirms that a respective interrupt service routine has been entered.
+The value isn’t stored, thus there is no need to reset it to ‘0’ again.
+Solely the write action is sufficient.</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+                <para/>
+                <table>
+                  <title>Resets of Request2</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Init Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Impact</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0b0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="ab295718a6c2">
+                          <para>Async</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>BusReset: Asynchronous Bus Reset</para>
+                          <para>The bit Request is set to NotPending after reset in the usually attached InterruptCollector HW block.</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>01</para>
+              </entry>
+              <entry>
+                <para>Request1</para>
+              </entry>
+              <entry xml:id="aa8de9a6172b">
+                <para>R/W</para>
+              </entry>
+              <entry>
+                <table>
+                  <title>Values of Request1</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Type</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="acb5705395db">
+                          <para>NotPending</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>An Interrupt is not pending.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a36ff2dc7627">
+                          <para>Pending</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>An Interrupt is pending.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a2c587c7137b">
+                          <para>NotConfirmed</para>
+                        </entry>
+                        <entry>
+                          <para>W</para>
+                        </entry>
+                        <entry>
+                          <para>Writing this value has no effect.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a394c11e1fdc">
+                          <para>Confirmed</para>
+                        </entry>
+                        <entry>
+                          <para>W</para>
+                        </entry>
+                        <entry>
+                          <para>Notifies HW that a pending interrupt has been recognized by SW.</para>
+                          <para>SW confirms that a respective interrupt service routine has been entered.
+The value isn’t stored, thus there is no need to reset it to ‘0’ again.
+Solely the write action is sufficient.</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+                <para/>
+                <table>
+                  <title>Resets of Request1</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Init Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Impact</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0b0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a4ae2195ff08">
+                          <para>Async</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>BusReset: Asynchronous Bus Reset</para>
+                          <para>The bit Request is set to NotPending after reset in the usually attached InterruptCollector HW block.</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>00</para>
+              </entry>
+              <entry>
+                <para>Request0</para>
+              </entry>
+              <entry xml:id="a7cd2a795bc8">
+                <para>R/W</para>
+              </entry>
+              <entry>
+                <table>
+                  <title>Values of Request0</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Type</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a661d4ec9be1">
+                          <para>NotPending</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>An Interrupt is not pending.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="abd7c4c75779">
+                          <para>Pending</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>An Interrupt is pending.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="ac81036fdc72">
+                          <para>NotConfirmed</para>
+                        </entry>
+                        <entry>
+                          <para>W</para>
+                        </entry>
+                        <entry>
+                          <para>Writing this value has no effect.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="ac9217bd64f2">
+                          <para>Confirmed</para>
+                        </entry>
+                        <entry>
+                          <para>W</para>
+                        </entry>
+                        <entry>
+                          <para>Notifies HW that a pending interrupt has been recognized by SW.</para>
+                          <para>SW confirms that a respective interrupt service routine has been entered.
+The value isn’t stored, thus there is no need to reset it to ‘0’ again.
+Solely the write action is sufficient.</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+                <para/>
+                <table>
+                  <title>Resets of Request0</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Init Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Impact</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0b0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="aceec35076f4">
+                          <para>Async</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>BusReset: Asynchronous Bus Reset</para>
+                          <para>The bit Request is set to NotPending after reset in the usually attached InterruptCollector HW block.</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+              </entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+    <section xml:id="interrupt-service-register-interruptservicereg">
+      <title>Interrupt Service Register (InterruptServiceReg)</title>
+      <table>
+        <title>Bits of Interrupt Service Register</title>
+        <tgroup cols="4">
+          <colspec colnum="1" colwidth="21" colname="col1"/>
+          <colspec colnum="2" colwidth="59" colname="col2"/>
+          <colspec colnum="3" colwidth="28" colname="col3"/>
+          <colspec colnum="4" colwidth="591" colname="col4"/>
+          <tbody>
+            <row>
+              <entry namest="col1" nameend="col4">
+                <para>Bits of Interrupt Service Register</para>
+              </entry>
+            </row>
+            <row>
+              <entry namest="col1" nameend="col3">
+                <para>
+                  <code>0x08</code>
+                </para>
+              </entry>
+              <entry xml:id="a16a6daf6e92">
+                <para>
+                  <link linkend="a0784af55386">Interrupt Service Register (InterruptServiceReg)</link>
+                </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Bits</para>
+              </entry>
+              <entry>
+                <para>ID</para>
+              </entry>
+              <entry>
+                <para>Type</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>03</para>
+              </entry>
+              <entry>
+                <para>Service3</para>
+              </entry>
+              <entry xml:id="af1320e9bb8a">
+                <para>R/W</para>
+              </entry>
+              <entry>
+                <table>
+                  <title>Values of Service3</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Type</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="aca287a4ded0">
+                          <para>Ended</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>The Interrupt service has ended.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="ad6cb5ce6e35">
+                          <para>InProcess</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>The Interrupt is in service.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="aecba6972c5d">
+                          <para>NotConfirmed</para>
+                        </entry>
+                        <entry>
+                          <para>W</para>
+                        </entry>
+                        <entry>
+                          <para>Writing this value has no effect.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a9c57e70115a">
+                          <para>Confirmed</para>
+                        </entry>
+                        <entry>
+                          <para>W</para>
+                        </entry>
+                        <entry>
+                          <para>Notifies HW that a pending interrupt has been recognized by SW.</para>
+                          <para>SW confirms that a respective interrupt service routine has been processed completely.
+The value isn’t stored, thus there is no need to reset it to ‘0’ again.
+Solely the write action is sufficient.</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+                <para/>
+                <table>
+                  <title>Resets of Service3</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Init Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Impact</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0b0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="af5e2f276b73">
+                          <para>Async</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>BusReset: Asynchronous Bus Reset</para>
+                          <para>The bit Service is set to Ended after reset in the usually attached InterruptCollector HW block.</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>02</para>
+              </entry>
+              <entry>
+                <para>Service2</para>
+              </entry>
+              <entry xml:id="a7033788576a">
+                <para>R/W</para>
+              </entry>
+              <entry>
+                <table>
+                  <title>Values of Service2</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Type</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="acdeb40df602">
+                          <para>Ended</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>The Interrupt service has ended.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="ad36fd407624">
+                          <para>InProcess</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>The Interrupt is in service.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a2e95db6e4ad">
+                          <para>NotConfirmed</para>
+                        </entry>
+                        <entry>
+                          <para>W</para>
+                        </entry>
+                        <entry>
+                          <para>Writing this value has no effect.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a5bde0dbad9b">
+                          <para>Confirmed</para>
+                        </entry>
+                        <entry>
+                          <para>W</para>
+                        </entry>
+                        <entry>
+                          <para>Notifies HW that a pending interrupt has been recognized by SW.</para>
+                          <para>SW confirms that a respective interrupt service routine has been processed completely.
+The value isn’t stored, thus there is no need to reset it to ‘0’ again.
+Solely the write action is sufficient.</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+                <para/>
+                <table>
+                  <title>Resets of Service2</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Init Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Impact</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0b0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a23f703eca70">
+                          <para>Async</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>BusReset: Asynchronous Bus Reset</para>
+                          <para>The bit Service is set to Ended after reset in the usually attached InterruptCollector HW block.</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>01</para>
+              </entry>
+              <entry>
+                <para>Service1</para>
+              </entry>
+              <entry xml:id="a2530402f1ba">
+                <para>R/W</para>
+              </entry>
+              <entry>
+                <table>
+                  <title>Values of Service1</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Type</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="ab619737c353">
+                          <para>Ended</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>The Interrupt service has ended.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a7a7f1eac5bd">
+                          <para>InProcess</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>The Interrupt is in service.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a03cba95450f">
+                          <para>NotConfirmed</para>
+                        </entry>
+                        <entry>
+                          <para>W</para>
+                        </entry>
+                        <entry>
+                          <para>Writing this value has no effect.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="aced747f42f9">
+                          <para>Confirmed</para>
+                        </entry>
+                        <entry>
+                          <para>W</para>
+                        </entry>
+                        <entry>
+                          <para>Notifies HW that a pending interrupt has been recognized by SW.</para>
+                          <para>SW confirms that a respective interrupt service routine has been processed completely.
+The value isn’t stored, thus there is no need to reset it to ‘0’ again.
+Solely the write action is sufficient.</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+                <para/>
+                <table>
+                  <title>Resets of Service1</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Init Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Impact</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0b0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a73295d61641">
+                          <para>Async</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>BusReset: Asynchronous Bus Reset</para>
+                          <para>The bit Service is set to Ended after reset in the usually attached InterruptCollector HW block.</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>00</para>
+              </entry>
+              <entry>
+                <para>Service0</para>
+              </entry>
+              <entry xml:id="a612b79783c6">
+                <para>R/W</para>
+              </entry>
+              <entry>
+                <table>
+                  <title>Values of Service0</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Type</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="aabc77a017f6">
+                          <para>Ended</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>The Interrupt service has ended.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="ad0dc3cf0e1f">
+                          <para>InProcess</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>The Interrupt is in service.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a4c7500b9cea">
+                          <para>NotConfirmed</para>
+                        </entry>
+                        <entry>
+                          <para>W</para>
+                        </entry>
+                        <entry>
+                          <para>Writing this value has no effect.</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0x1</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a6c65fb781ce">
+                          <para>Confirmed</para>
+                        </entry>
+                        <entry>
+                          <para>W</para>
+                        </entry>
+                        <entry>
+                          <para>Notifies HW that a pending interrupt has been recognized by SW.</para>
+                          <para>SW confirms that a respective interrupt service routine has been processed completely.
+The value isn’t stored, thus there is no need to reset it to ‘0’ again.
+Solely the write action is sufficient.</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+                <para/>
+                <table>
+                  <title>Resets of Service0</title>
+                  <tgroup cols="4">
+                    <colspec colnum="1" colwidth="59" colname="col1"/>
+                    <colspec colnum="2" colwidth="59" colname="col2"/>
+                    <colspec colnum="3" colwidth="28" colname="col3"/>
+                    <colspec colnum="4" colwidth="423" colname="col4"/>
+                    <tbody>
+                      <row>
+                        <entry>
+                          <para>Init Value</para>
+                        </entry>
+                        <entry>
+                          <para>ID</para>
+                        </entry>
+                        <entry>
+                          <para>Impact</para>
+                        </entry>
+                        <entry>
+                          <para>Description</para>
+                        </entry>
+                      </row>
+                      <row>
+                        <entry>
+                          <para>
+                            <code>0b0</code>
+                          </para>
+                        </entry>
+                        <entry xml:id="a37fde8c92ff">
+                          <para>Async</para>
+                        </entry>
+                        <entry>
+                          <para>R</para>
+                        </entry>
+                        <entry>
+                          <para>BusReset: Asynchronous Bus Reset</para>
+                          <para>The bit Service is set to Ended after reset in the usually attached InterruptCollector HW block.</para>
+                        </entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+              </entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+  </section>
+</section>

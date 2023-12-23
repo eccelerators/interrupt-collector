@@ -22,7 +22,7 @@
 	
 	
 	<basename property="eccelerators-book.basename" file="${basedir}" />
-	<property name="gen.filename.stem" value="eccelerators.library.ip.EventCatcherIfc"/>
+	<property name="gen.filename.stem" value="eccelerators.library.ip.${ant.project.name}"/>
 	<property name="fo-gen.pdf.filename" value="${gen.filename.stem}.pdf" />
 
 	<property name="sphinx.rst.folderpath" value="${basedir}/src/docs"/>

@@ -27,7 +27,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //******************************************************************************
-namespace Eccelerators.Library.Base
+namespace Eccelerators.Library.IP
 {
 
 	block InterruptCollectorBlk
@@ -35,7 +35,7 @@ namespace Eccelerators.Library.Base
 		Name = "Interrupt Collector Block";
 		Description = "
 			This block defines a basic interrupt collector for **level triggered** interrupt sources.
-			Usually edge triggered sources e.g., timers pulse can be converted to level triggered 
+			Usually edge triggered sources e.g., timer pulses can be converted to level triggered 
 			ones by catching them in the user logic. 
 
 			Constraints:
@@ -45,44 +45,53 @@ namespace Eccelerators.Library.Base
 			3. Provide control pulses to notify the user logic when a interrupt service for an 
 			   interrupt request has been started and has been ended. 
 			4. Use the control pulses to reset the interrupt request fo a source or do it by 
-			   a write ore read access directly to the user logic e.g. reading the receive data 
+			   a write or read access directly to the user logic e.g. reading the receive data 
 			   register of an UART. 
+			   
+            Interrupt Collector details:
+			 
+			.. figure:: resources/InterruptCollectorUserLogic.png
+			   :scale: 50
+			   
+			   Interrupt Collector details
 			   												 			 
 			";
 		Registers = [
-			InterruptCollectorBlk.InterruptMaskReg,
-			InterruptCollectorBlk.InterruptRequestReg,
-			InterruptCollectorBlk.InterruptServiceReg
+			InterruptMaskReg,
+			InterruptRequestReg,
+			InterruptServiceReg
 		];
-		Size = 0x10;
-
+		
 		register InterruptMaskReg
 		{
 			Name = "Interrupt Mask Register";
 			Width = 32;
 			Bits = [
-				InterruptCollectorBlk.InterruptMaskReg.Mask,
-				Reserved(Width=31)
+				Mask(Id="Mask0"),
+				Mask(Id="Mask1"),
+				Mask(Id="Mask2"),
+				Mask(Id="Mask3")
 			];
 			enum Mask
 			{
 				Width = 1;
 				Values = [
-					InterruptCollectorBlk.InterruptMaskReg.Mask.InterruptEnabled,
-					InterruptCollectorBlk.InterruptMaskReg.Mask.InterruptDisabled
+					InterruptCollectorBlk.InterruptMaskReg.Mask.InterruptDisabled,
+					InterruptCollectorBlk.InterruptMaskReg.Mask.InterruptEnabled
 				];
+				
+				value InterruptDisabled
+				{
+					Value = 0x0;
+					Description = "Interrupt is not forwarded to CPU(s).";
+				}
+				
 				value InterruptEnabled
 				{
 					Value = 0x1;
 					Description = "Interrupt is forwarded to CPU(s).";
 				}
 			
-				value InterruptDisabled
-				{
-					Value = 0x0;
-					Description = "Interrupt is not forwarded to CPU(s).";
-				}
-				Resets = [Rst(Value=0x0)];
 			}
 		}
 	
@@ -90,26 +99,23 @@ namespace Eccelerators.Library.Base
 		{
 			Name = "Interrupt Request Register";
 			Width = 32;
+			WriteTransparentPulse = true;
 			Bits = [
-				InterruptCollectorBlk.InterruptRequestReg.Request,
-				Reserved(Width=31)
+				Request(Id="Request0"),
+				Request(Id="Request1"),
+				Request(Id="Request2"),
+				Request(Id="Request3")
 			];
 			enum Request
 			{
 				Behaviour = BitBehaviour.Transparent;
 				Width = 1;
 				Values = [
-					InterruptCollectorBlk.InterruptRequestReg.Request.Pending,
-					InterruptCollectorBlk.InterruptRequestReg.Request.NotPending,
-					InterruptCollectorBlk.InterruptRequestReg.Request.Confirmed,
-					InterruptCollectorBlk.InterruptRequestReg.Request.InEffective
+					NotPending,
+					Pending,
+					NotConfirmed,
+					Confirmed				
 				];
-				value Pending
-				{
-					Value = 0x1;
-					Behaviour = ValueBehaviour.Read;
-					Description = "An Interrupt is pending.";
-				}
 			
 				value NotPending
 				{
@@ -117,6 +123,21 @@ namespace Eccelerators.Library.Base
 					Behaviour = ValueBehaviour.Read;
 					Description = "An Interrupt is not pending.";
 				}
+				
+				value Pending
+				{
+					Value = 0x1;
+					Behaviour = ValueBehaviour.Read;
+					Description = "An Interrupt is pending.";
+				}
+				
+				value NotConfirmed
+				{
+					Name = "Writing this value has no effect.";
+					Behaviour = ValueBehaviour.Write;
+					Value = 0x0;
+				}
+				
 				value Confirmed
 				{
 					Value = 0x1;
@@ -128,13 +149,12 @@ namespace Eccelerators.Library.Base
 						Solely the write action is sufficient.	
 						";
 				}
-				value InEffective
-				{
-					Name = "Writing this value has no effect.";
-					Behaviour = ValueBehaviour.Write;
-					Value = 0x0;
-				}
-				Resets = [Rst(Value=0x0)];
+
+				Resets = {
+				0b0:  BusReset.Async (Behaviour = ResetBehaviour.Read,  
+						Description = "
+							The bit Request is set to NotPending after reset in the usually attached InterruptCollector HW block.")			
+				};	
 			}
 		}
 	
@@ -142,33 +162,45 @@ namespace Eccelerators.Library.Base
 		{
 			Name = "Interrupt Service Register";
 			Width = 32;
+			WriteTransparentPulse = true;
 			Bits = [
-				InterruptCollectorBlk.InterruptServiceReg.Service,
-				Reserved(Width=31)
+				Service(Id="Service0"),
+				Service(Id="Service1"),
+				Service(Id="Service2"),
+				Service(Id="Service3")
 			];
 			enum Service
 			{
 				Behaviour = BitBehaviour.Transparent;
 				Width = 1;
 				Values = [
-					InterruptCollectorBlk.InterruptServiceReg.Service.InProcess,
-					InterruptCollectorBlk.InterruptServiceReg.Service.Ended,
-					InterruptCollectorBlk.InterruptServiceReg.Service.Confirmed,
-					InterruptCollectorBlk.InterruptServiceReg.Service.InEffective
+					Ended,
+					InProcess,
+					NotConfirmed,
+					Confirmed		
 				];
-				value InProcess
-				{
-					Value = 0x1;
-					Behaviour = ValueBehaviour.Read;
-					Description = "The Interrupt is in service.";
-				}
-			
+				
 				value Ended
 				{
 					Value = 0x0;
 					Behaviour = ValueBehaviour.Read;
 					Description = "The Interrupt service has ended.";
 				}
+				
+				value InProcess
+				{
+					Value = 0x1;
+					Behaviour = ValueBehaviour.Read;
+					Description = "The Interrupt is in service.";
+				}
+							
+				value NotConfirmed
+				{
+					Name = "Writing this value has no effect.";
+					Behaviour = ValueBehaviour.Write;
+					Value = 0x0;
+				}
+				
 				value Confirmed
 				{
 					Value = 0x1;
@@ -180,13 +212,12 @@ namespace Eccelerators.Library.Base
 						Solely the write action is sufficient.	
 						";
 				}
-				value InEffective
-				{
-					Name = "Writing this value has no effect.";
-					Behaviour = ValueBehaviour.Write;
-					Value = 0x0;
-				}
-				Resets = [Rst(Value=0x0)];
+
+				Resets = {
+				0b0:  BusReset.Async (Behaviour = ResetBehaviour.Read,  
+						Description = "
+							The bit Service is set to Ended after reset in the usually attached InterruptCollector HW block.")			
+				};	
 			}
 		}
 
