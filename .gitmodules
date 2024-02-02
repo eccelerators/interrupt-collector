@@ -1,30 +1,30 @@
 [submodule "submodules/usual-objects"]
 	path = submodules/usual-objects
-	url = git@github.com:eccelerators/usual-objects.git
+	url = https://github.com/eccelerators/usual-objects.git
 [submodule "submodules/sphinx-template"]
 	path = submodules/sphinx-template
-	url = git@github.com:eccelerators/sphinx-template.git
+	url = https://github.com/eccelerators/sphinx-template.git
 [submodule "submodules/eccelerators-docbook"]
 	path = submodules/eccelerators-docbook
-	url = git@github.com:eccelerators/eccelerators-docbook.git
+	url = https://github.com/eccelerators/eccelerators-docbook.git
 [submodule "submodules/sphinx_docbook"]
 	path = submodules/sphinx_docbook
-	url = git@github.com:eccelerators/sphinx_docbook.git
+	url = https://github.com/eccelerators/sphinx_docbook.git
 [submodule "submodules/simstm"]
 	path = submodules/simstm
-	url = git@github.com:eccelerators/simstm.git
+	url = https://github.com/eccelerators/simstm.git
 [submodule "submodules/interrupt-generator"]
 	path = submodules/interrupt-generator
-	url = git@github.com:eccelerators/interrupt-generator.git
+	url = https://github.com/eccelerators/interrupt-generator.git
 [submodule "submodules/bus-divider"]
 	path = submodules/bus-divider
-	url = git@github.com:eccelerators/bus-divider.git
+	url = https://github.com/eccelerators/bus-divider.git
 [submodule "submodules/bus-join"]
 	path = submodules/bus-join
-	url = git@github.com:eccelerators/bus-join.git
+	url = https://github.com/eccelerators/bus-join.git
 [submodule "submodules/vhdl-eccelerators-basic-package"]
 	path = submodules/vhdl-eccelerators-basic-package
-	url = git@github.com:eccelerators/vhdl-eccelerators-basic-package.git
+	url = https://github.com/eccelerators/vhdl-eccelerators-basic-package.git
 [submodule "submodules/interrupt-dispatcher"]
 	path = submodules/interrupt-dispatcher
-	url = git@github.com:eccelerators/interrupt-dispatcher.git
+	url = https://github.com/eccelerators/interrupt-dispatcher.git
