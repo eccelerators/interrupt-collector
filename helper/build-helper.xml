@@ -1,0 +1,122 @@
+<?xml version="1.0" ?>
+<project name="helper">
+
+    <property name="python-executable" value="python"/>
+	<property name="vlib-executable" value="/opt/intelFPGA/20.1/modelsim_ase/bin/vlib"/>
+	<property name="vmap-executable" value="/opt/intelFPGA/20.1/modelsim_ase/bin/vmap"/>
+	<property name="vcom-executable" value="/opt/intelFPGA/20.1/modelsim_ase/bin/vcom"/>
+	<property name="vsim-executable" value="/opt/intelFPGA/20.1/modelsim_ase/bin/vsim"/>
+			
+	<target name="_helper-clean-project-totally" description="remove all generated folders">	
+		<delete dir="simulation"/>
+		<delete dir="package"/>
+		<delete dir="scripts"/>
+		<delete dir="tmp-gen"/>		
+		<delete dir="src-gen"/>		
+	</target>
+	
+	<target name="_helper-remove-ghdl" description="remove ghdl">	
+		<delete dir="simulation/ghdl-axi4lite"/>	
+	</target>	
+	
+	<target name="_helper-remove-modelsim" description="remove modelsim">	
+		<delete dir="simulation/modelsim-axi4lite"/>	
+	</target>
+				
+	<target name="_helper-add-submodules" description="initially add all submodules given in the helper add_submodules.py list">	
+		<exec executable="${python-executable}">
+			<arg value="helper/add_submodules.py" />
+		</exec>
+		<replace file=".gitmodules" token="https://gitlab.emrsn.org" value="../.."/>  	
+	</target>
+	
+	<target name="_helper-remove-submodules" description="remove all submodules given in the helper remove_submodules.py list">	
+		<exec executable="${python-executable}">
+			<arg value="helper/remove_submodules.py" />
+		</exec>    	
+	</target>
+	
+	
+	<!-- <target name="_helper-generate-modelsim-axi4lite-ant-build-xml" description="generate ant build file for modelsim axi4lite case">
+	    <delete dir="simulation/modelsim-axi4lite"/>	  
+	    <mkdir dir="simulation/modelsim-axi4lite"/>	
+		<exec executable="${python-executable}">
+			<arg value="submodules/setup2modelsim/setup2modelsim/generate-modelsim-ant-build-xml.py" />
+			<arg value="&#45;-infile" />
+			<arg value="setup.py" />
+			<arg value="&#45;-inbustype" />
+			<arg value="axi4lite" />
+			<arg value="&#45;-outdir_simulation_subdir" />
+			<arg value="simulation/modelsim-axi4lite" />
+		</exec>  	
+	</target>
+	
+	<target name="_helper-generate-ghdl-axi4lite-ant-build-xml" description="generate ant build file for ghdl axi4lite case">
+	    <delete dir="simulation/ghdl-axi4lite"/>
+	    <mkdir dir="simulation/ghdl-axi4lite"/>
+		<exec executable="${python-executable}">
+			<arg value="submodules/setup2ghdl/setup2ghdl/generate-ghdl-ant-build-xml.py" />
+			<arg value="&#45;-infile" />
+			<arg value="setup.py" />
+			<arg value="&#45;-inbustype" />
+			<arg value="axi4lite" />
+			<arg value="&#45;-outdir_simulation_subdir" />
+			<arg value="simulation/ghdl-axi4lite" />
+		</exec>  	
+	</target>
+	-->
+	
+	<target name="_helper-generate-modelsim-wishbone-ant-build-xml" description="generate ant build file for modelsim wishbone case">
+	    <delete dir="simulation/modelsim-wishbone"/>	  
+	    <mkdir dir="simulation/modelsim-wishbone"/>	
+		<exec executable="${python-executable}">
+			<arg value="submodules/setup2modelsim/setup2modelsim/generate-modelsim-ant-build-xml.py" />
+			<arg value="&#45;-infile" />
+			<arg value="setup.py" />
+			<arg value="&#45;-inbustype" />
+			<arg value="wishbone" />
+			<arg value="&#45;-outdir_simulation_subdir" />
+			<arg value="simulation/modelsim-wishbone" />
+		</exec>  	
+	</target>
+	
+	<target name="_helper-generate-ghdl-wishbone-ant-build-xml" description="generate ant build file for ghdl wishbone case">
+	    <delete dir="simulation/ghdl-wishbone"/>
+	    <mkdir dir="simulation/ghdl-wishbone"/>
+		<exec executable="${python-executable}">
+			<arg value="submodules/setup2ghdl/setup2ghdl/generate-ghdl-ant-build-xml.py" />
+			<arg value="&#45;-infile" />
+			<arg value="setup.py" />
+			<arg value="&#45;-inbustype" />
+			<arg value="wishbone" />
+			<arg value="&#45;-outdir_simulation_subdir" />
+			<arg value="simulation/ghdl-wishbone" />
+		</exec>  	
+	</target>
+	
+	<target name="_helper-generate-proposal-for-setup-py" description="generate a proposal for setup.py">
+	    <delete dir="setup_proposal.py"/>
+		<exec executable="${python-executable}">
+			<arg value="helper/proposal_for_setup_py.py" />
+			<arg value="&#45;-indir_project" />
+			<arg value="." />
+			<arg value="&#45;-infile_setup_template_py" />
+			<arg value="helper/templates/setup_template.py" />
+			<arg value="&#45;-outfile_setup_proposal" />
+			<arg value="setup.py" />
+		</exec>  	
+	</target>
+
+	<target name="_helper-plausibility_check_of_setup_py" description="check plausibility of setup.py">
+	    <delete dir="setup_proposal.py"/>
+		<exec executable="${python-executable}">
+			<arg value="helper/plausibility_check_of_setup_py.py" />
+			<arg value="&#45;-infile" />
+			<arg value="setup.py" />
+			<arg value="&#45;-indir_project" />
+			<arg value="." />
+		</exec>  	
+	</target>	
+
+</project>
+

@@ -279,7 +279,7 @@ end interrupt
 
 InterruptB:
 interrupt
-    log message $INFO_4 "Core{:d}: Cross signal interrupt happened" $CoreNumber
+    log message $INFO_4 "Core{:d}: Cross notify interrupt happened" $CoreNumber
     signal write  OutCrossNotifyInterruptIsInServiceToOtherCore 1
     wait 100
     signal write  OutCrossNotifyInterruptIsInServiceToOtherCore 1
