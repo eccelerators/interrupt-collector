@@ -1,5 +1,5 @@
 ..
- Copyright (C) 2023 Eccelerators GmbH
+ Copyright (C) 2024 Eccelerators GmbH
 
 ..
  
@@ -11,10 +11,10 @@
  
 
 ..
- HxS Compiler 1.0.19-10671667
+ HxS Compiler v0.0.0-0000000
 
 ..
- Docs Extension for HxS 1.0.18-0b09510c
+ Docs Extension for HxS v0.0.0-0000000
 
 ..
  
@@ -41,7 +41,7 @@
  Author:HxS Compiler
 
 ..
- Date:21 Dec 2023 12:30:07
+ Date:25 Mar 2024 13:06:56
 
 Interrupt Collector Interface (InterruptCollectorIfc)
 """""""""""""""""""""""""""""""""""""""""""""""""""""

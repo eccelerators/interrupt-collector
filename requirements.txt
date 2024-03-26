@@ -1,0 +1,6 @@
+click
+lxml
+jinja2
+devpi-client==5.2.1
+virtualenv
+wheel

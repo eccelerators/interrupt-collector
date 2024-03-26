@@ -31,9 +31,8 @@ library ieee;
     use ieee.std_logic_1164.all;
     use ieee.numeric_std.all;
     
-library eccelerators;
-    use eccelerators.basic.all;
-    
+
+use work.basic.all;    
 use work.InterruptCollectorIfcPackage.all;
 use work.tb_bus_pkg.all;
 use work.tb_signals_pkg.all;
@@ -43,8 +42,10 @@ use work.BusDividerIfcPackage.all;
 
 entity tb_top_wishbone is
     generic (
-        stimulus_path : string := "../../tb/simstm/";
-        stimulus_file : string := "TestMainWishbone.stm"
+        stimulus_path : string := "tb/simstm/";
+        stimulus_file : string := "testMain.stm";
+        stimulus_main_entry_label : in string := "$testMain";
+        stimulus_test_suite_index : integer := 255
     );
 end;
 
@@ -60,6 +61,8 @@ architecture behavioural of tb_top_wishbone is
     signal executing_line0 : integer := 0;
     signal executing_file0 : text_line;
     signal marker0 : std_logic_vector(15 downto 0) := (others => '0');
+    signal standard_test_error_count0 : std_logic_vector(31 downto 0);
+    signal standard_test_error_count1 : std_logic_vector(31 downto 0);
     
     signal signals_in0 : t_signals_in;
     signal signals_out0 : t_signals_out;
@@ -78,6 +81,8 @@ architecture behavioural of tb_top_wishbone is
     signal bus_up1 : t_bus_up;        
     
     signal InterruptToDispatch : std_logic;
+    signal InterruptsBusyFromCpus : std_logic_vector(1 downto 0);
+    signal InterruptsEnableFromCpus : std_logic_vector(1 downto 0);
     signal InterruptsToCpus : std_logic_vector(1 downto 0);
     
     signal InterruptCollectorIfcWishboneDown : T_InterruptCollectorIfcWishboneDown;
@@ -139,19 +144,31 @@ begin
 
     Rst <= transport '0' after 100 ns;
     Clk <= transport (not Clk) and (not SimDone)  after 10 ns / 2; -- 100MHz
+
+    signals_in0.in_signal_1000 <= InterruptsToCpus(0);
+    signals_in0.in_signal_1010 <= signals_out1.out_signal_3001; -- cross core notify interrupt from/to other core
+  
+    signals_in0.in_signal_2000 <= GeneratorFailure;
+    signals_in0.in_signal_2001 <= x"00"; -- core number hard coded 
+    signals_in0.in_signal_2002 <= signals_out1.out_signal_3000; -- cross core sync signal in from other core
+    signals_in0.in_signal_2003 <= signals_out1.out_signal_3002; -- cross core notify interrupt is in service from/to other core
+
+    InterruptsBusyFromCpus(0) <= signals_out0.out_signal_1001;
+    InterruptsEnableFromCpus(0) <= signals_out0.out_signal_1002;
+   
     
-    signals_in0.in_signal <= GeneratorFailure;
-    signals_in0.in_signal_1 <= x"00"; -- core number
-    signals_in0.in_signal_2 <= signals_out1.out_signal_2; -- cross signals for Core sync
-    signals_in0.in_signal_3 <= signals_out1.out_signal_3; -- cross interrupts for Core sync
-    signals_in0.Interrupt_4 <= InterruptsToCpus(0);
+    signals_in1.in_signal_1000 <= InterruptsToCpus(1);
+    signals_in1.in_signal_1010 <= signals_out0.out_signal_3001; -- cross core notify interrupt from/to other core
+     
+    signals_in1.in_signal_2000 <= GeneratorFailure;
+    signals_in1.in_signal_2001 <= x"01"; -- core number hard coded 
+    signals_in1.in_signal_2002 <= signals_out0.out_signal_3000;
+    signals_in1.in_signal_2003 <= signals_out0.out_signal_3002; -- cross core notify interrupt is in service from/to other core
+        
+    InterruptsBusyFromCpus(1) <= signals_out0.out_signal_1011;
+    InterruptsEnableFromCpus(1) <= signals_out0.out_signal_1012;    
     
-    signals_in1.in_signal <= GeneratorFailure;
-    signals_in1.in_signal_1 <= x"01";
-    signals_in1.in_signal_2 <= signals_out0.out_signal_2;
-    signals_in1.in_signal_3 <= signals_out0.out_signal_3;
-    signals_in1.Interrupt_4 <= InterruptsToCpus(1);
-    
+   
     i0_tb_simstm : entity work.tb_simstm
         generic map (
             stimulus_path => stimulus_path,
@@ -163,6 +180,7 @@ begin
             simdone => SimDone,       
             executing_line => executing_line0,
             executing_file => executing_file0,
+            standard_test_error_count => standard_test_error_count0,
             marker => marker0,
             signals_in => signals_in0,
             signals_out => signals_out0,
@@ -181,6 +199,7 @@ begin
             simdone => open,       
             executing_line => executing_line1,
             executing_file => executing_file1,
+            standard_test_error_count => standard_test_error_count1,
             marker => marker1,
             signals_in => signals_in1,
             signals_out => signals_out1,
@@ -197,6 +216,8 @@ begin
             Clk => Clk,
             Rst => Rst,
             InterruptInToDispatch => InterruptToDispatch,
+            InterruptsBusyFromCpus => InterruptsBusyFromCpus,
+            InterruptsEnableFromCpus => InterruptsEnableFromCpus,
             InterruptsOutToCpus => InterruptsToCpus
         );
 
@@ -309,13 +330,17 @@ begin
 
     i_InterruptCollector : entity work.InterruptCollector
         generic map (
-            BIT_WIDTH => 4
+            BIT_WIDTH => 4,
+            INTER_INTERRUPT_GAP_NUMMBER_OF_CLKS => 1,
+            IS_LAST_IN_CHAIN => true
         )
         port map(
             Clk => Clk,
             Rst => Rst,
             InterruptIn => GeneratedInterrupt,
-            InterruptOut => InterruptToDispatch,
+            ChainInitiateGap => '0',
+            ChainInterruptUp => '0',
+            InterruptUp => InterruptToDispatch,
             Mask => Mask,
             RequestWritten => RequestWritten,
             WTransPulseInterruptRequestReg => InterruptCollectorIfcInterruptCollectorBlkDown.WTransPulseInterruptRequestReg,

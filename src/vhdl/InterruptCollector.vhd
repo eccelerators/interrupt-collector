@@ -31,20 +31,22 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-library eccelerators;
-    use eccelerators.basic.all;
-    
+use work.basic.all;
 use work.InterruptCollectorIfcPackage.all;
 
 entity InterruptCollector is
     generic (
-        BIT_WIDTH : positive := 1
+        BIT_WIDTH : positive := 1;
+        INTER_INTERRUPT_GAP_NUMMBER_OF_CLKS : natural := 1;
+        IS_LAST_IN_CHAIN : boolean := true
     );
     port (
         Clk : in std_logic;
         Rst : in std_logic;
         InterruptIn : in std_logic_vector(BIT_WIDTH - 1 downto 0);
-        InterruptOut : out std_logic;
+        ChainInitiateGap : in std_logic;
+        ChainInterruptUp : in std_logic;
+        InterruptUp : out std_logic;
         Mask : in std_logic_vector(BIT_WIDTH - 1 downto 0);
         RequestWritten : in std_logic_vector(BIT_WIDTH - 1 downto 0);
         WTransPulseInterruptRequestReg : in std_logic;
@@ -57,48 +59,66 @@ end entity;
 
 architecture RTL of InterruptCollector is
     
-    signal Request : std_logic_vector(BIT_WIDTH - 1 downto 0);
-    signal Service : std_logic_vector(BIT_WIDTH - 1 downto 0);
-
+    signal GapCount : unsigned(get_num_bits(INTER_INTERRUPT_GAP_NUMMBER_OF_CLKS) downto 0);
+    signal ThisInterruptUp : std_logic;
+    signal ThisInitiateGap : std_logic;
+    
 begin
 
-    RequestToBeRead <= Request;
-    ServiceToBeRead <= Service;
-    
+      
+    ThisInterruptUp <= '1' when unsigned(Mask and RequestToBeRead) /= 0 else '0';
+      
     prcRequestAndService : process ( Clk, Rst) is
     begin
         if Rst then
-            Request <= (others => '0');
-            Service <= (others => '0');
-            InterruptOut <= '0';
+            RequestToBeRead <= (others => '0');
+            ServiceToBeRead <= (others => '0');
+            ThisInitiateGap <= '0';          
         elsif rising_edge(Clk) then
-        
-            if unsigned(Mask and Request) /= 0 then
-                InterruptOut <= '1'; -- default assignment
-            end if;
-            
+            ThisInitiateGap <= '0'; -- default assignment
+                   
             for i in 0 to BIT_WIDTH - 1 loop
             
-                if Service(i) then
-                    Request(i) <= '0'; -- same request can only be set again after its service has ended
+                if ServiceToBeRead(i) then
+                    RequestToBeRead(i) <= '0'; -- same request can only be set again after its service has ended
                 elsif InterruptIn(i) then
-                    Request(i) <= '1'; 
+                    RequestToBeRead(i) <= '1'; 
                 end if;
                 
                 if RequestWritten(i) and WTransPulseInterruptRequestReg then
-                    Service(i) <= '1';
-                    Request(i) <= '0';
-                    InterruptOut <= '0'; -- deactivate for at least one clock after each service entry
-                                         -- to allow dispatching other pending requests to other cpu cores  
+                    ServiceToBeRead(i) <= '1';
+                    RequestToBeRead(i) <= '0';
+                    ThisInitiateGap <= '1';                               
                 end if;
                 
                 if ServiceWritten(i) and WTransPulseInterruptServiceReg then
-                    Service(i) <= '0';
+                    ServiceToBeRead(i) <= '0';
                 end if;        
                              
             end loop;
             
         end if;  
     end process;
+    
+    genLastInChain: if IS_LAST_IN_CHAIN generate
+        InterruptUp <= ThisInterruptUp or ChainInterruptUp when ThisInitiateGap = '0' and ChainInitiateGap = '0' and GapCount = 0 else '0';
+    
+        prcCountGap : process ( Clk, Rst) is
+        begin
+            if Rst then
+                GapCount <= (others => '0');
+            elsif rising_edge(Clk) then              
+                if ThisInitiateGap or ChainInitiateGap then
+                    GapCount <= to_unsigned(INTER_INTERRUPT_GAP_NUMMBER_OF_CLKS, GapCount'length);
+                elsif GapCount > 0 then
+                    GapCount <= GapCount - 1;
+                end if;                      
+            end if;  
+        end process;
+    end generate;
+    
+    genPredecessorInChain: if not IS_LAST_IN_CHAIN generate
+        InterruptUp <= ThisInterruptUp or ChainInterruptUp;
+    end generate;
     
 end architecture;

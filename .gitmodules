@@ -28,3 +28,20 @@
 [submodule "submodules/interrupt-dispatcher"]
 	path = submodules/interrupt-dispatcher
 	url = https://github.com/eccelerators/interrupt-dispatcher.git
+[submodule "submodules/setup2modelsim"]
+	path = submodules/setup2modelsim
+	url = https://github.com/eccelerators/setup2modelsim.git
+	branch = main
+[submodule "submodules/setup2ghdl"]
+	path = submodules/setup2ghdl
+	url = https://github.com/eccelerators/setup2ghdl.git
+	branch = main
+
+[submodule "submodules/basic-ant-builds"]
+	path = submodules/basic-ant-builds
+	url = https://github.com/eccelerators/basic-ant-builds.git
+	branch = main
+[submodule "submodules/break-docbook-program-listing"]
+	path = submodules/break-docbook-program-listing
+	url = https://github.com/eccelerators/break-docbook-program-listing.git
+	branch = main

@@ -1,0 +1,312 @@
+<?xml version="1.0" ?>
+<project name="modelsim-wishbone">
+   <!-- may be overridden in main build script -->
+   <property name="vlib-executable" value="vlib"/>
+   <property name="vmap-executable" value="vmap"/>
+   <property name="vcom-executable" value="vcom"/>
+   <property name="vsim-executable" value="vsim"/>
+
+   <target name="modelsim-wishbone-prepare" description="make work folder">
+      <mkdir dir="simulation/modelsim-wishbone/work"/>
+      <exec executable="${vlib-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="${basedir}/simulation/modelsim-wishbone/work/work"/>
+      </exec>
+      <exec executable="${vmap-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="work"/>
+         <arg value="${basedir}/simulation/modelsim-wishbone/work/work"/>
+      </exec>
+      <exec executable="${vmap-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="work_lib"/>
+         <arg value="${basedir}/simulation/modelsim-wishbone/work/work"/>
+      </exec>
+   </target>
+
+   <target name="modelsim-wishbone-clean" description="delete work folder">
+      <delete dir="simulation/modelsim-wishbone/work"/>
+      <delete dir="simulation/modelsim-wishbone/TimeStamps"/>
+   </target>
+
+   <target name="modelsim-wishbone-all"
+         description="all from scratch until interactive simulation" depends="
+     modelsim-wishbone-clean,
+     modelsim-wishbone-prepare,
+     modelsim-wishbone-compile,
+     modelsim-wishbone-simulate"/>
+
+   <target name="modelsim-wishbone-all-gui"
+         description="all from scratch until interactive simulation" depends="
+     modelsim-wishbone-clean,
+     modelsim-wishbone-prepare,
+     modelsim-wishbone-compile,
+     modelsim-wishbone-simulate-gui"/>
+
+   <target name="modelsim-wishbone-compile" depends="
+     -do_compile_modelsim-wishbone-tb_hdl_simstm_src_to_customize_tb_signals_pkg.vhd,
+     -do_compile_modelsim-wishbone-submodules_simstm_src_tb_bus_wishbone_pkg.vhd,
+     -do_compile_modelsim-wishbone-submodules_simstm_src_tb_bus_axi4lite_pkg.vhd,
+     -do_compile_modelsim-wishbone-submodules_simstm_src_tb_bus_avalon_pkg.vhd,
+     -do_compile_modelsim-wishbone-tb_hdl_simstm_src_to_customize_tb_bus_pkg.vhd,
+     -do_compile_modelsim-wishbone-submodules_vhdl-eccelerators-basic-package_src_eccelerators_basic.vhd,
+     -do_compile_modelsim-wishbone-submodules_simstm_src_tb_base_pkg.vhd,
+     -do_compile_modelsim-wishbone-submodules_simstm_src_tb_base_pkg_body.vhd,
+     -do_compile_modelsim-wishbone-submodules_simstm_src_tb_instructions_pkg.vhd,
+     -do_compile_modelsim-wishbone-submodules_simstm_src_tb_interpreter_pkg.vhd,
+     -do_compile_modelsim-wishbone-submodules_simstm_src_tb_interpreter_pkg_body.vhd,
+     -do_compile_modelsim-wishbone-submodules_simstm_src_tb_simstm.vhd,
+     -do_compile_modelsim-wishbone-submodules_interrupt-generator_src-gen_vhdl_wishbone_InterruptGeneratorIfcPackage.vhd,
+     -do_compile_modelsim-wishbone-submodules_interrupt-generator_src_vhdl_InterruptGenerator.vhd,
+     -do_compile_modelsim-wishbone-submodules_interrupt-generator_src-gen_vhdl_wishbone_InterruptGeneratorIfcWishbone.vhd,
+     -do_compile_modelsim-wishbone-submodules_interrupt-dispatcher_src_vhdl_InterruptDispatcher.vhd,
+     -do_compile_modelsim-wishbone-submodules_bus-join_src_vhdl_BusJoinWishbone.vhd,
+     -do_compile_modelsim-wishbone-submodules_bus-divider_src-gen_vhdl_wishbone_BusDividerIfcPackage.vhd,
+     -do_compile_modelsim-wishbone-submodules_bus-divider_src-gen_vhdl_wishbone_BusDividerIfcWishbone.vhd,
+     -do_compile_modelsim-wishbone-src-gen_vhdl_InterruptCollectorIfcPackage.vhd,
+     -do_compile_modelsim-wishbone-src_vhdl_InterruptCollector.vhd,
+     -do_compile_modelsim-wishbone-src-gen_vhdl_InterruptCollectorIfcWishbone.vhd,
+     -do_compile_modelsim-wishbone-tb_hdl_tb_top_wishbone.vhd"
+         description="compile all"/>
+
+   <target name="modelsim-wishbone-simulate" description="simulate">
+      <delete dir="simulation/modelsim-wishbone/../SimulationResults"/>
+      <mkdir dir="simulation/modelsim-wishbone/../SimulationResults"/>
+      <echo file="simulation/modelsim-wishbone/work/simulation.started" append="false">STARTED</echo>
+      <echo file="simulation/modelsim-wishbone/work/run_all.do" append="false">run -all</echo>
+      <exec executable="${vsim-executable}" dir="simulation/modelsim-wishbone/work">
+         <arg value="-t"/>
+         <arg value="ps"/>
+         <arg value="-L"/>
+         <arg value="work"/>
+         <arg value="work.tb_top_wishbone"/>
+         <arg value="-batch"/>
+         <arg value="-gstimulus_path=${basedir}/tb/simstm/"/>
+         <arg value="-do"/>
+         <arg value="run_all.do"/>
+      </exec>
+      <echo file="simulation/modelsim-wishbone/work/simulation.ended" append="false">ENDED</echo>
+   </target>
+
+   <target name="modelsim-wishbone-simulate-gui" description="simulate start gui">
+      <delete dir="simulation/modelsim-wishbone/../SimulationResults"/>
+      <mkdir dir="simulation/modelsim-wishbone/../SimulationResults"/>
+      <exec executable="${vsim-executable}" dir="simulation/modelsim-wishbone/work">
+         <arg value="-t"/>
+         <arg value="ps"/>
+         <arg value="-L"/>
+         <arg value="work"/>
+         <arg value="work.tb_top_wishbone"/>
+         <arg value="-gstimulus_path=${basedir}/tb/simstm/"/>
+         <arg value="-i"/>
+      </exec>
+   </target>
+
+   <target name="modelsim-wishbone-init-skip-properties">
+      <mkdir dir="simulation/modelsim-wishbone/work/TimeStamps"/>
+      <uptodate srcfile="${basedir}/tb/hdl/simstm_src_to_customize/tb_signals_pkg.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/tb_hdl_simstm_src_to_customize_tb_signals_pkg.vhd" property="modelsim-wishbone-tb_hdl_simstm_src_to_customize_tb_signals_pkg.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/simstm/src/tb_bus_wishbone_pkg.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_bus_wishbone_pkg.vhd" property="modelsim-wishbone-submodules_simstm_src_tb_bus_wishbone_pkg.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/simstm/src/tb_bus_axi4lite_pkg.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_bus_axi4lite_pkg.vhd" property="modelsim-wishbone-submodules_simstm_src_tb_bus_axi4lite_pkg.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/simstm/src/tb_bus_avalon_pkg.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_bus_avalon_pkg.vhd" property="modelsim-wishbone-submodules_simstm_src_tb_bus_avalon_pkg.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/tb/hdl/simstm_src_to_customize/tb_bus_pkg.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/tb_hdl_simstm_src_to_customize_tb_bus_pkg.vhd" property="modelsim-wishbone-tb_hdl_simstm_src_to_customize_tb_bus_pkg.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/vhdl-eccelerators-basic-package/src/eccelerators_basic.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_vhdl-eccelerators-basic-package_src_eccelerators_basic.vhd" property="modelsim-wishbone-submodules_vhdl-eccelerators-basic-package_src_eccelerators_basic.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/simstm/src/tb_base_pkg.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_base_pkg.vhd" property="modelsim-wishbone-submodules_simstm_src_tb_base_pkg.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/simstm/src/tb_base_pkg_body.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_base_pkg_body.vhd" property="modelsim-wishbone-submodules_simstm_src_tb_base_pkg_body.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/simstm/src/tb_instructions_pkg.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_instructions_pkg.vhd" property="modelsim-wishbone-submodules_simstm_src_tb_instructions_pkg.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/simstm/src/tb_interpreter_pkg.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_interpreter_pkg.vhd" property="modelsim-wishbone-submodules_simstm_src_tb_interpreter_pkg.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/simstm/src/tb_interpreter_pkg_body.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_interpreter_pkg_body.vhd" property="modelsim-wishbone-submodules_simstm_src_tb_interpreter_pkg_body.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/simstm/src/tb_simstm.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_simstm.vhd" property="modelsim-wishbone-submodules_simstm_src_tb_simstm.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/interrupt-generator/src-gen/vhdl/wishbone/InterruptGeneratorIfcPackage.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_interrupt-generator_src-gen_vhdl_wishbone_InterruptGeneratorIfcPackage.vhd" property="modelsim-wishbone-submodules_interrupt-generator_src-gen_vhdl_wishbone_InterruptGeneratorIfcPackage.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/interrupt-generator/src/vhdl/InterruptGenerator.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_interrupt-generator_src_vhdl_InterruptGenerator.vhd" property="modelsim-wishbone-submodules_interrupt-generator_src_vhdl_InterruptGenerator.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/interrupt-generator/src-gen/vhdl/wishbone/InterruptGeneratorIfcWishbone.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_interrupt-generator_src-gen_vhdl_wishbone_InterruptGeneratorIfcWishbone.vhd" property="modelsim-wishbone-submodules_interrupt-generator_src-gen_vhdl_wishbone_InterruptGeneratorIfcWishbone.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/interrupt-dispatcher/src/vhdl/InterruptDispatcher.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_interrupt-dispatcher_src_vhdl_InterruptDispatcher.vhd" property="modelsim-wishbone-submodules_interrupt-dispatcher_src_vhdl_InterruptDispatcher.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/bus-join/src/vhdl/BusJoinWishbone.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_bus-join_src_vhdl_BusJoinWishbone.vhd" property="modelsim-wishbone-submodules_bus-join_src_vhdl_BusJoinWishbone.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/bus-divider/src-gen/vhdl/wishbone/BusDividerIfcPackage.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_bus-divider_src-gen_vhdl_wishbone_BusDividerIfcPackage.vhd" property="modelsim-wishbone-submodules_bus-divider_src-gen_vhdl_wishbone_BusDividerIfcPackage.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/submodules/bus-divider/src-gen/vhdl/wishbone/BusDividerIfcWishbone.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_bus-divider_src-gen_vhdl_wishbone_BusDividerIfcWishbone.vhd" property="modelsim-wishbone-submodules_bus-divider_src-gen_vhdl_wishbone_BusDividerIfcWishbone.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/src-gen/vhdl/InterruptCollectorIfcPackage.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/src-gen_vhdl_InterruptCollectorIfcPackage.vhd" property="modelsim-wishbone-src-gen_vhdl_InterruptCollectorIfcPackage.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/src/vhdl/InterruptCollector.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/src_vhdl_InterruptCollector.vhd" property="modelsim-wishbone-src_vhdl_InterruptCollector.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/src-gen/vhdl/InterruptCollectorIfcWishbone.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/src-gen_vhdl_InterruptCollectorIfcWishbone.vhd" property="modelsim-wishbone-src-gen_vhdl_InterruptCollectorIfcWishbone.vhd.skip" value="true"/>
+      <uptodate srcfile="${basedir}/tb/hdl/tb_top_wishbone.vhd" targetfile="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/tb_hdl_tb_top_wishbone.vhd" property="modelsim-wishbone-tb_hdl_tb_top_wishbone.vhd.skip" value="true"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-tb_hdl_simstm_src_to_customize_tb_signals_pkg.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-tb_hdl_simstm_src_to_customize_tb_signals_pkg.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/tb/hdl/simstm_src_to_customize/tb_signals_pkg.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/tb_hdl_simstm_src_to_customize_tb_signals_pkg.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_simstm_src_tb_bus_wishbone_pkg.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_simstm_src_tb_bus_wishbone_pkg.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/simstm/src/tb_bus_wishbone_pkg.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_bus_wishbone_pkg.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_simstm_src_tb_bus_axi4lite_pkg.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_simstm_src_tb_bus_axi4lite_pkg.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/simstm/src/tb_bus_axi4lite_pkg.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_bus_axi4lite_pkg.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_simstm_src_tb_bus_avalon_pkg.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_simstm_src_tb_bus_avalon_pkg.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/simstm/src/tb_bus_avalon_pkg.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_bus_avalon_pkg.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-tb_hdl_simstm_src_to_customize_tb_bus_pkg.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-tb_hdl_simstm_src_to_customize_tb_bus_pkg.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/tb/hdl/simstm_src_to_customize/tb_bus_pkg.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/tb_hdl_simstm_src_to_customize_tb_bus_pkg.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_vhdl-eccelerators-basic-package_src_eccelerators_basic.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_vhdl-eccelerators-basic-package_src_eccelerators_basic.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/vhdl-eccelerators-basic-package/src/eccelerators_basic.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_vhdl-eccelerators-basic-package_src_eccelerators_basic.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_simstm_src_tb_base_pkg.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_simstm_src_tb_base_pkg.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/simstm/src/tb_base_pkg.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_base_pkg.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_simstm_src_tb_base_pkg_body.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_simstm_src_tb_base_pkg_body.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/simstm/src/tb_base_pkg_body.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_base_pkg_body.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_simstm_src_tb_instructions_pkg.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_simstm_src_tb_instructions_pkg.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/simstm/src/tb_instructions_pkg.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_instructions_pkg.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_simstm_src_tb_interpreter_pkg.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_simstm_src_tb_interpreter_pkg.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/simstm/src/tb_interpreter_pkg.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_interpreter_pkg.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_simstm_src_tb_interpreter_pkg_body.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_simstm_src_tb_interpreter_pkg_body.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/simstm/src/tb_interpreter_pkg_body.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_interpreter_pkg_body.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_simstm_src_tb_simstm.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_simstm_src_tb_simstm.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/simstm/src/tb_simstm.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_simstm_src_tb_simstm.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_interrupt-generator_src-gen_vhdl_wishbone_InterruptGeneratorIfcPackage.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_interrupt-generator_src-gen_vhdl_wishbone_InterruptGeneratorIfcPackage.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/interrupt-generator/src-gen/vhdl/wishbone/InterruptGeneratorIfcPackage.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_interrupt-generator_src-gen_vhdl_wishbone_InterruptGeneratorIfcPackage.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_interrupt-generator_src_vhdl_InterruptGenerator.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_interrupt-generator_src_vhdl_InterruptGenerator.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/interrupt-generator/src/vhdl/InterruptGenerator.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_interrupt-generator_src_vhdl_InterruptGenerator.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_interrupt-generator_src-gen_vhdl_wishbone_InterruptGeneratorIfcWishbone.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_interrupt-generator_src-gen_vhdl_wishbone_InterruptGeneratorIfcWishbone.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/interrupt-generator/src-gen/vhdl/wishbone/InterruptGeneratorIfcWishbone.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_interrupt-generator_src-gen_vhdl_wishbone_InterruptGeneratorIfcWishbone.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_interrupt-dispatcher_src_vhdl_InterruptDispatcher.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_interrupt-dispatcher_src_vhdl_InterruptDispatcher.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/interrupt-dispatcher/src/vhdl/InterruptDispatcher.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_interrupt-dispatcher_src_vhdl_InterruptDispatcher.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_bus-join_src_vhdl_BusJoinWishbone.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_bus-join_src_vhdl_BusJoinWishbone.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/bus-join/src/vhdl/BusJoinWishbone.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_bus-join_src_vhdl_BusJoinWishbone.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_bus-divider_src-gen_vhdl_wishbone_BusDividerIfcPackage.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_bus-divider_src-gen_vhdl_wishbone_BusDividerIfcPackage.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/bus-divider/src-gen/vhdl/wishbone/BusDividerIfcPackage.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_bus-divider_src-gen_vhdl_wishbone_BusDividerIfcPackage.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-submodules_bus-divider_src-gen_vhdl_wishbone_BusDividerIfcWishbone.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-submodules_bus-divider_src-gen_vhdl_wishbone_BusDividerIfcWishbone.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/submodules/bus-divider/src-gen/vhdl/wishbone/BusDividerIfcWishbone.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/submodules_bus-divider_src-gen_vhdl_wishbone_BusDividerIfcWishbone.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-src-gen_vhdl_InterruptCollectorIfcPackage.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-src-gen_vhdl_InterruptCollectorIfcPackage.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/src-gen/vhdl/InterruptCollectorIfcPackage.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/src-gen_vhdl_InterruptCollectorIfcPackage.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-src_vhdl_InterruptCollector.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-src_vhdl_InterruptCollector.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/src/vhdl/InterruptCollector.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/src_vhdl_InterruptCollector.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-src-gen_vhdl_InterruptCollectorIfcWishbone.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-src-gen_vhdl_InterruptCollectorIfcWishbone.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/src-gen/vhdl/InterruptCollectorIfcWishbone.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/src-gen_vhdl_InterruptCollectorIfcWishbone.vhd"/>
+   </target>
+
+   <target name="-do_compile_modelsim-wishbone-tb_hdl_tb_top_wishbone.vhd" depends="modelsim-wishbone-init-skip-properties" unless="modelsim-wishbone-tb_hdl_tb_top_wishbone.vhd.skip">
+      <exec executable="${vcom-executable}" dir="simulation/modelsim-wishbone/work" failonerror="true">
+         <arg value="-2008"/>
+         <arg value="${basedir}/tb/hdl/tb_top_wishbone.vhd"/>
+      </exec>
+      <touch file="${basedir}/simulation/modelsim-wishbone/work/TimeStamps/tb_hdl_tb_top_wishbone.vhd"/>
+   </target>
+</project>
