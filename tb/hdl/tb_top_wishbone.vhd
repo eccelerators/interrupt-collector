@@ -331,16 +331,18 @@ begin
     i_InterruptCollector : entity work.InterruptCollector
         generic map (
             BIT_WIDTH => 4,
-            INTER_INTERRUPT_GAP_NUMMBER_OF_CLKS => 1,
+            INTER_INTERRUPT_GAP => false,
+            GAP_NUMMBER_OF_CLKS => 1,
             IS_LAST_IN_CHAIN => true
         )
         port map(
             Clk => Clk,
             Rst => Rst,
             InterruptIn => GeneratedInterrupt,
-            ChainInitiateGap => '0',
-            ChainInterruptUp => '0',
-            InterruptUp => InterruptToDispatch,
+            ChainInUpInterrupt => '0',
+            ChainInUpInitiateGap => '0',
+            OutUpInterrupt => InterruptToDispatch,
+            OutUpInitiateGap => open,
             Mask => Mask,
             RequestWritten => RequestWritten,
             WTransPulseInterruptRequestReg => InterruptCollectorIfcInterruptCollectorBlkDown.WTransPulseInterruptRequestReg,
