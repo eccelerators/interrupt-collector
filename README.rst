@@ -4,10 +4,6 @@ Interrupt Collector
 .. contents:: 
    	:depth: 3
 	
-<<<<<<< HEAD
-.. include:: ./src/rst/InterruptCollectorIfc_usage.rst
-=======
-.. inclusion-marker-do-not-remove
 
 **Introduction**
 ----------------
@@ -265,4 +261,4 @@ Innovations like these are crucial to the evolution of fields such as embedded s
 The Interrupt-Collector's code is available under an MIT license. 
 
 **Feel free to use it—there's no need to reinvent the wheel!**
->>>>>>> 0178773 (advance)
+
