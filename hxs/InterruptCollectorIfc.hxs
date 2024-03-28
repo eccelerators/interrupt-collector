@@ -29,7 +29,7 @@
 //******************************************************************************
 namespace Eccelerators.Library.IP
 {
-	@Generator('docs.file_type', 'ReStructured Text')
+	@Generator('docs.file_type', 'rst, docx')
     interface InterruptCollectorIfc
 	{
 		Name = "Interrupt Collector Interface";

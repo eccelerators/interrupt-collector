@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Interrupt-Collector by Eccelerators &#8212; eccelerators-sphinx-sample-configuration  documentation</title>
+    <title>Introduction &#8212; eccelerators-sphinx-sample-configuration  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=f63d8bfa" />
     <link rel="stylesheet" type="text/css" href="_static/haiku.css?v=e491ac2d" />
     <script src="_static/documentation_options.js?v=5929fcd5"></script>
@@ -18,7 +18,7 @@
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>eccelerators-sphinx-sample-configuration  documentation</span></a></h1>
-        <h2 class="heading"><span>Interrupt-Collector by Eccelerators</span></h2>
+        <h2 class="heading"><span>Introduction</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
@@ -37,56 +37,225 @@
   <nav class="contents" id="contents" role="doc-toc">
 <p class="topic-title">Contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#interrupt-collector-by-eccelerators" id="id1">Interrupt-Collector by Eccelerators</a></p>
+<li><p><a class="reference internal" href="#introduction" id="id7"><strong>Introduction</strong></a></p></li>
+<li><p><a class="reference internal" href="#functionality" id="id8">Functionality</a></p></li>
+<li><p><a class="reference internal" href="#testbench" id="id9">Testbench</a></p></li>
+<li><p><a class="reference internal" href="#simulation" id="id10">Simulation</a></p>
 <ul>
-<li><p><a class="reference internal" href="#introduction" id="id2"><strong>Introduction</strong></a></p></li>
-<li><p><a class="reference internal" href="#functionality" id="id3"><strong>Functionality</strong></a></p></li>
-<li><p><a class="reference internal" href="#compatibility-with-edge-triggered-sources" id="id4"><strong>Compatibility with Edge-Triggered Sources</strong></a></p></li>
-<li><p><a class="reference internal" href="#conclusion" id="id5"><strong>Conclusion</strong></a></p></li>
+<li><p><a class="reference internal" href="#general" id="id11">General</a></p></li>
+<li><p><a class="reference internal" href="#ghdl" id="id12">GHDL</a></p></li>
+<li><p><a class="reference internal" href="#modelsim" id="id13">ModelSim</a></p></li>
 </ul>
 </li>
+<li><p><a class="reference internal" href="#hxs-hardware-software-interface" id="id14">HxS - Hardware/Software interface</a></p></li>
+<li><p><a class="reference internal" href="#conclusion" id="id15">Conclusion</a></p></li>
 </ul>
 </nav>
-<section id="interrupt-collector-by-eccelerators">
-<h1><a class="toc-backref" href="#id1" role="doc-backlink">Interrupt-Collector by Eccelerators</a><a class="headerlink" href="#interrupt-collector-by-eccelerators" title="Link to this heading">¶</a></h1>
 <section id="introduction">
-<h2><a class="toc-backref" href="#id2" role="doc-backlink"><strong>Introduction</strong></a><a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
-<p>The <em>Interrupt-Collector</em>, offered by Eccelerators, is a key IP block (Intellectual Property Block) in microelectronics.
-Its main role is to aggregate interrupts from diverse sources and route them to the interrupt input of a CPU (Central Processing Unit)
-or a multiprocessor system. This functionality is crucial in complex environments where numerous devices or
-processes operate simultaneously, necessitating the CPU’s attention.</p>
+<h1><a class="toc-backref" href="#id7" role="doc-backlink"><strong>Introduction</strong></a><a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h1>
+<p>Interrupts connect software (SW) and hardware (HW) very closely. They require a carefully planned concept that starts from the HW source bit, which
+causes an interrupt event, through different HW controllers/collectors located both outside and inside a CPU system, and extends to
+the SW operating system and its drivers, up to the application software. The concept is dependent on the specific nature of all components
+in this chain and dramatically affects the real-time capabilities and overall performance of a system.</p>
+<p>A designer of a peripheral logic block for a CPU system is often required to issue an interrupt to the system if their logic needs attention from the CPU.
+Typically, there is more than one event source in the peripheral logic block that can trigger an interrupt.
+The <em>Interrupt-Collector</em> presented here is a proven solution for managing these tasks. It does not impose excessive overhead on a peripheral logic block
+for a tiny microcontroller and is suitable for the most complex systems on a chip (SOC) with multiple cores running in symmetric or asymmetric multiprocessing mode.
+Thus, it and its driver software can be reused across a wide range of designs.</p>
+<p>The description of the <em>Interrupt-Collector</em> in the subsequent chapters is structured in a top-down manner, starting from a testbench that includes it,
+and progressing to its internal functions.</p>
+<p>The testbench simulation can be run immediately with either the GHDL or ModelSim simulator using the included ANT scripts. For more information,
+see the <span class="xref std std-ref">Quick Start</span> section.</p>
+<p>The VHDL source code, along with other source code in this repository, can be used liberally under the MIT license for any design.</p>
 </section>
 <section id="functionality">
-<h2><a class="toc-backref" href="#id3" role="doc-backlink"><strong>Functionality</strong></a><a class="headerlink" href="#functionality" title="Link to this heading">¶</a></h2>
+<h1><a class="toc-backref" href="#id8" role="doc-backlink">Functionality</a><a class="headerlink" href="#functionality" title="Link to this heading">¶</a></h1>
 <p>The distinctiveness of the Interrupt-Collector is evident in the type of interrupt sources it can manage.
 It is specifically designed for level-triggered interrupt sources, meaning the interrupt stays active as long as
 the trigger event or signal condition persists. This is in contrast to edge-triggered sources, which initiate an
 interrupt due to a change in the signal state, like transitioning from low to high or vice versa.</p>
-</section>
-<section id="compatibility-with-edge-triggered-sources">
-<h2><a class="toc-backref" href="#id4" role="doc-backlink"><strong>Compatibility with Edge-Triggered Sources</strong></a><a class="headerlink" href="#compatibility-with-edge-triggered-sources" title="Link to this heading">¶</a></h2>
 <p>For systems employing edge-triggered sources, Eccelerators presents an additional solution – the <em>Event-Catcher</em>.
 This IP block is capable of transforming edge-triggered sources into level-triggered sources, thereby ensuring
-compatibility with the Interrupt-Collector. This versatility is crucial for integrating a wide range of source types
-and signal variations into a cohesive system.</p>
-<p>Interrupts in multicore Systems on a Chip (SoCs) are handled through a combination of hardware and software mechanisms that can involve parallel processing, but with some nuances worth understanding.</p>
-<p>In a multicore SoC, each core can technically process interrupts independently, allowing for a parallel handling of different interrupts. This is beneficial for performance, as it can reduce latency and improve the system’s ability to respond to real-time events. However, the actual handling of interrupts in parallel depends on several factors:</p>
-<blockquote>
-<div><p>Interrupt Distribution: Some SoCs include interrupt controllers that can distribute interrupts to specific cores or let cores take interrupts based on their current load or specific configurations. This allows for a more efficient use of the multicore architecture.</p>
-<p>Type of Interrupt: Certain interrupts may be designated to specific cores, especially if they relate to tasks that are pinned to those cores. For instance, if a core is handling a specific device or task, interrupts related to that device or task may be directed to that core.</p>
-<p>Software Handling: The operating system’s scheduler plays a significant role in how interrupts are managed across cores. Modern operating systems can distribute interrupt handling across cores to balance the load, improve responsiveness, and utilize the multicore architecture effectively.</p>
-<p>Locking and Synchronization: While interrupts can be processed in parallel, there’s often a need for synchronization mechanisms to ensure data consistency, especially if different interrupts result in access to shared resources. This can introduce some overhead and affect the parallel processing efficiency.</p>
-<p>Affinity and Configuration: Systems can be configured to set affinity for certain interrupts to certain cores. This is often used in real-time or embedded systems where specific tasks need to be executed with high priority or low latency on dedicated cores.</p>
-</div></blockquote>
-<p>In summary, while multicore SoCs are capable of processing interrupts in parallel, the extent and efficiency of parallel processing depend on the system’s hardware configuration, the operating system’s capabilities and configurations, and the nature of the interrupts themselves. The goal is to leverage the multicore architecture to enhance performance and responsiveness without compromising system integrity or data consistency.</p>
+compatibility with the Interrupt-Collector.</p>
+<p>The interrupt collector consists of two parts. The first part, the hardware-software interface, is generated by the Eccelerators Tool HxS.
+It uses the description of the Mask-, Service- and Request, Registers in the HxS language as input. The output is the complete implementation
+of these registers in VHDL, with the necessary inputs and outputs to a user logic block.
+The second part contains the logic of the interrupt collector function, coded by the user.</p>
+<p>The design allows for the simultaneous processing of different interrupts within the same interrupt collector by multiple
+processors of a multiprocessor system, without the need for additional synchronization measures such as Spin-Locks.</p>
+<p>The accompanying diagram illustrates the implementation, including the connection of the HxS block to a Wishbone bus leading
+to the CPU or the multiprocessor system. The User Block demonstrates the realization of the interrupt logic.
+Both blocks are scalable in terms of the number of serviced interrupt inputs.</p>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="hxs/resources/InterruptCollectorOverview.png"><img alt="hxs/resources/InterruptCollectorOverview.png" src="hxs/resources/InterruptCollectorOverview.png" style="width: 828.5px; height: 393.5px;" /></a>
+<figcaption>
+<p><span class="caption-text">Interrupt Collector Overview</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Upon the arrival of an interrupt event at an input, an interrupt is triggered to the CPU system.
+This leads to the execution of an interrupt routine by software on exactly one CPU of the system. The routine reads the <em>Request-Register</em>
+in the interrupt collector, selects one of the reported interrupt requests for processing, and acknowledges
+this by setting the corresponding bit in the Request-Register.
+This interrupt request is then reset in the Request-Register and appears in the <em>Service-Register</em>. After completing the tasks in the interrupt
+service routine, the CPU sets to the corresponding bit in the Service-Register, thereby signaling the end of the interrupt routine
+to the interrupt collector. Only from this point can the corresponding Request-Register bit be set again by the same interrupt input.</p>
+<p>The actual triggering of an interrupt to the CPU system can be enabled or disabled in the <em>Mask-Register</em> for each input.
+After each acknowledged request, the interrupt line to the CPU system is briefly deactivated to allow for the processing
+of further interrupts by other CPUs of the system.</p>
+<p>The priority and synchrony of the individual interrupt inputs can be adjusted by the user in the User-Logic.</p>
+</section>
+<section id="testbench">
+<h1><a class="toc-backref" href="#id9" role="doc-backlink">Testbench</a><a class="headerlink" href="#testbench" title="Link to this heading">¶</a></h1>
+<figure class="align-default" id="id4">
+<a class="reference internal image-reference" href="src/rst/resources/InterruptCollectorTestbench.png"><img alt="src/rst/resources/InterruptCollectorTestbench.png" src="src/rst/resources/InterruptCollectorTestbench.png" style="width: 2352.0px; height: 1331.0px;" /></a>
+<figcaption>
+<p><span class="caption-text">Interrupt Collector Testbench</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>The “Interrupt Collector Testbench” shows the Device Under Test (DUT), our Interrupt
+Collector, within the red-bordered block. On the left are two processors, simulating a
+multiprocessor system. Each is an instance of the “Eccelerators SimStm Testbench”.
+Both execute the same SimStm code, shown on the left. The main routine differentiates
+based on core number; Processor 0 manages initial processes and cross-run signals for
+Processor 1. Only Processor 0 performs the DUT and mocks’ initialization.</p>
+<p>The Wishbone buses from both processors merge via a bus join unit, forming the common
+bus connection of the system. The bus then splits again into two address areas: one for the DUT
+and another for the mock, using a block generated by HxS with two delegates.</p>
+<p>The mock includes an interrupt generator creating four programmable interrupts. Each interrupt
+must be acknowledged in the generator by reading the actual count register and writing its count
+to the reference count register. Missed or incorrect acknowledgments are recorded per issued
+interrupt in an failure count register. The generator signals an failure at the first fault
+via its “GeneratorFailure” output.</p>
+<p>The four interrupts generated by the Interrupt Generator are processed by the DUT, the Interrupt Collector.
+They are delivered to the entire processor
+system via its “Interrupt” output. These interrupts are evenly distributed across both
+processors by the Interrupt Dispatcher.</p>
+<p>A short glance at the SimStm program “Main” routine snippet.</p>
+<figure class="align-default" id="id5">
+<a class="reference internal image-reference" href="src/rst/resources/simstm-snippet.png"><img alt="src/rst/resources/simstm-snippet.png" src="src/rst/resources/simstm-snippet.png" style="width: 570.5px; height: 484.5px;" /></a>
+<figcaption>
+<p><span class="caption-text">SimStm Main Routine Snippet</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="simulation">
+<h1><a class="toc-backref" href="#id10" role="doc-backlink">Simulation</a><a class="headerlink" href="#simulation" title="Link to this heading">¶</a></h1>
+<section id="general">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">General</a><a class="headerlink" href="#general" title="Link to this heading">¶</a></h2>
+<p>In this article, we focussed on an individual IP component rather than a complete
+FPGA design. Consequently, instead of creating a bitstream, we employ GHDL or ModelSim for
+simulation purposes. Our IP is simulated using the SimStm framework, a tool we
+developed for simulation and testing.</p>
+<p>To begin with, we utilize the register description to generate various HxS artifacts,
+including the VHDL register interface and its documentation. For this process,
+we’ve set up a Linux environment, specifically using Ubuntu 22.04. The first step
+involves installing Ant.</p>
+<div class="highlight-BASH notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>ant<span class="w"> </span>-y
+</pre></div>
+</div>
+<p>Next, we clone the actual <a class="reference external" href="https://github.com/eccelerators/interrupt-collector">interrupt-collector</a>
+repository:</p>
+<div class="highlight-BASH notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>--recurse-submodules<span class="w"> </span>git@github.com:eccelerators/interrupt-collector.git
+</pre></div>
+</div>
+<p>HxS sources are now in the hxs folder <a class="reference external" href="https://github.com/eccelerators/interrupt-collector/tree/main/hxs">hxs</a>  folder of the clone.</p>
+<p>We generate the HxS artifacts if having a valid HxS-license or Evaluation license:</p>
+<div class="highlight-BASH notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>interrupt-collector
+ant<span class="w"> </span>all
+</pre></div>
+</div>
+<p>Otherwise we use the artifacts already present in the <a class="reference external" href="https://github.com/eccelerators/interrupt-collector/tree/main/src-gen">src-gen folder</a></p>
+</section>
+<section id="ghdl">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">GHDL</a><a class="headerlink" href="#ghdl" title="Link to this heading">¶</a></h2>
+<p>Assuming GHDL(4.0.0 or later) is already installed, to simulate the design we run:</p>
+<div class="highlight-BASH notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>interrupt-collector/simulation/ghdl-wishbone
+./run.sh
+</pre></div>
+</div>
+<p>A successful simulation will yield an output similar to this:</p>
+<div class="highlight-TEXT notranslate"><div class="highlight"><pre><span></span>...
+
+Core1 currently: Interrupts in total: 0x0360, Source0: 0x0142, Source1: 0xEE, Source2: 0xB3, Source3: 0x7D
+Core0 currently: Interrupts in total: 0x0380, Source0: 0x013E, Source1: 0xFF, Source2: 0xC0, Source3: 0x83
+Core1 currently: Interrupts in total: 0x0380, Source0: 0x0142, Source1: 0x0101, Source2: 0xC0, Source3: 0x7D
+
+Core1 finally: Interrupts in total: 0x0380, Source0: 0x0142, Source1: 0x0101, Source2: 0xC0, Source3: 0x7D
+Core1: test finished
+
+Core0 finally: Interrupts in total: 0x0380, Source0: 0x013E, Source1: 0xFF, Source2: 0xC0, Source3: 0x83
+
+Total counts finally: ActualSum: 0x0700, Actual0: 0x0280, Actual1: 0x0200, Actual2: 0x0180, Actual3: 0x0100
+Total failure count finally: FailureSum: 0x00, Failures0: 0x00, Failures1: 0x00, Failures2: 0x00, Failures3: 0x00
+
+Core0: Main test finished
+
+../../../submodules/simstm/src/tb_simstm.vhd:1245:21:@773216100ps:(assertion note): test finished with no errors!!
+./work/tb_top_wishbone:info: simulation stopped by --stop-time @9990391400ps
+</pre></div>
+</div>
+</section>
+<section id="modelsim">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">ModelSim</a><a class="headerlink" href="#modelsim" title="Link to this heading">¶</a></h2>
+<p>Assuming ModelSim is already installed, to simulate the design we run:</p>
+<div class="highlight-BASH notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>interrupt-collector/simulation/modelsim_wishbone
+ant<span class="w"> </span>all
+</pre></div>
+</div>
+<p>Possibly the path to the ModelSim executable may have to be adapted in the ant build.xml file.</p>
+<p>In the ModelSim window command line section we run:</p>
+<div class="highlight-TEXT notranslate"><div class="highlight"><pre><span></span>run -all
+</pre></div>
+</div>
+<p>Using ModelSim Starter edition it may take up to 5 minutes until the output of a successful simulation
+will yield like this:</p>
+<p>A successful simulation will yield an output similar to this:</p>
+<p>(ModelSim Starter edition will take already a very long time cause of design size)</p>
+<div class="highlight-TEXT notranslate"><div class="highlight"><pre><span></span>...
+
+# Core0 currently: Interrupts in total: 0x0380, Source0: 0x013E, Source1: 0xFF, Source2: 0xC0, Source3: 0x83
+# Core1 currently: Interrupts in total: 0x0380, Source0: 0x0142, Source1: 0x0101, Source2: 0xC0, Source3: 0x7D
+#
+# Core1 finally: Interrupts in total: 0x0380, Source0: 0x0142, Source1: 0x0101, Source2: 0xC0, Source3: 0x7D
+# Core1: test finished
+#
+# Core0 finally: Interrupts in total: 0x0380, Source0: 0x013E, Source1: 0xFF, Source2: 0xC0, Source3: 0x83
+#
+# Total counts finally: ActualSum: 0x0700, Actual0: 0x0280, Actual1: 0x0200, Actual2: 0x0180, Actual3: 0x0100
+# Total failure count finally: FailureSum: 0x00, Failures0: 0x00, Failures1: 0x00, Failures2: 0x00, Failures3: 0x00
+#
+# Core0: Main test finished
+#
+# ** Note: test finished with no errors!!
+#    Time: 773216100 ps  Iteration: 0  Instance: /tb_top_wishbone/i0_tb_simstm
+# ** Note: Leaving proc Main and halt at line 195 end_proc file ../../tb/simstm/TestMainWishbone.stm
+#    Time: 1000790207100 ps  Iteration: 0  Instance: /tb_top_wishbone/i1_tb_simstm
+</pre></div>
+</div>
+</section>
+</section>
+<section id="hxs-hardware-software-interface">
+<h1><a class="toc-backref" href="#id14" role="doc-backlink">HxS - Hardware/Software interface</a><a class="headerlink" href="#hxs-hardware-software-interface" title="Link to this heading">¶</a></h1>
+<p>The Hardware/Software interface description of the Interrupt-Collector generated by HxS is: <a class="reference external" href="https://github.com/eccelerators/interrupt-collector/tree/main/src-gen/rst/Eccelerators.Library.IP.InterruptCollectorIfc-composite.rst">file</a>.</p>
+<p>The respective HxS sources are found in the <a class="reference external" href="https://github.com/eccelerators/interrupt-collector/tree/main/hxs">hxs</a>  folder of the interrupt-collector clone.</p>
+<p>Further generated artifacts Vhdl, SimStm, C, Python, HTML-Documentation, and PDF-Documentation is placed in <a class="reference external" href="https://github.com/eccelerators/interrupt-collector/tree/main/src-gen">hxs</a>  folder.</p>
+<p>The same applies for the Interrupt-Generator of the Mock and can be found the respective submodule folder.</p>
+<p>A glance at the HxS source snippet of the Interrupt Request Register:</p>
+<figure class="align-default" id="id6">
+<a class="reference internal image-reference" href="src/rst/resources/HxsRegisterSnippet.png"><img alt="src/rst/resources/HxsRegisterSnippet.png" src="src/rst/resources/HxsRegisterSnippet.png" style="width: 696.5px; height: 602.0px;" /></a>
+<figcaption>
+<p><span class="caption-text">HxS Interrupt Request Register Snippet</span><a class="headerlink" href="#id6" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
 </section>
 <section id="conclusion">
-<h2><a class="toc-backref" href="#id5" role="doc-backlink"><strong>Conclusion</strong></a><a class="headerlink" href="#conclusion" title="Link to this heading">¶</a></h2>
+<h1><a class="toc-backref" href="#id15" role="doc-backlink">Conclusion</a><a class="headerlink" href="#conclusion" title="Link to this heading">¶</a></h1>
 <p>Overall, the Interrupt-Collector is a testament to the advanced technological
 strides in the realm of computer hardware, pivotal in crafting more efficient and adaptable
-computing systems. Such innovations are integral to the evolution of high-performance computing
-environments, particularly in sectors like server infrastructures, embedded systems, and intricate data processing units.</p>
-</section>
+computing systems.</p>
+<p>Innovations like these are crucial to the evolution of fields such as embedded systems.
+The Interrupt-Collector’s code is available under an MIT license.</p>
+<p><strong>Feel free to use it—there’s no need to reinvent the wheel!</strong></p>
 </section>
 
 
