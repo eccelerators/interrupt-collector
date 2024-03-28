@@ -1,6 +1,3 @@
-.. |ROOT| replace:: 
-
-
 Interrupt Collector
 ===================
 
@@ -9,6 +6,7 @@ Interrupt Collector
 	
 .. inclusion-marker-do-not-remove
 
+.. |ROOT| replace:: ../../
 
 **Introduction**
 ----------------

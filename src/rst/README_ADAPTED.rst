@@ -1,4 +1,4 @@
-.. |ROOT| replace:: 
+.. |ROOT| replace:: ../../
 
 
 Interrupt Collector
