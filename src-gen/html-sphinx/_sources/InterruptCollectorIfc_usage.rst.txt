@@ -1,7 +1,7 @@
 
 .. contents::
 
-.. include:: README_ADAPTED.rst
+.. include:: ../../README.rst
   :start-after: inclusion-marker-do-not-remove
  
  

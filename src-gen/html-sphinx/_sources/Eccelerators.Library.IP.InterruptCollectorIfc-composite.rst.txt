@@ -41,7 +41,7 @@
  Author:HxS Compiler
 
 ..
- Date:27 Mar 2024 15:53:16
+ Date:28 Mar 2024 19:59:11
 
 Interrupt Collector Interface (InterruptCollectorIfc)
 """""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -102,7 +102,7 @@ Constraints:
    
 Interrupt Collector details:
  
-.. figure:: resources/InterruptCollectorUserLogic.png
+.. figure:: hxs/resources/InterruptCollectorOverview.png
    :scale: 50
    
    Interrupt Collector details

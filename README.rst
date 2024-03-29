@@ -1,6 +1,3 @@
-.. |ROOT| replace:: 
-
-
 Interrupt Collector
 ===================
 
@@ -80,7 +77,7 @@ Testbench
 ---------
 
 
-.. figure:: |ROOT|src/rst/resources/InterruptCollectorTestbench.png
+.. figure:: src/rst/resources/InterruptCollectorTestbench.png
    
    Interrupt Collector Testbench
 
@@ -112,6 +109,11 @@ A short glance at the SimStm program "Main" routine snippet.
    :scale: 50
    
    SimStm Main Routine Snippet
+   
+Quick Start
+-----------
+
+todo
 
 Simulation
 ----------
@@ -138,7 +140,7 @@ repository:
 
 .. code-block:: BASH
 
-  git clone --recurse-submodules git@github.com:eccelerators/interrupt-collector.git
+  git clone --recursive https://github.com/eccelerators/interrupt-collector.git
   
   
 HxS sources are now in the hxs folder `hxs <https://github.com/eccelerators/interrupt-collector/tree/main/hxs>`_  folder of the clone.

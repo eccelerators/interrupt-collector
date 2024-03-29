@@ -50,7 +50,7 @@ namespace Eccelerators.Library.IP
 			   
             Interrupt Collector details:
 			 
-			.. figure:: resources/InterruptCollectorUserLogic.png
+			.. figure:: hxs/resources/InterruptCollectorOverview.png
 			   :scale: 50
 			   
 			   Interrupt Collector details
