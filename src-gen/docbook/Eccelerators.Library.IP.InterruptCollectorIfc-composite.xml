@@ -102,7 +102,7 @@ register of an UART.</para>
     <figure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="resources/InterruptCollectorUserLogic.png" scale="50"/>
+          <imagedata fileref="hxs/resources/InterruptCollectorOverview.png" scale="50"/>
         </imageobject>
       </mediaobject>
       <title>Interrupt Collector details</title>
