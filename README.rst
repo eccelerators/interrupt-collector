@@ -110,21 +110,21 @@ If it is present its path can be adapted in the top 'build.xml' file in the repo
 
 ::
 
-  <!-- properties for local purposes, should be overriden by ci ant call e.g, with -Dpython-executable argument for ci purposes
+  \<!-- properties for local purposes, should be overriden by ci ant call e.g, with -Dpython-executable argument for ci purposes
   	
   defaults :
   	
-  <property name="ghdl-executable" value="ghdl"/>
-  <property name="gtkwave-executable" value="gtkwave"/>
+  \<property name="ghdl-executable" value="ghdl"/\>
+  \<property name="gtkwave-executable" value="gtkwave"/\>
   
-  <property name="vlib-executable" value="vlib"/>
-  <property name="vmap-executable" value="vmap"/>
-  <property name="vcom-executable" value="vcom"/>
-  <property name="vsim-executable" value="vsim"/>	
+  \<property name="vlib-executable" value="vlib"/\>
+  \<property name="vmap-executable" value="vmap"/\>
+  \<property name="vcom-executable" value="vcom"/\>
+  \<property name="vsim-executable" value="vsim"/\>	
   
   override respectively by uncommenting e.g, for python the following line:
   -->
-  <!-- <property name="python-executable" value="C:\Users\E212566412\AppData\Local\Programs\Python\Python38\python.exe"/> -->
+  \<!-- \<property name="python-executable" value="C:\Users\E212566412\AppData\Local\Programs\Python\Python38\python.exe"/\> --\>
   
 |
   
@@ -168,7 +168,7 @@ should show:
 	GHDL is free software, covered by the GNU General Public License.  There is NO
 	warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	
-	It may complain about missing libraries, then install them with:
+It may complain about missing libraries, then install them with:
 
 ::
   
