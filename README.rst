@@ -78,7 +78,7 @@ We use Ubuntu 22.04 for demonstration.
 
 At least a java runtime >= 17 is required. If not already present e.g., install it by:
 
-.. code-block:: BASH
+::
 
   sudo apt install openjdk-17-jre
 
@@ -86,14 +86,14 @@ At least a java runtime >= 17 is required. If not already present e.g., install 
 All builds are run by means of `APACHE ANT <https://ant.apache.org/>`_ and respective build.xml files.
 If not already present e.g., install it by:
 
-.. code-block:: BASH
+::
 
   sudo apt install ant
   
 Next, we clone the actual `interrupt-collector <https://github.com/eccelerators/interrupt-collector>`_
 repository:
 
-.. code-block:: BASH
+::
 
   git clone --recursive https://github.com/eccelerators/interrupt-collector.git
   
@@ -108,30 +108,30 @@ If it is present its path can be adapted in the top 'build.xml' file in the repo
 
 ::
 
-   	<!-- properties for local purposes, should be overriden by ci ant call e.g, with -Dpython-executable argument for ci purposes
-	
-	defaults :
-	
-	<property name="ghdl-executable" value="ghdl"/>
-    <property name="gtkwave-executable" value="gtkwave"/>
-    
-    <property name="vlib-executable" value="vlib"/>
-    <property name="vmap-executable" value="vmap"/>
-    <property name="vcom-executable" value="vcom"/>
-    <property name="vsim-executable" value="vsim"/>	
-    
-    override respectively by uncommenting e.g, for python the following line:
-	-->
-	<!-- <property name="python-executable" value="C:\Users\E212566412\AppData\Local\Programs\Python\Python38\python.exe"/> -->
-
-
+  <!-- properties for local purposes, should be overriden by ci ant call e.g, with -Dpython-executable argument for ci purposes
+  	
+  defaults :
+  	
+  <property name="ghdl-executable" value="ghdl"/>
+  <property name="gtkwave-executable" value="gtkwave"/>
+  
+  <property name="vlib-executable" value="vlib"/>
+  <property name="vmap-executable" value="vmap"/>
+  <property name="vcom-executable" value="vcom"/>
+  <property name="vsim-executable" value="vsim"/>	
+  
+  override respectively by uncommenting e.g, for python the following line:
+  -->
+  <!-- <property name="python-executable" value="C:\Users\E212566412\AppData\Local\Programs\Python\Python38\python.exe"/> -->
+  
+  
  If not, install it by downloading:
 
 `<https://github.com/ghdl/ghdl/releases/tag/v4.0.0/ghdl-gha-ubuntu-22.04-llvm.tgz>`_. 
 
 Copy the downloaded file to the a local folder e.g, 'ghdl_download' and unpack it there e.g., with 
 
-.. code-block:: BASH
+::
 
   cd ghdl_download
   tar -xzf ghdl-gha-ubuntu-22.04-llvm.tgz -C ./usr
@@ -139,7 +139,7 @@ Copy the downloaded file to the a local folder e.g, 'ghdl_download' and unpack i
 It is sufficient to copy the contents of the subfolders of the unpacked user folder to their respective pendants in
 the system root '/usr' after their owner has been set to root.  
   
-.. code-block:: BASH
+::
   
   sudo chown -R root:root ./usr
   sudo cp -r ./usr/bin/* /usr/bin
@@ -148,26 +148,26 @@ the system root '/usr' after their owner has been set to root.
 
 Then issuing:
 
-.. code-block:: BASH
+::
   
   ghdl --version
 
 should show:
 
-.. code-block:: 
+:: 
 
-GHDL 4.0.0 (3.0.0.r912.gc0e7e1483) [Dunoon edition]
- Compiled with GNAT Version: 10.5.0
- llvm 14.0.0 code generator
-Written by Tristan Gingold.
+	GHDL 4.0.0 (3.0.0.r912.gc0e7e1483) [Dunoon edition]
+	 Compiled with GNAT Version: 10.5.0
+	 llvm 14.0.0 code generator
+	Written by Tristan Gingold.
+	
+	Copyright (C) 2003 - 2024 Tristan Gingold.
+	GHDL is free software, covered by the GNU General Public License.  There is NO
+	warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	
+	It may complain about missing libraries, then install them with:
 
-Copyright (C) 2003 - 2024 Tristan Gingold.
-GHDL is free software, covered by the GNU General Public License.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-It may complain about missing libraries, then install them with:
-
-.. code-block:: BASH
+::
   
   sudo apt update
   sudo apt install build-essential
@@ -176,7 +176,7 @@ It may complain about missing libraries, then install them with:
 
 Then simulation can be run, assuming the cloned repository is located in 'git/interrupt-collector':
 
-.. code-block:: BASH
+::
   
   cd git/interrupt-collector
   ghdl-wishbone-all 
@@ -260,7 +260,7 @@ This should result in:
 
 Then simulation can be re-run then, since compilation and elaboration has already been done by the target 'ghdl-wishbone-all':
 
-.. code-block:: BASH
+::
   
   cd git/interrupt-collector
   ghdl-wishbone-simulate
@@ -269,14 +269,14 @@ Then simulation can be re-run then, since compilation and elaboration has alread
 
 Then simulation can be re-run with GUI:
 
-.. code-block:: BASH
+::
   
   cd git/interrupt-collector
   ghdl-wishbone-simulate-gui
   
 If the script complains about 'gtkwave' missing, install it:
 
-.. code-block:: BASH
+::
   
   sudo apt update
   sudo apt install gtkwave
@@ -285,7 +285,6 @@ If the script complains about 'gtkwave' missing, install it:
 
 Install GHDL Linux
 ------------------
-
 
 General
 :::::::
