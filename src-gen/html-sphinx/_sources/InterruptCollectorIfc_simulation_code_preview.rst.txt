@@ -9,4 +9,4 @@ The original file can be found in the generated src-gen/simstm folder.
 
 The entry point for simulation is the testMain.stm file found in the tb/simstm folder..
 
-.. literalinclude:: resources/InterruptCollectorIfc.stm
+.. literalinclude:: src-gen/simstm/InterruptCollectorIfc.stm

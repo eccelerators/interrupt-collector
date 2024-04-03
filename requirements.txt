@@ -1,6 +1,9 @@
 click
 lxml
 jinja2
+GitPython
+Sphinx
+vhdeps
 devpi-client==5.2.1
 virtualenv
 wheel
