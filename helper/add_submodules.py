@@ -3,7 +3,7 @@ from git import Repo, Submodule
 repo = Repo('.')
 
 submodule_list = [
-    [ "ci", "ci", "https://gitlab.emrsn.org/fpga/ip_ci_xilinx.git" ],
+    #[ "ci", "ci", "https://gitlab.emrsn.org/fpga/ip_ci_xilinx.git" ],
     # [ "break_docbook_program_listing", "submodules/break_docbook_program_listing", "https://gitlab.emrsn.org/tools/break_docbook_program_listing.git" ],
     # [ "sphinx_template", "submodules/sphinx_template", "https://gitlab.emrsn.org/tools/sphinx_template.git" ],
     # [ "sphinx_docbook", "submodules/sphinx_docbook", "https://gitlab.emrsn.org/tools/sphinx_docbook.git" ],

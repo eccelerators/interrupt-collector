@@ -10,9 +10,6 @@
 [submodule "submodules/sphinx_docbook"]
 	path = submodules/sphinx_docbook
 	url = https://github.com/eccelerators/sphinx_docbook.git
-[submodule "submodules/simstm"]
-	path = submodules/simstm
-	url = https://github.com/eccelerators/simstm.git
 [submodule "submodules/interrupt-generator"]
 	path = submodules/interrupt-generator
 	url = https://github.com/eccelerators/interrupt-generator.git
