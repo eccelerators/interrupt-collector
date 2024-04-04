@@ -83,9 +83,8 @@
       </listitem>
     </itemizedlist>
   </section>
-  <para>This README is a partial view of the final documents:</para>
-  <para>PDF <link xlink:href="https://github.com/eccelerators/interrupt-collector/blob/main/src-gen/docbook-pdf/Ecclerators.Library.IP.InterruptCollectorIfc.pdf">InterruptCollectorIfc.pdf</link>
-HTML <link xlink:href="https://github.com/eccelerators/interrupt-collector/blob/main/src-gen/html-sphinx/index.html">InterruptCollectorIfc.pdf</link></para>
+  <para>This README is a partial view of the final document
+<link xlink:href="https://github.com/eccelerators/interrupt-collector/blob/main/src-gen/docbook-pdf/Ecclerators.Library.IP.InterruptCollectorIfc.pdf">InterruptCollectorIfc.pdf</link></para>
   <section xml:id="introduction">
     <title>Introduction</title>
     <para>Interrupts connect software (SW) and hardware (HW) very closely. They require a carefully planned concept that starts from the HW source bit, which
@@ -108,7 +107,7 @@ see the <link linkend="quick-start-simlation">Quick Start Simulation</link> sect
     <figure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="src/rst/resources/InterruptCollectorTestbench.png"/>
+          <imagedata fileref="src/rst/resources/InterruptCollectorTestbench.png" scale="11"/>
         </imageobject>
       </mediaobject>
       <title>Interrupt Collector Testbench</title>
@@ -123,7 +122,7 @@ processes and cross-run signals for Processor 1. It is only Processor 0 that per
     <figure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="src/rst/resources/simstm-snippet.png"/>
+          <imagedata fileref="src/rst/resources/simstm-snippet.png" scale="30"/>
         </imageobject>
       </mediaobject>
       <title>SimStm Main Routine Snippet</title>
@@ -156,7 +155,7 @@ Both blocks are scalable in terms of the number of serviced interrupt inputs.</p
     <figure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="hxs/resources/InterruptCollectorOverview.png" scale="50"/>
+          <imagedata fileref="src/rst/resources/InterruptCollectorOverview.png" scale="50"/>
         </imageobject>
       </mediaobject>
       <title>Interrupt Collector Overview</title>
@@ -190,7 +189,7 @@ If not already present e.g., install it by:</para>
     <para>Git is required to clone the interrupt-collector repository.
 If not already present e.g., install it by:</para>
     <programlisting language="default">sudo apt install git</programlisting>
-    <para>Next, we clone the actual <link xlink:href="https://github.com/eccelerators/interrupt-collector">interrupt-collector</link>
+    <para>Next, we clone the actual <link xlink:href="https://github.com/eccelerators/interrupt-collector">interrupt collector repository</link>
 repository:</para>
     <programlisting language="default">git clone --recursive https://github.com/eccelerators/interrupt-collector.git</programlisting>
     <para>The  <code>--recursive</code> parameter is mandatory because many resources e.g. child build.xml files are residing there.</para>
@@ -297,7 +296,7 @@ ant ghdl-wishbone-simulate-gui</programlisting>
     </para>
     <para>Git is required to clone the interrupt-collector repository.
 If not already present e.g., by having already installed MSYS2 for GHDL install it in your favorite way.</para>
-    <para>Next, we clone the actual <link xlink:href="https://github.com/eccelerators/interrupt-collector">interrupt-collector</link>
+    <para>Next, we clone the actual <link xlink:href="https://github.com/eccelerators/interrupt-collector">interrupt collector repository</link>
 repository:</para>
     <programlisting language="default">git clone --recursive https://github.com/eccelerators/interrupt-collector.git</programlisting>
     <para>The  <code>--recursive</code> parameter is mandatory because many resources e.g. child build.xml files are residing there.</para>

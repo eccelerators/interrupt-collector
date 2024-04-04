@@ -11,7 +11,7 @@ Welcome to InterruptCollector's documentation!
    Eccelerators.Library.IP.InterruptCollectorIfc-composite
    InterruptCollectorIfc_c_code_preview
    InterruptCollectorIfc_python_code_preview
-   InterruptCollectorIfc_simulation_code_preview   
+   InterruptCollectorIfc_simulation_code_preview
    
 
 Indices and tables

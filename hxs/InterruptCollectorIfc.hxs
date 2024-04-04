@@ -35,6 +35,19 @@ namespace Eccelerators.Library.IP
 		Name = "Interrupt Collector Interface";
 		Description = "
 			Interface containing a basic Interrupt Collector block.
+			
+			Interrupt Collector details:
+			 
+			.. figure:: hxs/resources/Eccelerators.Library.IP.InterruptCollectorIfc-Slice0.png
+			   :scale: 50
+			   
+			   Interrupt Collector details slice0
+			   	
+			.. figure:: hxs/resources/Eccelerators.Library.IP.InterruptCollectorIfc-Slice1.png
+			   :scale: 50
+			   
+			   Interrupt Collector details slice1
+			   	
 		";
 		DataBusWidth = 32;
 		Blocks = [InterruptCollectorBlk];

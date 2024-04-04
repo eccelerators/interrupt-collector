@@ -47,14 +47,6 @@ namespace Eccelerators.Library.IP
 			4. Use the control pulses to reset the interrupt request fo a source or do it by 
 			   a write or read access directly to the user logic e.g. reading the receive data 
 			   register of an UART. 
-			   
-            Interrupt Collector details:
-			 
-			.. figure:: hxs/resources/InterruptCollectorOverview.png
-			   :scale: 50
-			   
-			   Interrupt Collector details
-			   												 			 
 			";
 		Registers = [
 			InterruptMaskReg,

@@ -41,11 +41,24 @@
  Author:HxS Compiler
 
 ..
- Date:04 Apr 2024 08:01:19
+ Date:04 Apr 2024 12:16:42
 
 Interrupt Collector Interface (InterruptCollectorIfc)
 """""""""""""""""""""""""""""""""""""""""""""""""""""
 Interface containing a basic Interrupt Collector block.
+ 
+Interrupt Collector details:
+ 
+.. figure:: hxs/resources/Eccelerators.Library.IP.InterruptCollectorIfc-Slice0.png
+   :scale: 50
+   
+   Interrupt Collector details slice0
+       
+.. figure:: hxs/resources/Eccelerators.Library.IP.InterruptCollectorIfc-Slice1.png
+   :scale: 50
+   
+   Interrupt Collector details slice1
+       
  
 
 
@@ -99,14 +112,6 @@ Constraints:
 4. Use the control pulses to reset the interrupt request fo a source or do it by 
    a write or read access directly to the user logic e.g. reading the receive data 
    register of an UART. 
-   
-Interrupt Collector details:
- 
-.. figure:: hxs/resources/InterruptCollectorOverview.png
-   :scale: 50
-   
-   Interrupt Collector details
-                                                                 
  
 
 .. table:: Registers or Delegates of Interrupt Collector Block

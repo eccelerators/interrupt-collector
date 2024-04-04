@@ -37,6 +37,7 @@ Testbench
 :::::::::
 
 .. figure:: src/rst/resources/InterruptCollectorTestbench.png
+   :scale: 11
    
    Interrupt Collector Testbench
 
@@ -52,6 +53,7 @@ processes and cross-run signals for Processor 1. It is only Processor 0 that per
 A short glance at the SimStm program "Main" routine snippet, the corresponding source file is `testMain.stm <https://github.com/eccelerators/interrupt-collector/tree/main/tb/simstm/testMain.stm>`_ .
 
 .. figure:: src/rst/resources/simstm-snippet.png
+   :scale: 30
    
    SimStm Main Routine Snippet
 
@@ -92,7 +94,7 @@ The accompanying diagram illustrates the implementation, including the connectio
 to the CPU or the multiprocessor system. The User Block demonstrates the realization of the interrupt logic. 
 Both blocks are scalable in terms of the number of serviced interrupt inputs.
 
-.. figure:: hxs/resources/InterruptCollectorOverview.png
+.. figure:: src/rst/resources/InterruptCollectorOverview.png
    :scale: 50
    
    Interrupt Collector Overview
@@ -118,7 +120,7 @@ the `event-catcher <https://github.com/eccelerators/event-catcher>`_ IP.
 
 
 .. _quick_start_simlation:
-   
+
 Quick Start Simulation
 ::::::::::::::::::::::
 
@@ -148,7 +150,7 @@ If not already present e.g., install it by:
 
   sudo apt install git
   
-Next, we clone the actual `interrupt-collector <https://github.com/eccelerators/interrupt-collector>`_
+Next, we clone the actual `interrupt collector repository <https://github.com/eccelerators/interrupt-collector>`_
 repository:
 
 ::
@@ -281,7 +283,7 @@ At least a java runtime >= 17 is required. If not already present e.g., install 
 Git is required to clone the interrupt-collector repository.
 If not already present e.g., by having already installed MSYS2 for GHDL install it in your favorite way.
 
-Next, we clone the actual `interrupt-collector <https://github.com/eccelerators/interrupt-collector>`_
+Next, we clone the actual `interrupt collector repository <https://github.com/eccelerators/interrupt-collector>`_
 repository:
 
 ::
