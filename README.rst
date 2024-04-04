@@ -4,10 +4,8 @@ Interrupt Collector
 .. contents:: 
    	:depth: 3
    	
-This README is a partial view of the final documents:
-
-PDF `InterruptCollectorIfc.pdf <https://github.com/eccelerators/interrupt-collector/blob/main/src-gen/docbook-pdf/Ecclerators.Library.IP.InterruptCollectorIfc.pdf>`_
-HTML `InterruptCollectorIfc.pdf <https://github.com/eccelerators/interrupt-collector/blob/main/src-gen/html-sphinx/index.html>`_ 	
+This README is a partial view of the final document
+`InterruptCollectorIfc.pdf <https://github.com/eccelerators/interrupt-collector/blob/main/src-gen/docbook-pdf/Ecclerators.Library.IP.InterruptCollectorIfc.pdf>`_
 
 
 
