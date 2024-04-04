@@ -68,7 +68,7 @@ areas: one for the Device Under Test (DUT) and another for the MOCK.
 The MOCK includes an interrupt generator with four channels. These channels are designed to generate a charged number of interrupts at programmable intervals 
 repeatedly. 
 
-The interrupt generator is maintained in its own repository `Eccelerators Interrupt Generator <https://github.com/eccelerators/interrupt-generatot>`_.
+The interrupt generator is maintained in its own repository `Eccelerators Interrupt Generator <https://github.com/eccelerators/interrupt-generator>`_.
 The documentation of its HW/SW interface is `InterruptGeneratorIfc.pdf <https://github.com/eccelerators/interrupt-generator/blob/main/src-gen/docbook-pdf/eccelerators.library.ip.InterruptGeneratorIfc.pdf>`_.
 
 For each interrupt, acknowledgment is required from the software interrupt service routine within the corresponding channel of the generator. 
