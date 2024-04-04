@@ -27,6 +27,8 @@
             </p></li><li class="listitem"><p>
               <a class="link" href="#further-steps" title="Further steps">Further steps</a>
             </p></li><li class="listitem"><p>
+              <a class="link" href="#helper" title="Helper">Helper</a>
+            </p></li><li class="listitem"><p>
               <a class="link" href="#">Install GHDL Ubuntu 22.04</a>
             </p></li><li class="listitem"><p>
               <a class="link" href="#">Install GHDL Windows</a>
@@ -44,12 +46,12 @@ The <span class="emphasis"><em>Interrupt-Collector</em></span> presented here is
 for a tiny microcontroller and is suitable for the most complex systems on a chip (SOC) with multiple cores running in symmetric or asymmetric multiprocessing mode.
 Thus, it and its driver software can be reused across a wide range of designs.</p><p>The description of the <span class="emphasis"><em>Interrupt-Collector</em></span> in the subsequent chapters is structured in a top-down manner, starting from a testbench that includes it,
 and progressing to its internal functions.</p><p>The testbench simulation can be run immediately with either the GHDL or ModelSim simulator using the included ANT scripts. For more information,
-see the QuickStartSimlation <a class="link" href="#quickstartsimulation" title="Quick Start Simulation">Quick Start Simulation</a> section.</p><p>The VHDL source code, along with other source code in this repository, can be used liberally under the MIT license for any design.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="testbench"></a>Testbench</h3></div></div></div><div class="figure"><a name="d5e70"></a><p class="title"><b>Figure&nbsp;1.1.&nbsp;Interrupt Collector Testbench</b></p><div class="figure-contents"><div class="mediaobject"><img src="src/rst/resources/InterruptCollectorTestbench.png" width="59" alt="Interrupt Collector Testbench"></div></div></div><br class="figure-break"><p>The &#8220;Interrupt Collector Testbench&#8221; illustrates the Device Under Test (DUT)&#8212;our Interrupt Collector&#8212;within a red-bordered block. On the left, there are
+see the QuickStartSimlation <a class="link" href="#quickstartsimulation" title="Quick Start Simulation">Quick Start Simulation</a> section.</p><p>The VHDL source code, along with other source code in this repository, can be used liberally under the MIT license for any design.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="testbench"></a>Testbench</h3></div></div></div><div class="figure"><a name="d5e73"></a><p class="title"><b>Figure&nbsp;1.1.&nbsp;Interrupt Collector Testbench</b></p><div class="figure-contents"><div class="mediaobject"><img src="src/rst/resources/InterruptCollectorTestbench.png" width="59" alt="Interrupt Collector Testbench"></div></div></div><br class="figure-break"><p>The &#8220;Interrupt Collector Testbench&#8221; illustrates the Device Under Test (DUT)&#8212;our Interrupt Collector&#8212;within a red-bordered block. On the left, there are
 two processors, simulating a multiprocessor system. Each processor is an instance of the <a class="link" href="https://github.com/eccelerators/simstm" target="_top">Eccelerators SimStm Testbench</a>.
 These processors are augmented by a BusJoin unit, which forms the common bus connection for the Dual Core Processor system, and an InterruptDispatcher unit
 that dispatches arriving interrupts to one of the cores.
 Both cores execute the same SimStm code, as shown on the left. The main routine is differentiated based on the core number; Processor 0 is responsible for managing initial
-processes and cross-run signals for Processor 1. It is only Processor 0 that performs the initialization of the DUT and MOCK.</p><p>A short glance at the SimStm program &#8220;Main&#8221; routine snippet, the corresponding source file is <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/tb/simstm/testMain.stm" target="_top">testMain.stm</a> .</p><div class="figure"><a name="d5e79"></a><p class="title"><b>Figure&nbsp;1.2.&nbsp;SimStm Main Routine Snippet</b></p><div class="figure-contents"><div class="mediaobject"><img src="src/rst/resources/simstm-snippet.png" width="162" alt="SimStm Main Routine Snippet"></div></div></div><br class="figure-break"><p>The SimStm source code is very compact and easy readable. It starts with the declaration and definition of constants, variables signals and buses. Following is the
+processes and cross-run signals for Processor 1. It is only Processor 0 that performs the initialization of the DUT and MOCK.</p><p>A short glance at the SimStm program &#8220;Main&#8221; routine snippet, the corresponding source file is <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/tb/simstm/testMain.stm" target="_top">testMain.stm</a> .</p><div class="figure"><a name="d5e82"></a><p class="title"><b>Figure&nbsp;1.2.&nbsp;SimStm Main Routine Snippet</b></p><div class="figure-contents"><div class="mediaobject"><img src="src/rst/resources/simstm-snippet.png" width="162" alt="SimStm Main Routine Snippet"></div></div></div><br class="figure-break"><p>The SimStm source code is very compact and easy readable. It starts with the declaration and definition of constants, variables signals and buses. Following is the
 &#8216;testMain&#8217; procedure, then the Interrupt procedure and helper procedures.</p><p>A BusDivider unit, generated by HxS, features two delegates. It splits the bus into two separate buses, each designated for different address
 areas: one for the Device Under Test (DUT) and another for the MOCK.</p><p>The MOCK includes an interrupt generator with four channels. These channels are designed to generate a charged number of interrupts at programmable intervals
 repeatedly.</p><p>The interrupt generator is maintained in its own repository <a class="link" href="https://github.com/eccelerators/interrupt-generator" target="_top">Eccelerators Interrupt Generator</a>.
@@ -64,7 +66,7 @@ of these registers in VHDL connected to a Wishbone Bus, with the necessary input
 The second part contains the logic of the interrupt collector function, coded by the user Eccelerators.</p><p>The design allows for the simultaneous processing of different interrupts within the same interrupt collector by multiple
 processors of a multiprocessor system, without the need for additional synchronization measures such as Spin-Locks.</p><p>The accompanying diagram illustrates the implementation, including the connection of the HxS block to a Wishbone bus leading
 to the CPU or the multiprocessor system. The User Block demonstrates the realization of the interrupt logic.
-Both blocks are scalable in terms of the number of serviced interrupt inputs.</p><div class="figure"><a name="d5e98"></a><p class="title"><b>Figure&nbsp;1.3.&nbsp;Interrupt Collector Overview</b></p><div class="figure-contents"><div class="mediaobject"><img src="src/rst/resources/InterruptCollectorOverview.png" width="270" alt="Interrupt Collector Overview"></div></div></div><br class="figure-break"><p>Upon the arrival of an interrupt event at an input, an interrupt is triggered to the CPU system.
+Both blocks are scalable in terms of the number of serviced interrupt inputs.</p><div class="figure"><a name="d5e101"></a><p class="title"><b>Figure&nbsp;1.3.&nbsp;Interrupt Collector Overview</b></p><div class="figure-contents"><div class="mediaobject"><img src="src/rst/resources/InterruptCollectorOverview.png" width="270" alt="Interrupt Collector Overview"></div></div></div><br class="figure-break"><p>Upon the arrival of an interrupt event at an input, an interrupt is triggered to the CPU system.
 This leads to the execution of an interrupt routine by software on exactly one CPU of the system. The routine reads the <span class="emphasis"><em>Request-Register</em></span>
 in the interrupt collector, selects one of the reported interrupt requests for processing, and acknowledges
 this by setting the corresponding bit in the Request-Register.
@@ -199,7 +201,7 @@ Main targets:
  modelsim-wishbone-compile                         compile all
  modelsim-wishbone-prepare                         make work folder
  modelsim-wishbone-simulate                        simulate
- modelsim-wishbone-simulate-gui                    simulate start gui</pre><p>To run the simulation with GHDL its version 4.0.0 must be present.</p><p>If not jump to <a class="link" href="InstallGhdlWindows" target="_top">Install GHDL Windows</a> section, if not callable as &#8216;ghdl&#8217; in path, usually with Windows, jump to <em class="citetitle">AdaptAntBuild</em> <a class="link" href="#adaptantbuild" title="Adapt ANT build">Adapt Ant Build</a>.</p><p>Then simulation can be run, assuming the cloned repository is located in &#8216;git/interrupt-collector&#8217;:</p><pre class="programlisting">cd git/interrupt-collector
+ modelsim-wishbone-simulate-gui                    simulate start gui</pre><p>To run the simulation with GHDL its version 4.0.0 must be present.</p><p>If not jump to <a class="link" href="#installghdlwindows" title="Install GHDL Windows">Install GHDL Windows</a> section, if not callable as &#8216;ghdl&#8217; in path, usually with Windows, jump to <em class="citetitle">AdaptAntBuild</em> <a class="link" href="#adaptantbuild" title="Adapt ANT build">Adapt Ant Build</a>.</p><p>Then simulation can be run, assuming the cloned repository is located in &#8216;git/interrupt-collector&#8217;:</p><pre class="programlisting">cd git/interrupt-collector
 ant ghdl-wishbone-all</pre><p>This should result in:</p><pre class="programlisting">[exec] Core0: Main test started
 [exec] Core1: Cross notify interrupt happened
 [exec] Core1: test started
@@ -275,7 +277,7 @@ ant ghdl-wishbone-all</pre><p>This should result in:</p><pre class="programlisti
 ant ghdl-wishbone-simulate</pre><p>
       <span class="strong"><strong>This is very useful since the SimStm (.stm) stimuli files can be changed to do a new simulation WITHOUT recompilation.</strong></span>
     </p><p>Then simulation can be re-run with GUI:</p><pre class="programlisting">cd git/interrupt-collector
-ant ghdl-wishbone-simulate-gui</pre><p>If the script complains about &#8216;gtkwave&#8217; missing, see respective install section in <a class="link" href="InstallGhdlWindows" target="_top">Install GHDL Windows</a> to install it.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="modelsim"></a>ModelSim</h3></div></div></div><p>Assuming ModelSim is already installed, to simulate the design we run:</p><pre class="programlisting">cd git/interrupt-collector
+ant ghdl-wishbone-simulate-gui</pre><p>If the script complains about &#8216;gtkwave&#8217; missing, see respective install section in <a class="link" href="#installghdlwindows" title="Install GHDL Windows">Install GHDL Windows</a> to install it.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="modelsim"></a>ModelSim</h3></div></div></div><p>Assuming ModelSim is already installed, to simulate the design we run:</p><pre class="programlisting">cd git/interrupt-collector
 ant modelsim-wishbone-all</pre><p>Possibly the path to the ModelSim executable may have to be adapted in the ant build.xml file.</p><p>Using ModelSim Starter edition it may take up to 5 minutes until the output of a successful simulation
 will yield like this:</p><p>(ModelSim Starter edition will take already a very long time cause of design size)</p><pre class="programlisting">...
 
@@ -299,12 +301,14 @@ will yield like this:</p><p>(ModelSim Starter edition will take already a very l
 ant modelsim-wishbone-simulate</pre><p>
       <span class="strong"><strong>This is very useful since the SimStm (.stm) stimuli files can be changed to do a new simulation WITHOUT recompilation.</strong></span>
     </p><p>Then simulation can be re-run with GUI:</p><pre class="programlisting">cd git/interrupt-collector
-ant ghdl-wishbone-simulate-gui</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="hxs-hardware-software-interface"></a>HxS - Hardware/Software interface</h3></div></div></div><p>The Hardware/Software interface description of the Interrupt-Collector generated by HxS is: <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/src-gen/rst/Eccelerators.Library.IP.InterruptCollectorIfc-composite.rst" target="_top">file</a>.</p><p>The respective HxS sources are found in the <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/hxs" target="_top">hxs</a>  folder of the interrupt-collector clone.</p><p>Further generated artifacts Vhdl, SimStm, C, Python, HTML-Documentation, and PDF-Documentation is placed in <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/src-gen" target="_top">hxs artifacts</a>  folder.</p><p>The same applies for the Interrupt-Generator of the Mock and can be found the respective submodule folder.</p><p>A glance at the HxS source snippet of the Interrupt Request Register:</p><div class="figure"><a name="d5e208"></a><p class="title"><b>Figure&nbsp;1.4.&nbsp;HxS Interrupt Request Register Snippet</b></p><div class="figure-contents"><div class="mediaobject"><img src="src/rst/resources/HxsRegisterSnippet.png" alt="HxS Interrupt Request Register Snippet"></div></div></div><br class="figure-break"><p>Then HxS artifacts can be generated by calling the following ANT target. A precondition for this step is having installed the <a class="link" href="https://eccelerators.com/HxS" target="_top">HxS Tool</a> and Python, see <a class="link" href="InstallPython" target="_top">Install Python</a>.
+ant ghdl-wishbone-simulate-gui</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="hxs-hardware-software-interface"></a>HxS - Hardware/Software interface</h3></div></div></div><p>The Hardware/Software interface description of the Interrupt-Collector generated by HxS is: <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/src-gen/rst/Eccelerators.Library.IP.InterruptCollectorIfc-composite.rst" target="_top">file</a>.</p><p>The respective HxS sources are found in the <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/hxs" target="_top">hxs</a>  folder of the interrupt-collector clone.</p><p>Further generated artifacts Vhdl, SimStm, C, Python, HTML-Documentation, and PDF-Documentation is placed in <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/src-gen" target="_top">hxs artifacts</a>  folder.</p><p>The same applies for the Interrupt-Generator of the Mock and can be found the respective submodule folder.</p><p>A glance at the HxS source snippet of the Interrupt Request Register:</p><div class="figure"><a name="d5e211"></a><p class="title"><b>Figure&nbsp;1.4.&nbsp;HxS Interrupt Request Register Snippet</b></p><div class="figure-contents"><div class="mediaobject"><img src="src/rst/resources/HxsRegisterSnippet.png" alt="HxS Interrupt Request Register Snippet"></div></div></div><br class="figure-break"><p>Then HxS artifacts can be generated by calling the following ANT target. A precondition for this step is having installed the <a class="link" href="https://eccelerators.com/HxS" target="_top">HxS Tool</a> and Python, see <a class="link" href="InstallPython" target="_top">Install Python</a>.
 However since the artifacts are already present, since they are unusually under version control in this repository too, it is not necessary to have the tool to run the simulation.</p><pre class="programlisting">cd git/interrupt-collector
 ant hxs-all</pre><p>The target calls further targets in different levels of the complete workflow:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>hxs-vhdl to generate the vhdl files in the src-gen/vhdl folder referenced by the user code files in the src/vhdl folder.</p></li><li class="listitem"><p>hxs-hxs2c to generate the C-header files in the src-gen/c folder.</p></li><li class="listitem"><p>hxs-hxs2python to generate the Python class files in the src-gen/python folder.</p></li><li class="listitem"><p>hxs-hxs2simstm to generate the SimStm files in the src-gen/simstm folder included by the testbench.</p></li><li class="listitem"><p>hxs-hxs2rst to generate the restructured text files in the src-gen/rst folder referenced by the user code files in the src/rst folder.</p><p>A &#8216;.drawio&#8217; drawing <a class="link" href="https://www.drawio.com" target="_top">draw.io</a> is generated there, waiting to be included in documentation by the user</p><p>or used for presentations.</p><p>A preliminary &#8216;.docx&#8217; Microsoft Word is generated there, if enabled by annotation in the HxS source. The user restructured text entered in</p><p>HxS descriptions is not yet transformed but flows through as it is, it will be presented in following realses of HxS.</p></li></ul></div></li><li class="listitem"><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>hxs-rst2html-sphinx to generate a final Sphinx style HTML document in src-gen/html-sphinx</p><p>The composition of the resulting document is determined by user source code in the folder src/rst.The generated</p><p>files are included there to determine the place where they are located in the final user document with e.g., additional user sections.</p></li><li class="listitem"><p>hxs-rst2docbook to generate the necessary interim input files for further <a class="link" href="https://docbook.org" target="_top">DocBook</a> transformations .</p><p>The composition of the resulting document by further steps is determined by user source code in the folder src/docbook. The generated</p><p>files are included there to determine the place where they are located in the final user document with e.g., additional user sections.</p><p>Resources like the company logo can be adapted there. For further customization hints see <a class="link" href="DocbookCustomizations" target="_top">Docbook Customizations</a> section.</p></li></ul></div></li><li class="listitem"><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>hxs-docbook2pdf to generate the final PDF document im src-gen/docbook-pdf</p></li><li class="listitem"><p>hxs-docbook2html to generate a final HTML document im src-gen/docbook-html</p><p>This html output is an alternative to the Sphinx html, it is much closer to the form of the PDF output.</p></li></ul></div></li></ol></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="docbookcustomizations"></a>DocBook customizations</h3></div></div></div><p>The docbook tranformation is done by the submodule <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/submodules/eccelerators-docbook" target="_top">eccelerators-docbook</a>.
 Further customizations can be done by taking this as a base for a own &#8216;user-docbook&#8217; submodule. The adaptions are to be done in the folder
 <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/submodules/submodules/eccelerators-docbook/customization/resources/docbook-xsl-ns/customization" target="_top">customization</a>
-similar to the eccelerators-book found there in our submodule. Detailed explanations can be found at <a class="link" href="https://docbook.org" target="_top">DocBook</a>.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="further-steps"></a>Further steps</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>Simply use it for your design.</p></li><li class="listitem"><p>Have a template for Eclipse and VsCode to easily enter the Mask, Request and Service bits with common name stem.</p></li><li class="listitem"><p>Adapt <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/tb/hdl/simstm_src_to_customize/tb_signals_pkg.vhd" target="_top">tb_signals_pkg.vhd</a></p><p>to different interrupt priority schemes or nested interrupts.</p><p>Extend SimStm code with respective test cases.</p></li><li class="listitem"><p>Adapt <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/submodules/interrupt-dispatcher/src/vhdl/InterruptDispatcher.vhd" target="_top">InterruptDispatcher.vhd</a></p><p>to respect disabled interrupts in a core or a core already busy with an interrupt in dispatachin scheme.</p><p>Extend SimStm code with respective test cases.</p></li><li class="listitem"><p>Model more cores and user specific behaviour</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="installghdlubuntu2204"></a>Install GHDL Ubuntu 22.04</h3></div></div></div><p>Install it by downloading:</p><p><a class="link" href="https://github.com/ghdl/ghdl/releases/tag/v4.0.0/ghdl-gha-ubuntu-22.04-llvm.tgz" target="_top">https://github.com/ghdl/ghdl/releases/tag/v4.0.0/ghdl-gha-ubuntu-22.04-llvm.tgz</a>.</p><p>Copy the downloaded file to the a local folder e.g, &#8216;ghdl_download&#8217; and unpack it there e.g., with</p><pre class="programlisting">cd ghdl_download
+similar to the eccelerators-book found there in our submodule. Detailed explanations can be found at <a class="link" href="https://docbook.org" target="_top">DocBook</a>.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="further-steps"></a>Further steps</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>Simply use it for your design.</p></li><li class="listitem"><p>Have a template for Eclipse and VsCode to easily enter the Mask, Request and Service bits with common name stem.</p></li><li class="listitem"><p>Adapt <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/tb/hdl/simstm_src_to_customize/tb_signals_pkg.vhd" target="_top">tb_signals_pkg.vhd</a></p><p>to different interrupt priority schemes or nested interrupts.</p><p>Extend SimStm code with respective test cases.</p></li><li class="listitem"><p>Adapt <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/submodules/interrupt-dispatcher/src/vhdl/InterruptDispatcher.vhd" target="_top">InterruptDispatcher.vhd</a></p><p>to respect disabled interrupts in a core or a core already busy with an interrupt in dispatachin scheme.</p><p>Extend SimStm code with respective test cases.</p></li><li class="listitem"><p>Model more cores and user specific behaviour</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="helper"></a>Helper</h3></div></div></div><p>The helper folder of the repository contains different python helper scripts. Eccelerators will provide its IPs as python packages in future,
+thus submodules will be replaced and dependencies and sub-dependencies will be mangaged much easier. Many of the helper scripts already rely on
+a setup.py or generate it in the current interim state.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="installghdlubuntu2204"></a>Install GHDL Ubuntu 22.04</h3></div></div></div><p>Install it by downloading:</p><p><a class="link" href="https://github.com/ghdl/ghdl/releases/tag/v4.0.0/ghdl-gha-ubuntu-22.04-llvm.tgz" target="_top">https://github.com/ghdl/ghdl/releases/tag/v4.0.0/ghdl-gha-ubuntu-22.04-llvm.tgz</a>.</p><p>Copy the downloaded file to the a local folder e.g, &#8216;ghdl_download&#8217; and unpack it there e.g., with</p><pre class="programlisting">cd ghdl_download
 tar -xzf ghdl-gha-ubuntu-22.04-llvm.tgz -C ./usr</pre><p>It is sufficient to copy the contents of the subfolders of the unpacked user folder to their respective pendants in
 the system root &#8216;/usr&#8217; after their owner has been set to root.</p><pre class="programlisting">sudo chown -R root:root ./usr
 sudo cp -r ./usr/bin/* /usr/bin
@@ -352,7 +356,7 @@ Especially the pathes to the python , ghdl and modelsim executables usually have
 ``--&gt;                                                                                ``
 ``&lt;!-- &lt;property name="python-executable"                                            ``
 ``      value="C:Users\user\AppData\Local\Programs\Python\Python38\python.exe"/&gt; --&gt;  ``</pre></div></div>
-<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="Eccelerators.Library.IP.InterruptCollectorIfc-composite"></a>Interrupt Collector Interface (InterruptCollectorIfc)</h2></div></div></div><p>Interface containing a basic Interrupt Collector block.</p><p>Interrupt Collector details:</p><div class="figure"><a name="d5e329"></a><p class="title"><b>Figure&nbsp;1.5.&nbsp;Interrupt Collector details slice0</b></p><div class="figure-contents"><div class="mediaobject"><img src="hxs/resources/Eccelerators.Library.IP.InterruptCollectorIfc-Slice0.png" width="270" alt="Interrupt Collector details slice0"></div></div></div><br class="figure-break"><div class="figure"><a name="d5e334"></a><p class="title"><b>Figure&nbsp;1.6.&nbsp;Interrupt Collector details slice1</b></p><div class="figure-contents"><div class="mediaobject"><img src="hxs/resources/Eccelerators.Library.IP.InterruptCollectorIfc-Slice1.png" width="270" alt="Interrupt Collector details slice1"></div></div></div><br class="figure-break"><div class="table"><a name="d5e339"></a><p class="title"><b>Table&nbsp;1.1.&nbsp;Blocks of Interrupt Collector Interface</b></p><div class="table-contents"><table summary="Blocks of Interrupt Collector Interface" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="73" class="col2"><col width="567" class="col3"></colgroup><tbody><tr><td colspan="3">
+<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="Eccelerators.Library.IP.InterruptCollectorIfc-composite"></a>Interrupt Collector Interface (InterruptCollectorIfc)</h2></div></div></div><p>Interface containing a basic Interrupt Collector block.</p><p>Interrupt Collector details:</p><div class="figure"><a name="d5e335"></a><p class="title"><b>Figure&nbsp;1.5.&nbsp;Interrupt Collector details slice0</b></p><div class="figure-contents"><div class="mediaobject"><img src="hxs/resources/Eccelerators.Library.IP.InterruptCollectorIfc-Slice0.png" width="270" alt="Interrupt Collector details slice0"></div></div></div><br class="figure-break"><div class="figure"><a name="d5e340"></a><p class="title"><b>Figure&nbsp;1.6.&nbsp;Interrupt Collector details slice1</b></p><div class="figure-contents"><div class="mediaobject"><img src="hxs/resources/Eccelerators.Library.IP.InterruptCollectorIfc-Slice1.png" width="270" alt="Interrupt Collector details slice1"></div></div></div><br class="figure-break"><div class="table"><a name="d5e345"></a><p class="title"><b>Table&nbsp;1.1.&nbsp;Blocks of Interrupt Collector Interface</b></p><div class="table-contents"><table summary="Blocks of Interrupt Collector Interface" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="73" class="col2"><col width="567" class="col3"></colgroup><tbody><tr><td colspan="3">
             <p>Blocks of Interrupt Collector Interface</p>
           </td></tr><tr><td>
             <p>Block Address</p>
@@ -370,7 +374,7 @@ Especially the pathes to the python , ghdl and modelsim executables usually have
             <p>
               <a class="link" href="#ad6dcef073ec">Interrupt Collector Block</a>
             </p>
-          </td></tr></tbody></table></div></div><br class="table-break"><p></p><div class="table"><a name="d5e366"></a><p class="title"><b>Table&nbsp;1.2.&nbsp;Resets of Interrupt Collector Interface</b></p><div class="table-contents"><table summary="Resets of Interrupt Collector Interface" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="640" class="col2"></colgroup><tbody><tr><td colspan="2">
+          </td></tr></tbody></table></div></div><br class="table-break"><p></p><div class="table"><a name="d5e372"></a><p class="title"><b>Table&nbsp;1.2.&nbsp;Resets of Interrupt Collector Interface</b></p><div class="table-contents"><table summary="Resets of Interrupt Collector Interface" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="640" class="col2"></colgroup><tbody><tr><td colspan="2">
             <p>Resets of Registers of Interrupt Collector Interface</p>
           </td></tr><tr><td>
             <p>ID</p>
@@ -385,7 +389,7 @@ Usually edge triggered sources e.g., timer pulses can be converted to level trig
 ones by catching them in the user logic.</p><p>Constraints:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Allow interrupt processing by multiple CPUs without need for spinlocks.</p></li><li class="listitem"><p>Enable forwarding an interrupt to the CPU(s) by a mask for each source.</p></li><li class="listitem"><p>Provide control pulses to notify the user logic when a interrupt service for an
 interrupt request has been started and has been ended.</p></li><li class="listitem"><p>Use the control pulses to reset the interrupt request fo a source or do it by
 a write or read access directly to the user logic e.g. reading the receive data
-register of an UART.</p></li></ol></div><div class="table"><a name="d5e400"></a><p class="title"><b>Table&nbsp;1.3.&nbsp;Registers or Delegates of Interrupt Collector Block</b></p><div class="table-contents"><table summary="Registers or Delegates of Interrupt Collector Block" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="66" class="col2"><col width="574" class="col3"></colgroup><tbody><tr><td colspan="3">
+register of an UART.</p></li></ol></div><div class="table"><a name="d5e406"></a><p class="title"><b>Table&nbsp;1.3.&nbsp;Registers or Delegates of Interrupt Collector Block</b></p><div class="table-contents"><table summary="Registers or Delegates of Interrupt Collector Block" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="66" class="col2"><col width="574" class="col3"></colgroup><tbody><tr><td colspan="3">
               <p>Registers or Delegates of Interrupt Collector Block</p>
             </td></tr><tr><td colspan="2">
               <p>
@@ -437,7 +441,7 @@ register of an UART.</p></li></ol></div><div class="table"><a name="d5e400"></a>
               <p>
                 <a class="link" href="#a16a6daf6e92">Interrupt Service Register</a>
               </p>
-            </td></tr></tbody></table></div></div><br class="table-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="interrupt-mask-register-interruptmaskreg"></a>Interrupt Mask Register (InterruptMaskReg)</h4></div></div></div><div class="table"><a name="d5e457"></a><p class="title"><b>Table&nbsp;1.4.&nbsp;Bits of Interrupt Mask Register</b></p><div class="table-contents"><table summary="Bits of Interrupt Mask Register" border="1" width="100%"><colgroup><col width="21" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="591" class="col4"></colgroup><tbody><tr><td colspan="4">
+            </td></tr></tbody></table></div></div><br class="table-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="interrupt-mask-register-interruptmaskreg"></a>Interrupt Mask Register (InterruptMaskReg)</h4></div></div></div><div class="table"><a name="d5e463"></a><p class="title"><b>Table&nbsp;1.4.&nbsp;Bits of Interrupt Mask Register</b></p><div class="table-contents"><table summary="Bits of Interrupt Mask Register" border="1" width="100%"><colgroup><col width="21" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="591" class="col4"></colgroup><tbody><tr><td colspan="4">
                 <p>Bits of Interrupt Mask Register</p>
               </td></tr><tr><td colspan="3">
                 <p>
@@ -462,7 +466,7 @@ register of an UART.</p></li></ol></div><div class="table"><a name="d5e400"></a>
               </td><td><a name="ad472cc988c6"></a>
                 <p>RW</p>
               </td><td>
-                <div class="table"><a name="d5e492"></a><p class="title"><b>Table&nbsp;1.5.&nbsp;Values of Mask3</b></p><div class="table-contents"><table summary="Values of Mask3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e498"></a><p class="title"><b>Table&nbsp;1.5.&nbsp;Values of Mask3</b></p><div class="table-contents"><table summary="Values of Mask3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Value</p>
                         </td><td>
                           <p>ID</p>
@@ -492,7 +496,7 @@ register of an UART.</p></li></ol></div><div class="table"><a name="d5e400"></a>
                           <p>Interrupt is forwarded to CPU(s).</p>
                         </td></tr></tbody></table></div></div><br class="table-break">
                 <p></p>
-                <div class="table"><a name="d5e530"></a><p class="title"><b>Table&nbsp;1.6.&nbsp;Resets of Mask3</b></p><div class="table-contents"><table summary="Resets of Mask3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e536"></a><p class="title"><b>Table&nbsp;1.6.&nbsp;Resets of Mask3</b></p><div class="table-contents"><table summary="Resets of Mask3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>
                             <code class="code">0x0</code>
                           </p>
@@ -510,7 +514,7 @@ register of an UART.</p></li></ol></div><div class="table"><a name="d5e400"></a>
               </td><td><a name="ac64c54d42e0"></a>
                 <p>RW</p>
               </td><td>
-                <div class="table"><a name="d5e556"></a><p class="title"><b>Table&nbsp;1.7.&nbsp;Values of Mask2</b></p><div class="table-contents"><table summary="Values of Mask2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e562"></a><p class="title"><b>Table&nbsp;1.7.&nbsp;Values of Mask2</b></p><div class="table-contents"><table summary="Values of Mask2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Value</p>
                         </td><td>
                           <p>ID</p>
@@ -540,7 +544,7 @@ register of an UART.</p></li></ol></div><div class="table"><a name="d5e400"></a>
                           <p>Interrupt is forwarded to CPU(s).</p>
                         </td></tr></tbody></table></div></div><br class="table-break">
                 <p></p>
-                <div class="table"><a name="d5e594"></a><p class="title"><b>Table&nbsp;1.8.&nbsp;Resets of Mask2</b></p><div class="table-contents"><table summary="Resets of Mask2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e600"></a><p class="title"><b>Table&nbsp;1.8.&nbsp;Resets of Mask2</b></p><div class="table-contents"><table summary="Resets of Mask2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>
                             <code class="code">0x0</code>
                           </p>
@@ -558,7 +562,7 @@ register of an UART.</p></li></ol></div><div class="table"><a name="d5e400"></a>
               </td><td><a name="aad07d2177a5"></a>
                 <p>RW</p>
               </td><td>
-                <div class="table"><a name="d5e620"></a><p class="title"><b>Table&nbsp;1.9.&nbsp;Values of Mask1</b></p><div class="table-contents"><table summary="Values of Mask1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e626"></a><p class="title"><b>Table&nbsp;1.9.&nbsp;Values of Mask1</b></p><div class="table-contents"><table summary="Values of Mask1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Value</p>
                         </td><td>
                           <p>ID</p>
@@ -588,7 +592,7 @@ register of an UART.</p></li></ol></div><div class="table"><a name="d5e400"></a>
                           <p>Interrupt is forwarded to CPU(s).</p>
                         </td></tr></tbody></table></div></div><br class="table-break">
                 <p></p>
-                <div class="table"><a name="d5e658"></a><p class="title"><b>Table&nbsp;1.10.&nbsp;Resets of Mask1</b></p><div class="table-contents"><table summary="Resets of Mask1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e664"></a><p class="title"><b>Table&nbsp;1.10.&nbsp;Resets of Mask1</b></p><div class="table-contents"><table summary="Resets of Mask1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>
                             <code class="code">0x0</code>
                           </p>
@@ -606,7 +610,7 @@ register of an UART.</p></li></ol></div><div class="table"><a name="d5e400"></a>
               </td><td><a name="a9844edf1b58"></a>
                 <p>RW</p>
               </td><td>
-                <div class="table"><a name="d5e684"></a><p class="title"><b>Table&nbsp;1.11.&nbsp;Values of Mask0</b></p><div class="table-contents"><table summary="Values of Mask0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e690"></a><p class="title"><b>Table&nbsp;1.11.&nbsp;Values of Mask0</b></p><div class="table-contents"><table summary="Values of Mask0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Value</p>
                         </td><td>
                           <p>ID</p>
@@ -636,7 +640,7 @@ register of an UART.</p></li></ol></div><div class="table"><a name="d5e400"></a>
                           <p>Interrupt is forwarded to CPU(s).</p>
                         </td></tr></tbody></table></div></div><br class="table-break">
                 <p></p>
-                <div class="table"><a name="d5e722"></a><p class="title"><b>Table&nbsp;1.12.&nbsp;Resets of Mask0</b></p><div class="table-contents"><table summary="Resets of Mask0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e728"></a><p class="title"><b>Table&nbsp;1.12.&nbsp;Resets of Mask0</b></p><div class="table-contents"><table summary="Resets of Mask0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>
                             <code class="code">0x0</code>
                           </p>
@@ -647,7 +651,7 @@ register of an UART.</p></li></ol></div><div class="table"><a name="d5e400"></a>
                         </td><td>
                           <p>Default Bus Reset</p>
                         </td></tr></tbody></table></div></div><br class="table-break">
-              </td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="interrupt-request-register-interruptrequestreg"></a>Interrupt Request Register (InterruptRequestReg)</h4></div></div></div><div class="table"><a name="d5e742"></a><p class="title"><b>Table&nbsp;1.13.&nbsp;Bits of Interrupt Request Register</b></p><div class="table-contents"><table summary="Bits of Interrupt Request Register" border="1" width="100%"><colgroup><col width="21" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="591" class="col4"></colgroup><tbody><tr><td colspan="4">
+              </td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="interrupt-request-register-interruptrequestreg"></a>Interrupt Request Register (InterruptRequestReg)</h4></div></div></div><div class="table"><a name="d5e748"></a><p class="title"><b>Table&nbsp;1.13.&nbsp;Bits of Interrupt Request Register</b></p><div class="table-contents"><table summary="Bits of Interrupt Request Register" border="1" width="100%"><colgroup><col width="21" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="591" class="col4"></colgroup><tbody><tr><td colspan="4">
                 <p>Bits of Interrupt Request Register</p>
               </td></tr><tr><td colspan="3">
                 <p>
@@ -672,7 +676,7 @@ register of an UART.</p></li></ol></div><div class="table"><a name="d5e400"></a>
               </td><td><a name="af91926a5691"></a>
                 <p>R/W</p>
               </td><td>
-                <div class="table"><a name="d5e777"></a><p class="title"><b>Table&nbsp;1.14.&nbsp;Values of Request3</b></p><div class="table-contents"><table summary="Values of Request3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e783"></a><p class="title"><b>Table&nbsp;1.14.&nbsp;Values of Request3</b></p><div class="table-contents"><table summary="Values of Request3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Value</p>
                         </td><td>
                           <p>ID</p>
@@ -725,7 +729,7 @@ The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#821
 Solely the write action is sufficient.</p>
                         </td></tr></tbody></table></div></div><br class="table-break">
                 <p></p>
-                <div class="table"><a name="d5e836"></a><p class="title"><b>Table&nbsp;1.15.&nbsp;Resets of Request3</b></p><div class="table-contents"><table summary="Resets of Request3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e842"></a><p class="title"><b>Table&nbsp;1.15.&nbsp;Resets of Request3</b></p><div class="table-contents"><table summary="Resets of Request3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Init Value</p>
                         </td><td>
                           <p>ID</p>
@@ -752,7 +756,7 @@ Solely the write action is sufficient.</p>
               </td><td><a name="ae9251ef3f3e"></a>
                 <p>R/W</p>
               </td><td>
-                <div class="table"><a name="d5e872"></a><p class="title"><b>Table&nbsp;1.16.&nbsp;Values of Request2</b></p><div class="table-contents"><table summary="Values of Request2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e878"></a><p class="title"><b>Table&nbsp;1.16.&nbsp;Values of Request2</b></p><div class="table-contents"><table summary="Values of Request2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Value</p>
                         </td><td>
                           <p>ID</p>
@@ -805,7 +809,7 @@ The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#821
 Solely the write action is sufficient.</p>
                         </td></tr></tbody></table></div></div><br class="table-break">
                 <p></p>
-                <div class="table"><a name="d5e931"></a><p class="title"><b>Table&nbsp;1.17.&nbsp;Resets of Request2</b></p><div class="table-contents"><table summary="Resets of Request2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e937"></a><p class="title"><b>Table&nbsp;1.17.&nbsp;Resets of Request2</b></p><div class="table-contents"><table summary="Resets of Request2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Init Value</p>
                         </td><td>
                           <p>ID</p>
@@ -832,7 +836,7 @@ Solely the write action is sufficient.</p>
               </td><td><a name="aa8de9a6172b"></a>
                 <p>R/W</p>
               </td><td>
-                <div class="table"><a name="d5e967"></a><p class="title"><b>Table&nbsp;1.18.&nbsp;Values of Request1</b></p><div class="table-contents"><table summary="Values of Request1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e973"></a><p class="title"><b>Table&nbsp;1.18.&nbsp;Values of Request1</b></p><div class="table-contents"><table summary="Values of Request1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Value</p>
                         </td><td>
                           <p>ID</p>
@@ -885,7 +889,7 @@ The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#821
 Solely the write action is sufficient.</p>
                         </td></tr></tbody></table></div></div><br class="table-break">
                 <p></p>
-                <div class="table"><a name="d5e1026"></a><p class="title"><b>Table&nbsp;1.19.&nbsp;Resets of Request1</b></p><div class="table-contents"><table summary="Resets of Request1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e1032"></a><p class="title"><b>Table&nbsp;1.19.&nbsp;Resets of Request1</b></p><div class="table-contents"><table summary="Resets of Request1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Init Value</p>
                         </td><td>
                           <p>ID</p>
@@ -912,7 +916,7 @@ Solely the write action is sufficient.</p>
               </td><td><a name="a7cd2a795bc8"></a>
                 <p>R/W</p>
               </td><td>
-                <div class="table"><a name="d5e1062"></a><p class="title"><b>Table&nbsp;1.20.&nbsp;Values of Request0</b></p><div class="table-contents"><table summary="Values of Request0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e1068"></a><p class="title"><b>Table&nbsp;1.20.&nbsp;Values of Request0</b></p><div class="table-contents"><table summary="Values of Request0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Value</p>
                         </td><td>
                           <p>ID</p>
@@ -965,7 +969,7 @@ The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#821
 Solely the write action is sufficient.</p>
                         </td></tr></tbody></table></div></div><br class="table-break">
                 <p></p>
-                <div class="table"><a name="d5e1121"></a><p class="title"><b>Table&nbsp;1.21.&nbsp;Resets of Request0</b></p><div class="table-contents"><table summary="Resets of Request0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e1127"></a><p class="title"><b>Table&nbsp;1.21.&nbsp;Resets of Request0</b></p><div class="table-contents"><table summary="Resets of Request0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Init Value</p>
                         </td><td>
                           <p>ID</p>
@@ -985,7 +989,7 @@ Solely the write action is sufficient.</p>
                           <p>BusReset: Asynchronous Bus Reset</p>
                           <p>The bit Request is set to NotPending after reset in the usually attached InterruptCollector HW block.</p>
                         </td></tr></tbody></table></div></div><br class="table-break">
-              </td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="interrupt-service-register-interruptservicereg"></a>Interrupt Service Register (InterruptServiceReg)</h4></div></div></div><div class="table"><a name="d5e1151"></a><p class="title"><b>Table&nbsp;1.22.&nbsp;Bits of Interrupt Service Register</b></p><div class="table-contents"><table summary="Bits of Interrupt Service Register" border="1" width="100%"><colgroup><col width="21" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="591" class="col4"></colgroup><tbody><tr><td colspan="4">
+              </td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="interrupt-service-register-interruptservicereg"></a>Interrupt Service Register (InterruptServiceReg)</h4></div></div></div><div class="table"><a name="d5e1157"></a><p class="title"><b>Table&nbsp;1.22.&nbsp;Bits of Interrupt Service Register</b></p><div class="table-contents"><table summary="Bits of Interrupt Service Register" border="1" width="100%"><colgroup><col width="21" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="591" class="col4"></colgroup><tbody><tr><td colspan="4">
                 <p>Bits of Interrupt Service Register</p>
               </td></tr><tr><td colspan="3">
                 <p>
@@ -1010,7 +1014,7 @@ Solely the write action is sufficient.</p>
               </td><td><a name="af1320e9bb8a"></a>
                 <p>R/W</p>
               </td><td>
-                <div class="table"><a name="d5e1186"></a><p class="title"><b>Table&nbsp;1.23.&nbsp;Values of Service3</b></p><div class="table-contents"><table summary="Values of Service3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e1192"></a><p class="title"><b>Table&nbsp;1.23.&nbsp;Values of Service3</b></p><div class="table-contents"><table summary="Values of Service3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Value</p>
                         </td><td>
                           <p>ID</p>
@@ -1063,7 +1067,7 @@ The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#821
 Solely the write action is sufficient.</p>
                         </td></tr></tbody></table></div></div><br class="table-break">
                 <p></p>
-                <div class="table"><a name="d5e1245"></a><p class="title"><b>Table&nbsp;1.24.&nbsp;Resets of Service3</b></p><div class="table-contents"><table summary="Resets of Service3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e1251"></a><p class="title"><b>Table&nbsp;1.24.&nbsp;Resets of Service3</b></p><div class="table-contents"><table summary="Resets of Service3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Init Value</p>
                         </td><td>
                           <p>ID</p>
@@ -1090,7 +1094,7 @@ Solely the write action is sufficient.</p>
               </td><td><a name="a7033788576a"></a>
                 <p>R/W</p>
               </td><td>
-                <div class="table"><a name="d5e1281"></a><p class="title"><b>Table&nbsp;1.25.&nbsp;Values of Service2</b></p><div class="table-contents"><table summary="Values of Service2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e1287"></a><p class="title"><b>Table&nbsp;1.25.&nbsp;Values of Service2</b></p><div class="table-contents"><table summary="Values of Service2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Value</p>
                         </td><td>
                           <p>ID</p>
@@ -1143,7 +1147,7 @@ The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#821
 Solely the write action is sufficient.</p>
                         </td></tr></tbody></table></div></div><br class="table-break">
                 <p></p>
-                <div class="table"><a name="d5e1340"></a><p class="title"><b>Table&nbsp;1.26.&nbsp;Resets of Service2</b></p><div class="table-contents"><table summary="Resets of Service2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e1346"></a><p class="title"><b>Table&nbsp;1.26.&nbsp;Resets of Service2</b></p><div class="table-contents"><table summary="Resets of Service2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Init Value</p>
                         </td><td>
                           <p>ID</p>
@@ -1170,7 +1174,7 @@ Solely the write action is sufficient.</p>
               </td><td><a name="a2530402f1ba"></a>
                 <p>R/W</p>
               </td><td>
-                <div class="table"><a name="d5e1376"></a><p class="title"><b>Table&nbsp;1.27.&nbsp;Values of Service1</b></p><div class="table-contents"><table summary="Values of Service1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e1382"></a><p class="title"><b>Table&nbsp;1.27.&nbsp;Values of Service1</b></p><div class="table-contents"><table summary="Values of Service1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Value</p>
                         </td><td>
                           <p>ID</p>
@@ -1223,7 +1227,7 @@ The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#821
 Solely the write action is sufficient.</p>
                         </td></tr></tbody></table></div></div><br class="table-break">
                 <p></p>
-                <div class="table"><a name="d5e1435"></a><p class="title"><b>Table&nbsp;1.28.&nbsp;Resets of Service1</b></p><div class="table-contents"><table summary="Resets of Service1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e1441"></a><p class="title"><b>Table&nbsp;1.28.&nbsp;Resets of Service1</b></p><div class="table-contents"><table summary="Resets of Service1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Init Value</p>
                         </td><td>
                           <p>ID</p>
@@ -1250,7 +1254,7 @@ Solely the write action is sufficient.</p>
               </td><td><a name="a612b79783c6"></a>
                 <p>R/W</p>
               </td><td>
-                <div class="table"><a name="d5e1471"></a><p class="title"><b>Table&nbsp;1.29.&nbsp;Values of Service0</b></p><div class="table-contents"><table summary="Values of Service0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e1477"></a><p class="title"><b>Table&nbsp;1.29.&nbsp;Values of Service0</b></p><div class="table-contents"><table summary="Values of Service0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Value</p>
                         </td><td>
                           <p>ID</p>
@@ -1303,7 +1307,7 @@ The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#821
 Solely the write action is sufficient.</p>
                         </td></tr></tbody></table></div></div><br class="table-break">
                 <p></p>
-                <div class="table"><a name="d5e1530"></a><p class="title"><b>Table&nbsp;1.30.&nbsp;Resets of Service0</b></p><div class="table-contents"><table summary="Resets of Service0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                <div class="table"><a name="d5e1536"></a><p class="title"><b>Table&nbsp;1.30.&nbsp;Resets of Service0</b></p><div class="table-contents"><table summary="Resets of Service0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
                           <p>Init Value</p>
                         </td><td>
                           <p>ID</p>

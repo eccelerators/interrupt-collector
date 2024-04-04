@@ -616,6 +616,15 @@ Further steps
   
 * Model more cores and user specific behaviour
 
+
+Helper
+::::::
+
+The helper folder of the repository contains different python helper scripts. Eccelerators will provide its IPs as python packages in future,
+thus submodules will be replaced and dependencies and sub-dependencies will be mangaged much easier. Many of the helper scripts already rely on 
+a setup.py or generate it in the current interim state.
+
+
 .. _InstallGhdlUbuntu2204:
 
 Install GHDL Ubuntu 22.04

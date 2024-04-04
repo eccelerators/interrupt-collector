@@ -61,6 +61,11 @@
           </listitem>
           <listitem>
             <para>
+              <link linkend="helper">Helper</link>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
               <link linkend="install-ghdl-ubuntu-22-04">Install GHDL Ubuntu 22.04</link>
             </para>
           </listitem>
@@ -577,6 +582,12 @@ similar to the eccelerators-book found there in our submodule. Detailed explanat
         <para>Model more cores and user specific behaviour</para>
       </listitem>
     </itemizedlist>
+  </section>
+  <section xml:id="helper">
+    <title>Helper</title>
+    <para>The helper folder of the repository contains different python helper scripts. Eccelerators will provide its IPs as python packages in future,
+thus submodules will be replaced and dependencies and sub-dependencies will be mangaged much easier. Many of the helper scripts already rely on
+a setup.py or generate it in the current interim state.</para>
   </section>
   <section xml:id="installghdlubuntu2204">
     <title>Install GHDL Ubuntu 22.04</title>
