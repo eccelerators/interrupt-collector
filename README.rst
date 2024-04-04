@@ -5,7 +5,7 @@ Interrupt Collector
    	:depth: 3
    	
 This README is a partial view of the final document
-`InterruptCollectorIfc.pdf <https://github.com/eccelerators/interrupt-collector/blob/main/src-gen/docbook-pdf/Ecclerators.Library.IP.InterruptCollectorIfc.pdf>`_
+`InterruptCollector.pdf <https://github.com/eccelerators/interrupt-collector/blob/main/src-gen/docbook-pdf/Ecclerators.Library.IP.InterruptCollectorIfc.pdf>`_
 
 
 
