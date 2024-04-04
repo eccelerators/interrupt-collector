@@ -11,9 +11,7 @@
         <itemizedlist>
           <listitem>
             <para>
-              <link linkend="introduction">
-                <emphasis role="strong">Introduction</emphasis>
-              </link>
+              <link linkend="introduction">Introduction</link>
             </para>
           </listitem>
           <listitem>
@@ -86,12 +84,10 @@
     </itemizedlist>
   </section>
   <para>This README is a partial view of the final documents:</para>
-  <para>PDF <link xlink:href="https://github.com/eccelerators/interrupt-collector/src-gen/docbook-pdf/Eccelerators.Library.IP.InterruptCollectorIfc.pdf">InterruptCollectorIfc.pdf</link>
-HTML <link xlink:href="https://github.com/eccelerators/interrupt-collector/src-gen/sphinx-html/index.html">InterruptCollectorIfc.pdf</link></para>
+  <para>PDF <link xlink:href="https://github.com/eccelerators/interrupt-collector/blob/main/src-gen/docbook-pdf/Ecclerators.Library.IP.InterruptCollectorIfc.pdf">InterruptCollectorIfc.pdf</link>
+HTML <link xlink:href="https://github.com/eccelerators/interrupt-collector/blob/main/src-gen/html-sphinx/index.html">InterruptCollectorIfc.pdf</link></para>
   <section xml:id="introduction">
-    <title>
-      <emphasis role="strong">Introduction</emphasis>
-    </title>
+    <title>Introduction</title>
     <para>Interrupts connect software (SW) and hardware (HW) very closely. They require a carefully planned concept that starts from the HW source bit, which
 causes an interrupt event, through different HW controllers/collectors located both outside and inside a CPU system, and extends to
 the SW operating system and its drivers, up to the application software. The concept is dependent on the specific nature of all components

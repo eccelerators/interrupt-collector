@@ -6,10 +6,8 @@ Interrupt Collector
    	
 This README is a partial view of the final documents:
 
-PDF `InterruptCollectorIfc.pdf <https://github.com/eccelerators/interrupt-collector/src-gen/docbook-pdf/Eccelerators.Library.IP.InterruptCollectorIfc.pdf>`_
-HTML `InterruptCollectorIfc.pdf <https://github.com/eccelerators/interrupt-collector/src-gen/sphinx-html/index.html>`_ 	
-	
-.. inclusion-marker-do-not-remove
+PDF `InterruptCollectorIfc.pdf <https://github.com/eccelerators/interrupt-collector/blob/main/src-gen/docbook-pdf/Ecclerators.Library.IP.InterruptCollectorIfc.pdf>`_
+HTML `InterruptCollectorIfc.pdf <https://github.com/eccelerators/interrupt-collector/blob/main/src-gen/html-sphinx/index.html>`_ 	
 
 
 

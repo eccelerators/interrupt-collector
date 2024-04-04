@@ -1,0 +1,1795 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Eccelerators Library IP specification</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="#d5e1" title="Eccelerators Library IP specification"><link rel="next" href="#Eccelerators-Library-IP-InterruptCollector" title="Chapter&nbsp;1.&nbsp;InterruptCollectorIfc"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="book"><div class="titlepage"><div><div><h1 class="title"><a name="d5e1"></a>Eccelerators Library IP specification</h1></div></div><hr></div>
+
+<div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="Eccelerators-Library-IP-InterruptCollector"></a>Chapter&nbsp;1.&nbsp;InterruptCollectorIfc</h1></div></div></div>
+
+<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="InterruptCollector_usage"></a>Interrupt Collector</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="contents"></a>Contents</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          <a class="link" href="#">Interrupt Collector</a>
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+              <a class="link" href="#introduction" title="Introduction">Introduction</a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="#testbench" title="Testbench">Testbench</a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="#function-dut" title="Function (DUT)">Function (DUT)</a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="#">Quick Start Simulation</a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="#ghdl-linux" title="GHDL Linux">GHDL Linux</a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="#ghdl-windows" title="GHDL Windows">GHDL Windows</a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="#modelsim" title="ModelSim">ModelSim</a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="#hxs-hardware-software-interface" title="HxS - Hardware/Software interface">HxS - Hardware/Software interface</a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="#docbook-customizations" title="DocBook customizations">DocBook customizations</a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="#further-steps" title="Further steps">Further steps</a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="#install-ghdl-ubuntu-22-04" title="Install GHDL Ubuntu 22.04">Install GHDL Ubuntu 22.04</a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="#install-ghdl-windows" title="Install GHDL Windows">Install GHDL Windows</a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="#python" title="Python">Python</a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="#adapt-ant-build" title="Adapt ANT build">Adapt ANT build</a>
+            </p></li></ul></div></li></ul></div></div><p>This README is a partial view of the final documents:</p><p>PDF <a class="link" href="https://github.com/eccelerators/interrupt-collector/blob/main/src-gen/docbook-pdf/Ecclerators.Library.IP.InterruptCollectorIfc.pdf" target="_top">InterruptCollectorIfc.pdf</a>
+HTML <a class="link" href="https://github.com/eccelerators/interrupt-collector/blob/main/src-gen/html-sphinx/index.html" target="_top">InterruptCollectorIfc.pdf</a></p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="introduction"></a>Introduction</h3></div></div></div><p>Interrupts connect software (SW) and hardware (HW) very closely. They require a carefully planned concept that starts from the HW source bit, which
+causes an interrupt event, through different HW controllers/collectors located both outside and inside a CPU system, and extends to
+the SW operating system and its drivers, up to the application software. The concept is dependent on the specific nature of all components
+in this chain and dramatically affects the real-time capabilities and overall performance of a system.</p><p>A designer of a peripheral logic block for a CPU system is often required to issue an interrupt to the system if their logic needs attention from the CPU.
+Typically, there is more than one event source in the peripheral logic block that can trigger an interrupt.
+The <span class="emphasis"><em>Interrupt-Collector</em></span> presented here is a proven solution for managing these tasks. It does not impose excessive overhead on a peripheral logic block
+for a tiny microcontroller and is suitable for the most complex systems on a chip (SOC) with multiple cores running in symmetric or asymmetric multiprocessing mode.
+Thus, it and its driver software can be reused across a wide range of designs.</p><p>The description of the <span class="emphasis"><em>Interrupt-Collector</em></span> in the subsequent chapters is structured in a top-down manner, starting from a testbench that includes it,
+and progressing to its internal functions.</p><p>The testbench simulation can be run immediately with either the GHDL or ModelSim simulator using the included ANT scripts. For more information,
+see the <a class="link" href="#quick-start-simlation" title="Quick Start Simulation">Quick Start Simulation</a> section.</p><p>The VHDL source code, along with other source code in this repository, can be used liberally under the MIT license for any design.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="testbench"></a>Testbench</h3></div></div></div><div class="figure"><a name="d5e72"></a><p class="title"><b>Figure&nbsp;1.1.&nbsp;Interrupt Collector Testbench</b></p><div class="figure-contents"><div class="mediaobject"><img src="src/rst/resources/InterruptCollectorTestbench.png" alt="Interrupt Collector Testbench"></div></div></div><br class="figure-break"><p>The &#8220;Interrupt Collector Testbench&#8221; illustrates the Device Under Test (DUT)&#8212;our Interrupt Collector&#8212;within a red-bordered block. On the left, there are
+two processors, simulating a multiprocessor system. Each processor is an instance of the <a class="link" href="https://github.com/eccelerators/simstm" target="_top">Eccelerators SimStm Testbench</a>.
+These processors are augmented by a BusJoin unit, which forms the common bus connection for the Dual Core Processor system, and an InterruptDispatcher unit
+that dispatches arriving interrupts to one of the cores.
+Both cores execute the same SimStm code, as shown on the left. The main routine is differentiated based on the core number; Processor 0 is responsible for managing initial
+processes and cross-run signals for Processor 1. It is only Processor 0 that performs the initialization of the DUT and MOCK.</p><p>A short glance at the SimStm program &#8220;Main&#8221; routine snippet, the corresponding source file is <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/tb/simstm/testMain.stm" target="_top">testMain.stm</a> .</p><div class="figure"><a name="d5e81"></a><p class="title"><b>Figure&nbsp;1.2.&nbsp;SimStm Main Routine Snippet</b></p><div class="figure-contents"><div class="mediaobject"><img src="src/rst/resources/simstm-snippet.png" alt="SimStm Main Routine Snippet"></div></div></div><br class="figure-break"><p>The SimStm source code is very compact and easy readable. It starts with the declaration and definition of constants, variables signals and buses. Following is the
+&#8216;testMain&#8217; procedure, then the Interrupt procedure and helper procedures.</p><p>A BusDivider unit, generated by HxS, features two delegates. It splits the bus into two separate buses, each designated for different address
+areas: one for the Device Under Test (DUT) and another for the MOCK.</p><p>The MOCK includes an interrupt generator with four channels. These channels are designed to generate a charged number of interrupts at programmable intervals
+repeatedly. For each interrupt, acknowledgment is required from the software interrupt service routine within the corresponding channel of the generator.
+This acknowledgment process involves reading the actual count from a register and then writing this count to a reference count register.
+Any missed or incorrect acknowledgments are logged for each issued interrupt in a failure count register. Should any channel experience a fault,
+the generator signals this failure through its &#8220;GeneratorFailure&#8221; output at the first occurrence of such a fault.</p><p>The four interrupts generated by the Interrupt Generator are processed by the Device Under Test (DUT), the Interrupt Collector. They are delivered to the
+Dual Core Processor system via its &#8220;OutUpInterrupt&#8221; output.</p><p>The running simulation of the testbench should demonstrate that all generated interrupts are serviced in parallel, with the services being
+evenly distributed between both cores.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="function-dut"></a>Function (DUT)</h3></div></div></div><p>The interrupt collector consists of two parts. The first part, the hardware-software interface, is generated by the Eccelerators Tool HxS.
+It uses the description of the Mask-, Service- and Request, Registers in the HxS language as input. The output is the complete implementation
+of these registers in VHDL connected to a Wishbone Bus, with the necessary inputs and outputs to a user logic block.
+The second part contains the logic of the interrupt collector function, coded by the user Eccelerators.</p><p>The design allows for the simultaneous processing of different interrupts within the same interrupt collector by multiple
+processors of a multiprocessor system, without the need for additional synchronization measures such as Spin-Locks.</p><p>The accompanying diagram illustrates the implementation, including the connection of the HxS block to a Wishbone bus leading
+to the CPU or the multiprocessor system. The User Block demonstrates the realization of the interrupt logic.
+Both blocks are scalable in terms of the number of serviced interrupt inputs.</p><div class="figure"><a name="d5e96"></a><p class="title"><b>Figure&nbsp;1.3.&nbsp;Interrupt Collector Overview</b></p><div class="figure-contents"><div class="mediaobject"><img src="hxs/resources/InterruptCollectorOverview.png" width="270" alt="Interrupt Collector Overview"></div></div></div><br class="figure-break"><p>Upon the arrival of an interrupt event at an input, an interrupt is triggered to the CPU system.
+This leads to the execution of an interrupt routine by software on exactly one CPU of the system. The routine reads the <span class="emphasis"><em>Request-Register</em></span>
+in the interrupt collector, selects one of the reported interrupt requests for processing, and acknowledges
+this by setting the corresponding bit in the Request-Register.
+This interrupt request is then reset in the Request-Register and appears in the <span class="emphasis"><em>Service-Register</em></span>. After completing the tasks in the interrupt
+service routine, the CPU sets to the corresponding bit in the Service-Register, thereby signaling the end of the interrupt routine
+to the interrupt collector. Only from this point can the corresponding Request-Register bit be set again by the same interrupt input.</p><p>The actual triggering of an interrupt to the CPU system can be enabled or disabled in the <span class="emphasis"><em>Mask-Register</em></span> for each input.
+After each acknowledged request, the interrupt line to the CPU system is briefly deactivated to allow for the processing
+of further interrupts by other CPUs of the system.</p><p>The sources for the Interrupt-Collector inputs must have a level-triggering nature. The source logic block issuing an interrupt event must keep its signal active
+until it is acknowledged by the interrupt service routine by some SW access to the source logic block.</p><p>Edge-triggering sources e.g., timers must be converted to level-triggering sources. A solution for this conversion is the
+the <a class="link" href="https://github.com/eccelerators/event-catcher" target="_top">event-catcher</a> IP.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="quick-start-simlation"></a>Quick Start Simulation</h3></div></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="ghdl-linux"></a>GHDL Linux</h3></div></div></div><p>We use Ubuntu 22.04 for demonstration.</p><p>At least a java runtime &gt;= 17 is required. If not already present e.g., install it by:</p><pre class="programlisting">sudo apt install openjdk-17-jre</pre><p>All builds are run by means of <a class="link" href="https://ant.apache.org/" target="_top">APACHE ANT</a> and respective build.xml files.
+If not already present e.g., install it by:</p><pre class="programlisting">sudo apt install ant</pre><p>Git is required to clone the interrupt-collector repository.
+If not already present e.g., install it by:</p><pre class="programlisting">sudo apt install git</pre><p>Next, we clone the actual <a class="link" href="https://github.com/eccelerators/interrupt-collector" target="_top">interrupt-collector</a>
+repository:</p><pre class="programlisting">git clone --recursive https://github.com/eccelerators/interrupt-collector.git</pre><p>The  <code class="code">--recursive</code> parameter is mandatory because many resources e.g. child build.xml files are residing there.</p><p>In an unconventional approach, all necessary artifacts generated by previously executed build steps in the Ecclerators IP project workflow are already
+present in the cloned working copy. This setup facilitates easy use and progress with this starter IP.</p><p>To run the simulation with GHDL its version 4.0.0 must be present.</p><p>If not jump to <a class="link" href="#install-ghdl-ubuntu-22-04" title="Install GHDL Ubuntu 22.04">Install GHDL Ubuntu 22.04</a> section, if not callable as &#8216;ghdl&#8217; in path, usually wit Windows, jump to <a class="link" href="#adapt-ant-build" title="Adapt ANT build">Adapt ANT build</a>.</p><p>Then simulation can be run, assuming the cloned repository is located in &#8216;git/interrupt-collector&#8217;:</p><pre class="programlisting">cd git/interrupt-collector
+ant ghdl-wishbone-all</pre><p>This should result in:</p><pre class="programlisting">[exec] Core0: Main test started
+[exec] Core1: Cross notify interrupt happened
+[exec] Core1: test started
+[exec] Core0: Cross notify interrupt happened
+[exec] Core1 currently: Interrupts in total: 32, Source0: 12, Source1: 6, Source2: 6, Source3: 8
+[exec] Core0 currently: Interrupts in total: 32, Source0: 13, Source1: 11, Source2: 6, Source3: 2
+[exec] Core1 currently: Interrupts in total: 64, Source0: 22, Source1: 14, Source2: 12, Source3: 16
+[exec] Core0 currently: Interrupts in total: 64, Source0: 28, Source1: 21, Source2: 12, Source3: 3
+[exec] Core1 currently: Interrupts in total: 96, Source0: 34, Source1: 19, Source2: 20, Source3: 23
+[exec] Core0 currently: Interrupts in total: 96, Source0: 43, Source1: 30, Source2: 18, Source3: 5
+[exec] Core1 currently: Interrupts in total: 128, Source0: 46, Source1: 25, Source2: 25, Source3: 32
+[exec] Core0 currently: Interrupts in total: 128, Source0: 56, Source1: 41, Source2: 24, Source3: 7
+[exec] Core1 currently: Interrupts in total: 160, Source0: 56, Source1: 32, Source2: 32, Source3: 40
+[exec] Core0 currently: Interrupts in total: 160, Source0: 69, Source1: 52, Source2: 30, Source3: 9
+[exec] Core1 currently: Interrupts in total: 192, Source0: 68, Source1: 38, Source2: 38, Source3: 48
+[exec] Core0 currently: Interrupts in total: 192, Source0: 84, Source1: 62, Source2: 36, Source3: 10
+[exec] Core1 currently: Interrupts in total: 224, Source0: 78, Source1: 46, Source2: 44, Source3: 56
+[exec] Core0 currently: Interrupts in total: 224, Source0: 98, Source1: 72, Source2: 42, Source3: 12
+[exec] Core1 currently: Interrupts in total: 256, Source0: 90, Source1: 51, Source2: 52, Source3: 63
+[exec] Core0 currently: Interrupts in total: 256, Source0: 110, Source1: 84, Source2: 48, Source3: 14
+[exec] Core1 currently: Interrupts in total: 288, Source0: 102, Source1: 57, Source2: 57, Source3: 72
+[exec] Core0 currently: Interrupts in total: 288, Source0: 125, Source1: 93, Source2: 54, Source3: 16
+[exec] Core1 currently: Interrupts in total: 320, Source0: 112, Source1: 64, Source2: 64, Source3: 80
+[exec] Core0 currently: Interrupts in total: 320, Source0: 139, Source1: 103, Source2: 61, Source3: 17
+[exec] Core1 currently: Interrupts in total: 352, Source0: 124, Source1: 70, Source2: 70, Source3: 88
+[exec] Core0 currently: Interrupts in total: 352, Source0: 153, Source1: 113, Source2: 67, Source3: 19
+[exec] Core1 currently: Interrupts in total: 384, Source0: 134, Source1: 78, Source2: 76, Source3: 96
+[exec] Core0 currently: Interrupts in total: 384, Source0: 166, Source1: 125, Source2: 72, Source3: 21
+[exec] Core1 currently: Interrupts in total: 416, Source0: 146, Source1: 83, Source2: 84, Source3: 103
+[exec] Core0 currently: Interrupts in total: 416, Source0: 180, Source1: 135, Source2: 79, Source3: 22
+[exec] Core1 currently: Interrupts in total: 448, Source0: 158, Source1: 89, Source2: 89, Source3: 112
+[exec] Core1 currently: Interrupts in total: 480, Source0: 168, Source1: 96, Source2: 96, Source3: 120
+[exec] Core0 currently: Interrupts in total: 448, Source0: 195, Source1: 144, Source2: 85, Source3: 24
+[exec] Core1 currently: Interrupts in total: 512, Source0: 180, Source1: 102, Source2: 102, Source3: 128
+[exec] Core0 currently: Interrupts in total: 480, Source0: 207, Source1: 156, Source2: 91, Source3: 26
+[exec] Core1 currently: Interrupts in total: 544, Source0: 190, Source1: 110, Source2: 108, Source3: 136
+[exec] Core0 currently: Interrupts in total: 512, Source0: 221, Source1: 166, Source2: 97, Source3: 28
+[exec] Core1 currently: Interrupts in total: 576, Source0: 202, Source1: 115, Source2: 116, Source3: 143
+[exec] Core0 currently: Interrupts in total: 544, Source0: 236, Source1: 176, Source2: 103, Source3: 29
+[exec] Core1 currently: Interrupts in total: 608, Source0: 214, Source1: 121, Source2: 121, Source3: 152
+[exec] Core0 currently: Interrupts in total: 576, Source0: 251, Source1: 185, Source2: 109, Source3: 31
+[exec] Core1 currently: Interrupts in total: 640, Source0: 224, Source1: 128, Source2: 128, Source3: 160
+[exec] Core0 currently: Interrupts in total: 608, Source0: 264, Source1: 197, Source2: 114, Source3: 33
+[exec] Core1 currently: Interrupts in total: 672, Source0: 236, Source1: 134, Source2: 134, Source3: 168
+[exec] Core0 currently: Interrupts in total: 640, Source0: 276, Source1: 208, Source2: 121, Source3: 35
+[exec] Core1 currently: Interrupts in total: 704, Source0: 246, Source1: 142, Source2: 140, Source3: 176
+[exec] Core0 currently: Interrupts in total: 672, Source0: 291, Source1: 218, Source2: 127, Source3: 36
+[exec] Core1 currently: Interrupts in total: 736, Source0: 258, Source1: 147, Source2: 148, Source3: 183
+[exec] Core0 currently: Interrupts in total: 704, Source0: 305, Source1: 228, Source2: 133, Source3: 38
+[exec] Core1 currently: Interrupts in total: 768, Source0: 270, Source1: 153, Source2: 153, Source3: 192
+[exec] Core0 currently: Interrupts in total: 736, Source0: 318, Source1: 239, Source2: 139, Source3: 40
+[exec] Core1 currently: Interrupts in total: 800, Source0: 280, Source1: 160, Source2: 160, Source3: 200
+[exec] Core0 currently: Interrupts in total: 768, Source0: 332, Source1: 249, Source2: 145, Source3: 42
+[exec] Core1 currently: Interrupts in total: 832, Source0: 292, Source1: 166, Source2: 166, Source3: 208
+[exec] Core0 currently: Interrupts in total: 800, Source0: 341, Source1: 260, Source2: 156, Source3: 43
+[exec] Core1 currently: Interrupts in total: 864, Source0: 299, Source1: 181, Source2: 171, Source3: 213
+[exec] Core0 currently: Interrupts in total: 832, Source0: 341, Source1: 268, Source2: 180, Source3: 43
+[exec] Core1 currently: Interrupts in total: 896, Source0: 299, Source1: 213, Source2: 171, Source3: 213
+[exec] Core0 currently: Interrupts in total: 864, Source0: 341, Source1: 276, Source2: 204, Source3: 43
+[exec]
+[exec] Core1 finally: Interrupts in total: 916, Source0: 299, Source1: 233, Source2: 171, Source3: 213
+[exec] Core1: test finished
+[exec]
+[exec] Core0 finally: Interrupts in total: 876, Source0: 341, Source1: 279, Source2: 213, Source3: 43
+[exec]
+[exec] Total counts finally: ActualSum: 1792, Actual0: 640, Actual1: 512, Actual2: 384, Actual3: 256
+[exec] Total failure count finally: FailureSum: 0, Failures0: 0, Failures1: 0, Failures2: 0, Failures3: 0
+[exec]
+[exec] Core0: Main test finished
+[exec]
+[exec] /home/heinrich/git/interrupt-collector/submodules/simstm/src/tb_simstm.vhd:1308:21:@773696100ps:(assertion note): test finished with no errors!!
+[exec] /home/heinrich/git/interrupt-collector/simulation/ghdl-wishbone/work/tb_top_wishbone:info: simulation stopped by --stop-time @99992130300ps</pre><p>Then simulation can be re-run then, since compilation and elaboration has already been done by the target &#8216;ghdl-wishbone-all&#8217;:</p><pre class="programlisting">cd git/interrupt-collector
+ant ghdl-wishbone-simulate</pre><p>
+      <span class="strong"><strong>This is very useful since the SimStm (.stm) stimuli files can be changed to do a new simulation WITHOUT recompilation.</strong></span>
+    </p><p>Then simulation can be re-run with GUI:</p><pre class="programlisting">cd git/interrupt-collector
+ant ghdl-wishbone-simulate-gui</pre><p>If the script complains about &#8216;gtkwave&#8217; missing, see respective install section to install it.:</p><p>
+      <a class="link" href="#install-ghdl-ubuntu-22-04" title="Install GHDL Ubuntu 22.04">Install GHDL Ubuntu 22.04</a>
+    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="ghdl-windows"></a>GHDL Windows</h3></div></div></div><p>We use Windows 10 for demonstration.</p><p>At least a java runtime &gt;= 17 is required. If not already present e.g., install it by downloading:</p><p>
+      <a class="link" href="https://aka.ms/download-jdk/microsoft-jdk-17.0.10-windows-x64.msi" target="_top">JAVA</a>
+    </p><p>Git is required to clone the interrupt-collector repository.
+If not already present e.g., by having already installed MSYS2 for GHDL install it in your favorite way.</p><p>Next, we clone the actual <a class="link" href="https://github.com/eccelerators/interrupt-collector" target="_top">interrupt-collector</a>
+repository:</p><pre class="programlisting">git clone --recursive https://github.com/eccelerators/interrupt-collector.git</pre><p>The  <code class="code">--recursive</code> parameter is mandatory because many resources e.g. child build.xml files are residing there.</p><p>In an unconventional approach, all necessary artifacts generated by previously executed build steps in the Ecclerators IP project workflow are already
+present in the cloned working copy. This setup facilitates easy use and progress with this starter IP.</p><p>All builds are run by means of <a class="link" href="https://ant.apache.org/" target="_top">APACHE ANT</a> and respective build.xml files.
+If not already present e.g., install it by downloading:</p><p>
+      <a class="link" href="https://downloads.apache.org/ant/binaries/apache-ant-1.10.14-bin.zip" target="_top">ANT</a>
+    </p><p>Unzip it e.g., to C:/apache-ant-1.10.14-bin and add the bin folder to your path environment.</p><pre class="programlisting">c:\Data\git\interrupt-collector&gt;ant -p build.xml</pre><p>should produce then:</p><pre class="programlisting">Buildfile: c:\Data\git\interrupt-collector\build.xml
+
+Main targets:
+
+ _helper-add-submodules                            initially add all submodules given in the helper add_submodules.py list
+ _helper-clean-project-totally                     remove all generated folders
+ _helper-generate-ghdl-wishbone-ant-build-xml      generate ant build file for ghdl wishbone case
+ _helper-generate-modelsim-wishbone-ant-build-xml  generate ant build file for modelsim wishbone case
+ _helper-generate-proposal-for-setup-py            generate a proposal for setup.py
+ _helper-plausibility_check_of_setup_py            check plausibility of setup.py
+ _helper-remove-ghdl                               remove ghdl
+ _helper-remove-modelsim                           remove modelsim
+ _helper-remove-submodules                         remove all submodules given in the helper remove_submodules.py list
+ ghdl-wishbone-all                                 all from scratch until interactive simulation
+ ghdl-wishbone-clean                               delete work folder
+ ghdl-wishbone-compile                             compile all
+ ghdl-wishbone-elaborate                           elaborate
+ ghdl-wishbone-prepare                             make work folder
+ ghdl-wishbone-simulate                            run simulation
+ ghdl-wishbone-simulate-gui                        simulate and write trace.vcd
+ hxs-all                                           compile all
+ hxs-clean                                         Delete all previously generated result files
+ hxs-docbook2html                                  Generate a HTML5 file
+ hxs-docbook2pdf                                   Generate a PDF file
+ hxs-hxs2c                                         Build c files
+ hxs-hxs2python                                    Build python files
+ hxs-hxs2rst                                       Build rst text description
+ hxs-hxs2simstm                                    Build simstm files
+ hxs-hxs2vhdl                                      Build vhdl files
+ hxs-rst2docbook                                   Build docbook description from rst with Sphinx
+ hxs-rst2html-sphinx                               Build html description from rst with Sphinx
+ modelsim-wishbone-all                             all from scratch until interactive simulation
+ modelsim-wishbone-all-gui                         all from scratch until interactive simulation
+ modelsim-wishbone-clean                           delete work folder
+ modelsim-wishbone-compile                         compile all
+ modelsim-wishbone-prepare                         make work folder
+ modelsim-wishbone-simulate                        simulate
+ modelsim-wishbone-simulate-gui                    simulate start gui</pre><p>To run the simulation with GHDL its version 4.0.0 must be present.</p><p>If not jump to <a class="link" href="#install-ghdl-windows" title="Install GHDL Windows">Install GHDL Windows</a> section, if not callable as &#8216;ghdl&#8217; in path, usually wit Windows, jump to <a class="link" href="#adapt-ant-build" title="Adapt ANT build">Adapt ANT build</a>.</p><p>Then simulation can be run, assuming the cloned repository is located in &#8216;git/interrupt-collector&#8217;:</p><pre class="programlisting">cd git/interrupt-collector
+ant ghdl-wishbone-all</pre><p>This should result in:</p><pre class="programlisting">[exec] Core0: Main test started
+[exec] Core1: Cross notify interrupt happened
+[exec] Core1: test started
+[exec] Core0: Cross notify interrupt happened
+[exec] Core1 currently: Interrupts in total: 32, Source0: 12, Source1: 6, Source2: 6, Source3: 8
+[exec] Core0 currently: Interrupts in total: 32, Source0: 13, Source1: 11, Source2: 6, Source3: 2
+[exec] Core1 currently: Interrupts in total: 64, Source0: 22, Source1: 14, Source2: 12, Source3: 16
+[exec] Core0 currently: Interrupts in total: 64, Source0: 28, Source1: 21, Source2: 12, Source3: 3
+[exec] Core1 currently: Interrupts in total: 96, Source0: 34, Source1: 19, Source2: 20, Source3: 23
+[exec] Core0 currently: Interrupts in total: 96, Source0: 43, Source1: 30, Source2: 18, Source3: 5
+[exec] Core1 currently: Interrupts in total: 128, Source0: 46, Source1: 25, Source2: 25, Source3: 32
+[exec] Core0 currently: Interrupts in total: 128, Source0: 56, Source1: 41, Source2: 24, Source3: 7
+[exec] Core1 currently: Interrupts in total: 160, Source0: 56, Source1: 32, Source2: 32, Source3: 40
+[exec] Core0 currently: Interrupts in total: 160, Source0: 69, Source1: 52, Source2: 30, Source3: 9
+[exec] Core1 currently: Interrupts in total: 192, Source0: 68, Source1: 38, Source2: 38, Source3: 48
+[exec] Core0 currently: Interrupts in total: 192, Source0: 84, Source1: 62, Source2: 36, Source3: 10
+[exec] Core1 currently: Interrupts in total: 224, Source0: 78, Source1: 46, Source2: 44, Source3: 56
+[exec] Core0 currently: Interrupts in total: 224, Source0: 98, Source1: 72, Source2: 42, Source3: 12
+[exec] Core1 currently: Interrupts in total: 256, Source0: 90, Source1: 51, Source2: 52, Source3: 63
+[exec] Core0 currently: Interrupts in total: 256, Source0: 110, Source1: 84, Source2: 48, Source3: 14
+[exec] Core1 currently: Interrupts in total: 288, Source0: 102, Source1: 57, Source2: 57, Source3: 72
+[exec] Core0 currently: Interrupts in total: 288, Source0: 125, Source1: 93, Source2: 54, Source3: 16
+[exec] Core1 currently: Interrupts in total: 320, Source0: 112, Source1: 64, Source2: 64, Source3: 80
+[exec] Core0 currently: Interrupts in total: 320, Source0: 139, Source1: 103, Source2: 61, Source3: 17
+[exec] Core1 currently: Interrupts in total: 352, Source0: 124, Source1: 70, Source2: 70, Source3: 88
+[exec] Core0 currently: Interrupts in total: 352, Source0: 153, Source1: 113, Source2: 67, Source3: 19
+[exec] Core1 currently: Interrupts in total: 384, Source0: 134, Source1: 78, Source2: 76, Source3: 96
+[exec] Core0 currently: Interrupts in total: 384, Source0: 166, Source1: 125, Source2: 72, Source3: 21
+[exec] Core1 currently: Interrupts in total: 416, Source0: 146, Source1: 83, Source2: 84, Source3: 103
+[exec] Core0 currently: Interrupts in total: 416, Source0: 180, Source1: 135, Source2: 79, Source3: 22
+[exec] Core1 currently: Interrupts in total: 448, Source0: 158, Source1: 89, Source2: 89, Source3: 112
+[exec] Core1 currently: Interrupts in total: 480, Source0: 168, Source1: 96, Source2: 96, Source3: 120
+[exec] Core0 currently: Interrupts in total: 448, Source0: 195, Source1: 144, Source2: 85, Source3: 24
+[exec] Core1 currently: Interrupts in total: 512, Source0: 180, Source1: 102, Source2: 102, Source3: 128
+[exec] Core0 currently: Interrupts in total: 480, Source0: 207, Source1: 156, Source2: 91, Source3: 26
+[exec] Core1 currently: Interrupts in total: 544, Source0: 190, Source1: 110, Source2: 108, Source3: 136
+[exec] Core0 currently: Interrupts in total: 512, Source0: 221, Source1: 166, Source2: 97, Source3: 28
+[exec] Core1 currently: Interrupts in total: 576, Source0: 202, Source1: 115, Source2: 116, Source3: 143
+[exec] Core0 currently: Interrupts in total: 544, Source0: 236, Source1: 176, Source2: 103, Source3: 29
+[exec] Core1 currently: Interrupts in total: 608, Source0: 214, Source1: 121, Source2: 121, Source3: 152
+[exec] Core0 currently: Interrupts in total: 576, Source0: 251, Source1: 185, Source2: 109, Source3: 31
+[exec] Core1 currently: Interrupts in total: 640, Source0: 224, Source1: 128, Source2: 128, Source3: 160
+[exec] Core0 currently: Interrupts in total: 608, Source0: 264, Source1: 197, Source2: 114, Source3: 33
+[exec] Core1 currently: Interrupts in total: 672, Source0: 236, Source1: 134, Source2: 134, Source3: 168
+[exec] Core0 currently: Interrupts in total: 640, Source0: 276, Source1: 208, Source2: 121, Source3: 35
+[exec] Core1 currently: Interrupts in total: 704, Source0: 246, Source1: 142, Source2: 140, Source3: 176
+[exec] Core0 currently: Interrupts in total: 672, Source0: 291, Source1: 218, Source2: 127, Source3: 36
+[exec] Core1 currently: Interrupts in total: 736, Source0: 258, Source1: 147, Source2: 148, Source3: 183
+[exec] Core0 currently: Interrupts in total: 704, Source0: 305, Source1: 228, Source2: 133, Source3: 38
+[exec] Core1 currently: Interrupts in total: 768, Source0: 270, Source1: 153, Source2: 153, Source3: 192
+[exec] Core0 currently: Interrupts in total: 736, Source0: 318, Source1: 239, Source2: 139, Source3: 40
+[exec] Core1 currently: Interrupts in total: 800, Source0: 280, Source1: 160, Source2: 160, Source3: 200
+[exec] Core0 currently: Interrupts in total: 768, Source0: 332, Source1: 249, Source2: 145, Source3: 42
+[exec] Core1 currently: Interrupts in total: 832, Source0: 292, Source1: 166, Source2: 166, Source3: 208
+[exec] Core0 currently: Interrupts in total: 800, Source0: 341, Source1: 260, Source2: 156, Source3: 43
+[exec] Core1 currently: Interrupts in total: 864, Source0: 299, Source1: 181, Source2: 171, Source3: 213
+[exec] Core0 currently: Interrupts in total: 832, Source0: 341, Source1: 268, Source2: 180, Source3: 43
+[exec] Core1 currently: Interrupts in total: 896, Source0: 299, Source1: 213, Source2: 171, Source3: 213
+[exec] Core0 currently: Interrupts in total: 864, Source0: 341, Source1: 276, Source2: 204, Source3: 43
+[exec]
+[exec] Core1 finally: Interrupts in total: 916, Source0: 299, Source1: 233, Source2: 171, Source3: 213
+[exec] Core1: test finished
+[exec]
+[exec] Core0 finally: Interrupts in total: 876, Source0: 341, Source1: 279, Source2: 213, Source3: 43
+[exec]
+[exec] Total counts finally: ActualSum: 1792, Actual0: 640, Actual1: 512, Actual2: 384, Actual3: 256
+[exec] Total failure count finally: FailureSum: 0, Failures0: 0, Failures1: 0, Failures2: 0, Failures3: 0
+[exec]
+[exec] Core0: Main test finished
+[exec]
+[exec] /home/heinrich/git/interrupt-collector/submodules/simstm/src/tb_simstm.vhd:1308:21:@773696100ps:(assertion note): test finished with no errors!!
+[exec] /home/heinrich/git/interrupt-collector/simulation/ghdl-wishbone/work/tb_top_wishbone:info: simulation stopped by --stop-time @99992130300ps</pre><p>Then simulation can be re-run then, since compilation and elaboration has already been done by the target &#8216;ghdl-wishbone-all&#8217;:</p><pre class="programlisting">cd git/interrupt-collector
+ant ghdl-wishbone-simulate</pre><p>
+      <span class="strong"><strong>This is very useful since the SimStm (.stm) stimuli files can be changed to do a new simulation WITHOUT recompilation.</strong></span>
+    </p><p>Then simulation can be re-run with GUI:</p><pre class="programlisting">cd git/interrupt-collector
+ant ghdl-wishbone-simulate-gui</pre><p>If the script complains about &#8216;gtkwave&#8217; missing, see respective install section to install it.:</p><p>
+      <a class="link" href="#install-ghdl-windows" title="Install GHDL Windows">Install GHDL Windows</a>
+    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="modelsim"></a>ModelSim</h3></div></div></div><p>Assuming ModelSim is already installed, to simulate the design we run:</p><pre class="programlisting">cd git/interrupt-collector
+ant modelsim-wishbone-all</pre><p>Possibly the path to the ModelSim executable may have to be adapted in the ant build.xml file.</p><p>Using ModelSim Starter edition it may take up to 5 minutes until the output of a successful simulation
+will yield like this:</p><p>(ModelSim Starter edition will take already a very long time cause of design size)</p><pre class="programlisting">...
+
+# Core0 currently: Interrupts in total: 0x0380, Source0: 0x013E, Source1: 0xFF, Source2: 0xC0, Source3: 0x83
+# Core1 currently: Interrupts in total: 0x0380, Source0: 0x0142, Source1: 0x0101, Source2: 0xC0, Source3: 0x7D
+#
+# Core1 finally: Interrupts in total: 0x0380, Source0: 0x0142, Source1: 0x0101, Source2: 0xC0, Source3: 0x7D
+# Core1: test finished
+#
+# Core0 finally: Interrupts in total: 0x0380, Source0: 0x013E, Source1: 0xFF, Source2: 0xC0, Source3: 0x83
+#
+# Total counts finally: ActualSum: 0x0700, Actual0: 0x0280, Actual1: 0x0200, Actual2: 0x0180, Actual3: 0x0100
+# Total failure count finally: FailureSum: 0x00, Failures0: 0x00, Failures1: 0x00, Failures2: 0x00, Failures3: 0x00
+#
+# Core0: Main test finished
+#
+# ** Note: test finished with no errors!!
+#    Time: 773216100 ps  Iteration: 0  Instance: /tb_top_wishbone/i0_tb_simstm
+# ** Note: Leaving proc Main and halt at line 195 end_proc file ../../tb/simstm/TestMainWishbone.stm
+#    Time: 1000790207100 ps  Iteration: 0  Instance: /tb_top_wishbone/i1_tb_simstm</pre><p>Then simulation can be re-run, since compilation and elaboration has already been done by the target &#8216;ghdl-wishbone-all&#8217;:</p><pre class="programlisting">cd git/interrupt-collector
+ant modelsim-wishbone-simulate</pre><p>
+      <span class="strong"><strong>This is very useful since the SimStm (.stm) stimuli files can be changed to do a new simulation WITHOUT recompilation.</strong></span>
+    </p><p>Then simulation can be re-run with GUI:</p><pre class="programlisting">cd git/interrupt-collector
+ant ghdl-wishbone-simulate-gui</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="hxs-hardware-software-interface"></a>HxS - Hardware/Software interface</h3></div></div></div><p>The Hardware/Software interface description of the Interrupt-Collector generated by HxS is: <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/src-gen/rst/Eccelerators.Library.IP.InterruptCollectorIfc-composite.rst" target="_top">file</a>.</p><p>The respective HxS sources are found in the <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/hxs" target="_top">hxs</a>  folder of the interrupt-collector clone.</p><p>Further generated artifacts Vhdl, SimStm, C, Python, HTML-Documentation, and PDF-Documentation is placed in <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/src-gen" target="_top">hxs artifacts</a>  folder.</p><p>The same applies for the Interrupt-Generator of the Mock and can be found the respective submodule folder.</p><p>A glance at the HxS source snippet of the Interrupt Request Register:</p><div class="figure"><a name="d5e206"></a><p class="title"><b>Figure&nbsp;1.4.&nbsp;HxS Interrupt Request Register Snippet</b></p><div class="figure-contents"><div class="mediaobject"><img src="src/rst/resources/HxsRegisterSnippet.png" alt="HxS Interrupt Request Register Snippet"></div></div></div><br class="figure-break"><p>Then HxS artifacts can be generated by calling the following ANT target. A precondition for this step is having installed the <a class="link" href="https://eccelerators.com/HxS" target="_top">HxS Tool</a> and Python, see  <a class="link" href="#python" title="Python">Python</a>.
+However since the artifacts are already present, since they are unusually under version control in this repository too, it is not necessary to have the tool to run the simulation.</p><pre class="programlisting">cd git/interrupt-collector
+ant hxs-all</pre><p>The target calls further targets in different levels of the complete workflow:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>hxs-vhdl to generate the vhdl files in the src-gen/vhdl folder referenced by the user code files in the src/vhdl folder.</p></li><li class="listitem"><p>hxs-hxs2c to generate the C-header files in the src-gen/c folder.</p></li><li class="listitem"><p>hxs-hxs2python to generate the Python class files in the src-gen/python folder.</p></li><li class="listitem"><p>hxs-hxs2simstm to generate the SimStm files in the src-gen/simstm folder included by the testbench.</p></li><li class="listitem"><p>hxs-hxs2rst to generate the restructured text files in the src-gen/rst folder referenced by the user code files in the src/rst folder.</p><p>A &#8216;.drawio&#8217; drawing <a class="link" href="https://www.drawio.com" target="_top">draw.io</a> is generated there, waiting to be included in documentation by the user</p><p>or used for presentations.</p><p>A preliminary &#8216;.docx&#8217; Microsoft Word is generated there, if enabled by annotation in the HxS source. The user restructured text entered in</p><p>HxS descriptions is not yet transformed but flows through as it is, it will be presented in following realses of HxS.</p></li></ul></div></li><li class="listitem"><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>hxs-rst2html-sphinx to generate a final Sphinx style HTML document in src-gen/html-sphinx</p><p>The composition of the resulting document is determined by user source code in the folder src/rst.The generated</p><p>files are included there to determine the place where they are located in the final user document with e.g., additional user sections.</p></li><li class="listitem"><p>hxs-rst2docbook to generate the necessary interim input files for further <a class="link" href="https://docbook.org" target="_top">DocBook</a> transformations .</p><p>The composition of the resulting document by further steps is determined by user source code in the folder src/docbook. The generated</p><p>files are included there to determine the place where they are located in the final user document with e.g., additional user sections.</p><p>Resources like the company logo can be adapted there. For further customization hints see <a class="link" href="#docbook-customizations" title="DocBook customizations">DocBook customizations</a> section.</p></li></ul></div></li><li class="listitem"><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>hxs-docbook2pdf to generate the final PDF document im src-gen/docbook-pdf</p></li><li class="listitem"><p>hxs-docbook2html to generate a final HTML document im src-gen/docbook-html</p><p>This html output is an alternative to the Sphinx html, it is much closer to the form of the PDF output.</p></li></ul></div></li></ol></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="docbook-customizations"></a>DocBook customizations</h3></div></div></div><p>The docbook tranformation is done by the submodule <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/submodules/eccelerators-docbook" target="_top">eccelerators-docbook</a>.
+Further customizations can be done by taking this as a base for a own &#8216;user-docbook&#8217; submodule. The adaptions are to be done in the folder
+<a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/submodules/submodules/eccelerators-docbook/customization/resources/docbook-xsl-ns/customization" target="_top">customization</a>
+similar to the eccelerators-book found there in our submodule. Detailed explanations can be found at <a class="link" href="https://docbook.org" target="_top">DocBook</a>.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="further-steps"></a>Further steps</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>Simply use it for your design.</p></li><li class="listitem"><p>Have a template for Eclipse and VsCode to easily enter the Mask, Request and Service bits with common name stem.</p></li><li class="listitem"><p>Adapt <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/tb/hdl/simstm_src_to_customize/tb_signals_pkg.vhd" target="_top">tb_signals_pkg.vhd</a></p><p>to different interrupt priority schemes or nested interrupts.</p><p>Extend SimStm code with respective test cases.</p></li><li class="listitem"><p>Adapt <a class="link" href="https://github.com/eccelerators/interrupt-collector/tree/main/submodules/interrupt-dispatcher/src/vhdl/InterruptDispatcher.vhd" target="_top">InterruptDispatcher.vhd</a></p><p>to respect disabled interrupts in a core or a core already busy with an interrupt in dispatachin scheme.</p><p>Extend SimStm code with respective test cases.</p></li><li class="listitem"><p>Model more cores and user specific behaviour</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="install-ghdl-ubuntu-22-04"></a>Install GHDL Ubuntu 22.04</h3></div></div></div><p>Install it by downloading:</p><p><a class="link" href="https://github.com/ghdl/ghdl/releases/tag/v4.0.0/ghdl-gha-ubuntu-22.04-llvm.tgz" target="_top">https://github.com/ghdl/ghdl/releases/tag/v4.0.0/ghdl-gha-ubuntu-22.04-llvm.tgz</a>.</p><p>Copy the downloaded file to the a local folder e.g, &#8216;ghdl_download&#8217; and unpack it there e.g., with</p><pre class="programlisting">cd ghdl_download
+tar -xzf ghdl-gha-ubuntu-22.04-llvm.tgz -C ./usr</pre><p>It is sufficient to copy the contents of the subfolders of the unpacked user folder to their respective pendants in
+the system root &#8216;/usr&#8217; after their owner has been set to root.</p><pre class="programlisting">sudo chown -R root:root ./usr
+sudo cp -r ./usr/bin/* /usr/bin
+sudo cp -r ./usr/include/* /usr/include
+sudo cp -r ./usr/lib/* /usr/lib</pre><p>Then issuing:</p><pre class="programlisting">ghdl --version</pre><p>should show:</p><pre class="programlisting">GHDL 4.0.0 (3.0.0.r912.gc0e7e1483) [Dunoon edition]
+ Compiled with GNAT Version: 10.5.0
+ llvm 14.0.0 code generator
+Written by Tristan Gingold.
+
+Copyright (C) 2003 - 2024 Tristan Gingold.
+GHDL is free software, covered by the GNU General Public License.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</pre><p>It may complain about missing libraries, then install them with:</p><pre class="programlisting">sudo apt update
+sudo apt install build-essential
+sudo apt install llvm-14
+sudo apt install gnat</pre><p>Install &#8216;gtkwave&#8217; to use the GUI variant for simulation:</p><pre class="programlisting">sudo apt update
+sudo apt install gtkwave</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="install-ghdl-windows"></a>Install GHDL Windows</h3></div></div></div><p>There are many options beneath the following, we describe the MSYS way.</p><p>MSYS2 is required, install it by downloading:</p><p>
+      <a class="link" href="https://github.com/msys2/msys2-installer/releases/download/2024-01-13/msys2-x86_64-20240113.exe" target="_top">MSYS2</a>
+    </p><p>Add <code class="code">C:\msys64\ucrt64\bin</code> to your environment path variable.</p><p>Download GHDL:</p><p>
+      <a class="link" href="https://github.com/ghdl/ghdl/releases/download/v4.0.0/mingw-w64-ucrt-x86_64-ghdl-llvm-ci-1-any.pkg.tar.zst" target="_top">GHDL</a>
+    </p><p>Execute in the &#8216;MSYS2 MSYS&#8217; console:</p><pre class="programlisting">cd /c/Users/&lt;your-user&gt;/Downloads
+pacman -U mingw-w64-ucrt-x86_64-ghdl-llvm-ci-1-any.pkg.tar.zst</pre><p>Then issuing:</p><pre class="programlisting">ghdl --version</pre><p>should show:</p><pre class="programlisting">GHDL 4.0.0 (3.0.0.r912.gc0e7e1483) [Dunoon edition]
+ Compiled with GNAT Version: 10.5.0
+ llvm 14.0.0 code generator
+Written by Tristan Gingold.
+
+Copyright (C) 2003 - 2024 Tristan Gingold.
+GHDL is free software, covered by the GNU General Public License.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</pre><p>Install &#8216;gtkwave&#8217; to use the GUI variant for simulation in the &#8216;MSYS2 MSYS&#8217; console:</p><pre class="programlisting">pacman -S mingw-w64-x86_64-gtkwave</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="python"></a>Python</h3></div></div></div><p>Python must be present to run the helper- and hxs- generator targets of the ANT build file.
+To get all necessary dependencies you can run:</p><pre class="programlisting">cd git/interrupt-collector
+pip install -r requirements.txt</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="adapt-ant-build"></a>Adapt ANT build</h3></div></div></div><p>If it is present its path can be adapted in the top &#8216;build.xml&#8217; file in the repository root once for all builds and child builds.
+Especially the pathes to the python , ghdl and modelsim executables usually have to be adapted for windows.</p><pre class="programlisting">``&lt;!-- properties for local purposes, should be overriden by ci ant call e.g,        ``
+``     with -Dpython-executable argument for ci purposes                             ``
+``                                                                                   ``
+``defaults :                                                                         ``
+``                                                                                   ``
+``&lt;property name="ghdl-executable" value="ghdl"/&gt;                                    ``
+``&lt;property name="gtkwave-executable" value="gtkwave"/&gt;                              ``
+``                                                                                   ``
+``&lt;property name="vlib-executable" value="vlib"/&gt;                                    ``
+``&lt;property name="vmap-executable" value="vmap"/&gt;                                    ``
+``&lt;property name="vcom-executable" value="vcom"/&gt;                                    ``
+``&lt;property name="vsim-executable" value="vsim"/&gt;                                        ``
+``                                                                                   ``
+``override respectively by uncommenting e.g, for python the following line:          ``
+``--&gt;                                                                                ``
+``&lt;!-- &lt;property name="python-executable"                                            ``
+``      value="C:Users\user\AppData\Local\Programs\Python\Python38\python.exe"/&gt; --&gt;  ``</pre></div></div>
+<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="Eccelerators.Library.IP.InterruptCollectorIfc-composite"></a>Interrupt Collector Interface (InterruptCollectorIfc)</h2></div></div></div><p>Interface containing a basic Interrupt Collector block.</p><div class="table"><a name="d5e326"></a><p class="title"><b>Table&nbsp;1.1.&nbsp;Blocks of Interrupt Collector Interface</b></p><div class="table-contents"><table summary="Blocks of Interrupt Collector Interface" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="73" class="col2"><col width="567" class="col3"></colgroup><tbody><tr><td colspan="3">
+            <p>Blocks of Interrupt Collector Interface</p>
+          </td></tr><tr><td>
+            <p>Block Address</p>
+          </td><td>
+            <p>ID</p>
+          </td><td>
+            <p>Block Name</p>
+          </td></tr><tr><td>
+            <p>
+              <code class="code">0x00</code>
+            </p>
+          </td><td><a name="acbbf44f56a2"></a>
+            <p>InterruptCollectorBlk</p>
+          </td><td>
+            <p>
+              <a class="link" href="#ad6dcef073ec">Interrupt Collector Block</a>
+            </p>
+          </td></tr></tbody></table></div></div><br class="table-break"><p></p><div class="table"><a name="d5e353"></a><p class="title"><b>Table&nbsp;1.2.&nbsp;Resets of Interrupt Collector Interface</b></p><div class="table-contents"><table summary="Resets of Interrupt Collector Interface" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="640" class="col2"></colgroup><tbody><tr><td colspan="2">
+            <p>Resets of Registers of Interrupt Collector Interface</p>
+          </td></tr><tr><td>
+            <p>ID</p>
+          </td><td>
+            <p>Reset Name</p>
+          </td></tr><tr><td>
+            <p>Async</p>
+          </td><td><a name="a6ed5018216f"></a>
+            <p>BusReset: Asynchronous Bus Reset</p>
+          </td></tr></tbody></table></div></div><br class="table-break"><p></p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="interrupt-collector-block-interruptcollectorblk"></a>Interrupt Collector Block (InterruptCollectorBlk)</h3></div></div></div><p>This block defines a basic interrupt collector for <span class="strong"><strong>level triggered</strong></span> interrupt sources.
+Usually edge triggered sources e.g., timer pulses can be converted to level triggered
+ones by catching them in the user logic.</p><p>Constraints:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Allow interrupt processing by multiple CPUs without need for spinlocks.</p></li><li class="listitem"><p>Enable forwarding an interrupt to the CPU(s) by a mask for each source.</p></li><li class="listitem"><p>Provide control pulses to notify the user logic when a interrupt service for an
+interrupt request has been started and has been ended.</p></li><li class="listitem"><p>Use the control pulses to reset the interrupt request fo a source or do it by
+a write or read access directly to the user logic e.g. reading the receive data
+register of an UART.</p></li></ol></div><p>Interrupt Collector details:</p><div class="figure"><a name="d5e388"></a><p class="title"><b>Figure&nbsp;1.5.&nbsp;Interrupt Collector details</b></p><div class="figure-contents"><div class="mediaobject"><img src="hxs/resources/InterruptCollectorOverview.png" width="270" alt="Interrupt Collector details"></div></div></div><br class="figure-break"><div class="table"><a name="d5e393"></a><p class="title"><b>Table&nbsp;1.3.&nbsp;Registers or Delegates of Interrupt Collector Block</b></p><div class="table-contents"><table summary="Registers or Delegates of Interrupt Collector Block" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="66" class="col2"><col width="574" class="col3"></colgroup><tbody><tr><td colspan="3">
+              <p>Registers or Delegates of Interrupt Collector Block</p>
+            </td></tr><tr><td colspan="2">
+              <p>
+                <code class="code">0x00</code>
+              </p>
+              <p>
+                <code class="code">..</code>
+              </p>
+              <p>
+                <code class="code">0x0b</code>
+              </p>
+            </td><td><a name="ad6dcef073ec"></a>
+              <p>
+                <a class="link" href="#acbbf44f56a2">Interrupt Collector Block</a>
+              </p>
+            </td></tr><tr><td>
+              <p>Address</p>
+            </td><td>
+              <p>ID</p>
+            </td><td>
+              <p>Name</p>
+            </td></tr><tr><td>
+              <p>
+                <code class="code">0x00</code>
+              </p>
+            </td><td><a name="ab85dd1aed3e"></a>
+              <p>InterruptMaskReg</p>
+            </td><td>
+              <p>
+                <a class="link" href="#a979d295fb35">Interrupt Mask Register</a>
+              </p>
+            </td></tr><tr><td>
+              <p>
+                <code class="code">0x04</code>
+              </p>
+            </td><td><a name="a009d9b0fe97"></a>
+              <p>InterruptRequestReg</p>
+            </td><td>
+              <p>
+                <a class="link" href="#a9fa5fc587a1">Interrupt Request Register</a>
+              </p>
+            </td></tr><tr><td>
+              <p>
+                <code class="code">0x08</code>
+              </p>
+            </td><td><a name="a0784af55386"></a>
+              <p>InterruptServiceReg</p>
+            </td><td>
+              <p>
+                <a class="link" href="#a16a6daf6e92">Interrupt Service Register</a>
+              </p>
+            </td></tr></tbody></table></div></div><br class="table-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="interrupt-mask-register-interruptmaskreg"></a>Interrupt Mask Register (InterruptMaskReg)</h4></div></div></div><div class="table"><a name="d5e450"></a><p class="title"><b>Table&nbsp;1.4.&nbsp;Bits of Interrupt Mask Register</b></p><div class="table-contents"><table summary="Bits of Interrupt Mask Register" border="1" width="100%"><colgroup><col width="21" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="591" class="col4"></colgroup><tbody><tr><td colspan="4">
+                <p>Bits of Interrupt Mask Register</p>
+              </td></tr><tr><td colspan="3">
+                <p>
+                  <code class="code">0x00</code>
+                </p>
+              </td><td><a name="a979d295fb35"></a>
+                <p>
+                  <a class="link" href="#ab85dd1aed3e">Interrupt Mask Register (InterruptMaskReg)</a>
+                </p>
+              </td></tr><tr><td>
+                <p>Bits</p>
+              </td><td>
+                <p>ID</p>
+              </td><td>
+                <p>Type</p>
+              </td><td>
+                <p>Description</p>
+              </td></tr><tr><td>
+                <p>03</p>
+              </td><td>
+                <p>Mask3</p>
+              </td><td><a name="ad472cc988c6"></a>
+                <p>RW</p>
+              </td><td>
+                <div class="table"><a name="d5e485"></a><p class="title"><b>Table&nbsp;1.5.&nbsp;Values of Mask3</b></p><div class="table-contents"><table summary="Values of Mask3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="aca553bbc6bb"></a>
+                          <p>InterruptDisabled</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Interrupt is not forwarded to CPU(s).</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="ac167b2e5b41"></a>
+                          <p>InterruptEnabled</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Interrupt is forwarded to CPU(s).</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e523"></a><p class="title"><b>Table&nbsp;1.6.&nbsp;Resets of Mask3</b></p><div class="table-contents"><table summary="Resets of Mask3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a2acd9f746ab"></a>
+                          <p>BusReset</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Default Bus Reset</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>02</p>
+              </td><td>
+                <p>Mask2</p>
+              </td><td><a name="ac64c54d42e0"></a>
+                <p>RW</p>
+              </td><td>
+                <div class="table"><a name="d5e549"></a><p class="title"><b>Table&nbsp;1.7.&nbsp;Values of Mask2</b></p><div class="table-contents"><table summary="Values of Mask2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a783b5e3a296"></a>
+                          <p>InterruptDisabled</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Interrupt is not forwarded to CPU(s).</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a7909bafb92a"></a>
+                          <p>InterruptEnabled</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Interrupt is forwarded to CPU(s).</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e587"></a><p class="title"><b>Table&nbsp;1.8.&nbsp;Resets of Mask2</b></p><div class="table-contents"><table summary="Resets of Mask2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="ae443d10c030"></a>
+                          <p>BusReset</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Default Bus Reset</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>01</p>
+              </td><td>
+                <p>Mask1</p>
+              </td><td><a name="aad07d2177a5"></a>
+                <p>RW</p>
+              </td><td>
+                <div class="table"><a name="d5e613"></a><p class="title"><b>Table&nbsp;1.9.&nbsp;Values of Mask1</b></p><div class="table-contents"><table summary="Values of Mask1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a41171c59145"></a>
+                          <p>InterruptDisabled</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Interrupt is not forwarded to CPU(s).</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a2835bf8080e"></a>
+                          <p>InterruptEnabled</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Interrupt is forwarded to CPU(s).</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e651"></a><p class="title"><b>Table&nbsp;1.10.&nbsp;Resets of Mask1</b></p><div class="table-contents"><table summary="Resets of Mask1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="ac460c914526"></a>
+                          <p>BusReset</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Default Bus Reset</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>00</p>
+              </td><td>
+                <p>Mask0</p>
+              </td><td><a name="a9844edf1b58"></a>
+                <p>RW</p>
+              </td><td>
+                <div class="table"><a name="d5e677"></a><p class="title"><b>Table&nbsp;1.11.&nbsp;Values of Mask0</b></p><div class="table-contents"><table summary="Values of Mask0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a3a7b3ad8cf1"></a>
+                          <p>InterruptDisabled</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Interrupt is not forwarded to CPU(s).</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="ab6de1ecc52a"></a>
+                          <p>InterruptEnabled</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Interrupt is forwarded to CPU(s).</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e715"></a><p class="title"><b>Table&nbsp;1.12.&nbsp;Resets of Mask0</b></p><div class="table-contents"><table summary="Resets of Mask0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="ab49f1675ea9"></a>
+                          <p>BusReset</p>
+                        </td><td>
+                          <p>RW</p>
+                        </td><td>
+                          <p>Default Bus Reset</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="interrupt-request-register-interruptrequestreg"></a>Interrupt Request Register (InterruptRequestReg)</h4></div></div></div><div class="table"><a name="d5e735"></a><p class="title"><b>Table&nbsp;1.13.&nbsp;Bits of Interrupt Request Register</b></p><div class="table-contents"><table summary="Bits of Interrupt Request Register" border="1" width="100%"><colgroup><col width="21" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="591" class="col4"></colgroup><tbody><tr><td colspan="4">
+                <p>Bits of Interrupt Request Register</p>
+              </td></tr><tr><td colspan="3">
+                <p>
+                  <code class="code">0x04</code>
+                </p>
+              </td><td><a name="a9fa5fc587a1"></a>
+                <p>
+                  <a class="link" href="#a009d9b0fe97">Interrupt Request Register (InterruptRequestReg)</a>
+                </p>
+              </td></tr><tr><td>
+                <p>Bits</p>
+              </td><td>
+                <p>ID</p>
+              </td><td>
+                <p>Type</p>
+              </td><td>
+                <p>Description</p>
+              </td></tr><tr><td>
+                <p>03</p>
+              </td><td>
+                <p>Request3</p>
+              </td><td><a name="af91926a5691"></a>
+                <p>R/W</p>
+              </td><td>
+                <div class="table"><a name="d5e770"></a><p class="title"><b>Table&nbsp;1.14.&nbsp;Values of Request3</b></p><div class="table-contents"><table summary="Values of Request3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a38f887ee786"></a>
+                          <p>NotPending</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>An Interrupt is not pending.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a5f1cc719d3c"></a>
+                          <p>Pending</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>An Interrupt is pending.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a62a6ab1a6bb"></a>
+                          <p>NotConfirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Writing this value has no effect.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a92d35ff8c78"></a>
+                          <p>Confirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Notifies HW that a pending interrupt has been recognized by SW.</p>
+                          <p>SW confirms that a respective interrupt service routine has been entered.
+The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#8217; again.
+Solely the write action is sufficient.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e829"></a><p class="title"><b>Table&nbsp;1.15.&nbsp;Resets of Request3</b></p><div class="table-contents"><table summary="Resets of Request3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Init Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Impact</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0b0</code>
+                          </p>
+                        </td><td><a name="af16d19e0e41"></a>
+                          <p>Async</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>BusReset: Asynchronous Bus Reset</p>
+                          <p>The bit Request is set to NotPending after reset in the usually attached InterruptCollector HW block.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>02</p>
+              </td><td>
+                <p>Request2</p>
+              </td><td><a name="ae9251ef3f3e"></a>
+                <p>R/W</p>
+              </td><td>
+                <div class="table"><a name="d5e865"></a><p class="title"><b>Table&nbsp;1.16.&nbsp;Values of Request2</b></p><div class="table-contents"><table summary="Values of Request2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="ab50f8225529"></a>
+                          <p>NotPending</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>An Interrupt is not pending.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="ab7a8cbdb45a"></a>
+                          <p>Pending</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>An Interrupt is pending.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a9d9cd6edb07"></a>
+                          <p>NotConfirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Writing this value has no effect.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a34d83ecbdf6"></a>
+                          <p>Confirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Notifies HW that a pending interrupt has been recognized by SW.</p>
+                          <p>SW confirms that a respective interrupt service routine has been entered.
+The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#8217; again.
+Solely the write action is sufficient.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e924"></a><p class="title"><b>Table&nbsp;1.17.&nbsp;Resets of Request2</b></p><div class="table-contents"><table summary="Resets of Request2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Init Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Impact</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0b0</code>
+                          </p>
+                        </td><td><a name="ab295718a6c2"></a>
+                          <p>Async</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>BusReset: Asynchronous Bus Reset</p>
+                          <p>The bit Request is set to NotPending after reset in the usually attached InterruptCollector HW block.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>01</p>
+              </td><td>
+                <p>Request1</p>
+              </td><td><a name="aa8de9a6172b"></a>
+                <p>R/W</p>
+              </td><td>
+                <div class="table"><a name="d5e960"></a><p class="title"><b>Table&nbsp;1.18.&nbsp;Values of Request1</b></p><div class="table-contents"><table summary="Values of Request1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="acb5705395db"></a>
+                          <p>NotPending</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>An Interrupt is not pending.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a36ff2dc7627"></a>
+                          <p>Pending</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>An Interrupt is pending.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a2c587c7137b"></a>
+                          <p>NotConfirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Writing this value has no effect.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a394c11e1fdc"></a>
+                          <p>Confirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Notifies HW that a pending interrupt has been recognized by SW.</p>
+                          <p>SW confirms that a respective interrupt service routine has been entered.
+The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#8217; again.
+Solely the write action is sufficient.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e1019"></a><p class="title"><b>Table&nbsp;1.19.&nbsp;Resets of Request1</b></p><div class="table-contents"><table summary="Resets of Request1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Init Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Impact</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0b0</code>
+                          </p>
+                        </td><td><a name="a4ae2195ff08"></a>
+                          <p>Async</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>BusReset: Asynchronous Bus Reset</p>
+                          <p>The bit Request is set to NotPending after reset in the usually attached InterruptCollector HW block.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>00</p>
+              </td><td>
+                <p>Request0</p>
+              </td><td><a name="a7cd2a795bc8"></a>
+                <p>R/W</p>
+              </td><td>
+                <div class="table"><a name="d5e1055"></a><p class="title"><b>Table&nbsp;1.20.&nbsp;Values of Request0</b></p><div class="table-contents"><table summary="Values of Request0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a661d4ec9be1"></a>
+                          <p>NotPending</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>An Interrupt is not pending.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="abd7c4c75779"></a>
+                          <p>Pending</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>An Interrupt is pending.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="ac81036fdc72"></a>
+                          <p>NotConfirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Writing this value has no effect.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="ac9217bd64f2"></a>
+                          <p>Confirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Notifies HW that a pending interrupt has been recognized by SW.</p>
+                          <p>SW confirms that a respective interrupt service routine has been entered.
+The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#8217; again.
+Solely the write action is sufficient.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e1114"></a><p class="title"><b>Table&nbsp;1.21.&nbsp;Resets of Request0</b></p><div class="table-contents"><table summary="Resets of Request0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Init Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Impact</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0b0</code>
+                          </p>
+                        </td><td><a name="aceec35076f4"></a>
+                          <p>Async</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>BusReset: Asynchronous Bus Reset</p>
+                          <p>The bit Request is set to NotPending after reset in the usually attached InterruptCollector HW block.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="interrupt-service-register-interruptservicereg"></a>Interrupt Service Register (InterruptServiceReg)</h4></div></div></div><div class="table"><a name="d5e1144"></a><p class="title"><b>Table&nbsp;1.22.&nbsp;Bits of Interrupt Service Register</b></p><div class="table-contents"><table summary="Bits of Interrupt Service Register" border="1" width="100%"><colgroup><col width="21" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="591" class="col4"></colgroup><tbody><tr><td colspan="4">
+                <p>Bits of Interrupt Service Register</p>
+              </td></tr><tr><td colspan="3">
+                <p>
+                  <code class="code">0x08</code>
+                </p>
+              </td><td><a name="a16a6daf6e92"></a>
+                <p>
+                  <a class="link" href="#a0784af55386">Interrupt Service Register (InterruptServiceReg)</a>
+                </p>
+              </td></tr><tr><td>
+                <p>Bits</p>
+              </td><td>
+                <p>ID</p>
+              </td><td>
+                <p>Type</p>
+              </td><td>
+                <p>Description</p>
+              </td></tr><tr><td>
+                <p>03</p>
+              </td><td>
+                <p>Service3</p>
+              </td><td><a name="af1320e9bb8a"></a>
+                <p>R/W</p>
+              </td><td>
+                <div class="table"><a name="d5e1179"></a><p class="title"><b>Table&nbsp;1.23.&nbsp;Values of Service3</b></p><div class="table-contents"><table summary="Values of Service3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="aca287a4ded0"></a>
+                          <p>Ended</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>The Interrupt service has ended.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="ad6cb5ce6e35"></a>
+                          <p>InProcess</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>The Interrupt is in service.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="aecba6972c5d"></a>
+                          <p>NotConfirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Writing this value has no effect.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a9c57e70115a"></a>
+                          <p>Confirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Notifies HW that a pending interrupt has been recognized by SW.</p>
+                          <p>SW confirms that a respective interrupt service routine has been processed completely.
+The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#8217; again.
+Solely the write action is sufficient.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e1238"></a><p class="title"><b>Table&nbsp;1.24.&nbsp;Resets of Service3</b></p><div class="table-contents"><table summary="Resets of Service3" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Init Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Impact</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0b0</code>
+                          </p>
+                        </td><td><a name="af5e2f276b73"></a>
+                          <p>Async</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>BusReset: Asynchronous Bus Reset</p>
+                          <p>The bit Service is set to Ended after reset in the usually attached InterruptCollector HW block.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>02</p>
+              </td><td>
+                <p>Service2</p>
+              </td><td><a name="a7033788576a"></a>
+                <p>R/W</p>
+              </td><td>
+                <div class="table"><a name="d5e1274"></a><p class="title"><b>Table&nbsp;1.25.&nbsp;Values of Service2</b></p><div class="table-contents"><table summary="Values of Service2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="acdeb40df602"></a>
+                          <p>Ended</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>The Interrupt service has ended.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="ad36fd407624"></a>
+                          <p>InProcess</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>The Interrupt is in service.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a2e95db6e4ad"></a>
+                          <p>NotConfirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Writing this value has no effect.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a5bde0dbad9b"></a>
+                          <p>Confirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Notifies HW that a pending interrupt has been recognized by SW.</p>
+                          <p>SW confirms that a respective interrupt service routine has been processed completely.
+The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#8217; again.
+Solely the write action is sufficient.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e1333"></a><p class="title"><b>Table&nbsp;1.26.&nbsp;Resets of Service2</b></p><div class="table-contents"><table summary="Resets of Service2" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Init Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Impact</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0b0</code>
+                          </p>
+                        </td><td><a name="a23f703eca70"></a>
+                          <p>Async</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>BusReset: Asynchronous Bus Reset</p>
+                          <p>The bit Service is set to Ended after reset in the usually attached InterruptCollector HW block.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>01</p>
+              </td><td>
+                <p>Service1</p>
+              </td><td><a name="a2530402f1ba"></a>
+                <p>R/W</p>
+              </td><td>
+                <div class="table"><a name="d5e1369"></a><p class="title"><b>Table&nbsp;1.27.&nbsp;Values of Service1</b></p><div class="table-contents"><table summary="Values of Service1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="ab619737c353"></a>
+                          <p>Ended</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>The Interrupt service has ended.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a7a7f1eac5bd"></a>
+                          <p>InProcess</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>The Interrupt is in service.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a03cba95450f"></a>
+                          <p>NotConfirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Writing this value has no effect.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="aced747f42f9"></a>
+                          <p>Confirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Notifies HW that a pending interrupt has been recognized by SW.</p>
+                          <p>SW confirms that a respective interrupt service routine has been processed completely.
+The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#8217; again.
+Solely the write action is sufficient.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e1428"></a><p class="title"><b>Table&nbsp;1.28.&nbsp;Resets of Service1</b></p><div class="table-contents"><table summary="Resets of Service1" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Init Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Impact</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0b0</code>
+                          </p>
+                        </td><td><a name="a73295d61641"></a>
+                          <p>Async</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>BusReset: Asynchronous Bus Reset</p>
+                          <p>The bit Service is set to Ended after reset in the usually attached InterruptCollector HW block.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr><tr><td>
+                <p>00</p>
+              </td><td>
+                <p>Service0</p>
+              </td><td><a name="a612b79783c6"></a>
+                <p>R/W</p>
+              </td><td>
+                <div class="table"><a name="d5e1464"></a><p class="title"><b>Table&nbsp;1.29.&nbsp;Values of Service0</b></p><div class="table-contents"><table summary="Values of Service0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Type</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="aabc77a017f6"></a>
+                          <p>Ended</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>The Interrupt service has ended.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="ad0dc3cf0e1f"></a>
+                          <p>InProcess</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>The Interrupt is in service.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x0</code>
+                          </p>
+                        </td><td><a name="a4c7500b9cea"></a>
+                          <p>NotConfirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Writing this value has no effect.</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0x1</code>
+                          </p>
+                        </td><td><a name="a6c65fb781ce"></a>
+                          <p>Confirmed</p>
+                        </td><td>
+                          <p>W</p>
+                        </td><td>
+                          <p>Notifies HW that a pending interrupt has been recognized by SW.</p>
+                          <p>SW confirms that a respective interrupt service routine has been processed completely.
+The value isn&#8217;t stored, thus there is no need to reset it to &#8216;0&#8217; again.
+Solely the write action is sufficient.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+                <p></p>
+                <div class="table"><a name="d5e1523"></a><p class="title"><b>Table&nbsp;1.30.&nbsp;Resets of Service0</b></p><div class="table-contents"><table summary="Resets of Service0" border="1" width="100%"><colgroup><col width="59" class="col1"><col width="59" class="col2"><col width="28" class="col3"><col width="423" class="col4"></colgroup><tbody><tr><td>
+                          <p>Init Value</p>
+                        </td><td>
+                          <p>ID</p>
+                        </td><td>
+                          <p>Impact</p>
+                        </td><td>
+                          <p>Description</p>
+                        </td></tr><tr><td>
+                          <p>
+                            <code class="code">0b0</code>
+                          </p>
+                        </td><td><a name="a37fde8c92ff"></a>
+                          <p>Async</p>
+                        </td><td>
+                          <p>R</p>
+                        </td><td>
+                          <p>BusReset: Asynchronous Bus Reset</p>
+                          <p>The bit Service is set to Ended after reset in the usually attached InterruptCollector HW block.</p>
+                        </td></tr></tbody></table></div></div><br class="table-break">
+              </td></tr></tbody></table></div></div><br class="table-break"></div></div></div>
+<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="interrupt-collector-c-header-preview"></a>Interrupt Collector C-Header preview</h2></div></div></div><p>The original file can be found in the generated src-gen/c folder.</p><p>The defines in this file should be used for FW/SW development, thus bits, register. &#8230; can be moved in HxS congruently.</p><pre class="programlisting">/* Copyright (C) 2024 Eccelerators GmbH
+   
+   This code was generated by:
+  
+   HxS Compiler v0.0.0-0000000
+   C Extension for HxS 1.0.24-85d98215
+   
+   Further information at https://eccelerators.com/hxs
+   
+   Changes to this file may cause incorrect behavior and will be lost if the
+   code is regenerated.
+*/	
+	
+#ifndef _InterruptCollectorIfc_H
+#define _InterruptCollectorIfc_H
+
+/* ----------------------------------------------------- */
+/* Addresses, widths, values and masks for direct access */
+/* ----------------------------------------------------- */
+#define InterruptCollectorIfcAddressBusWidth 4
+#define InterruptCollectorIfcDataBusWidth 32
+
+#define InterruptCollectorBlkAddress 0x0
+#define InterruptCollectorBlkSize 0xC
+
+#define InterruptMaskRegAddress (0x0 + InterruptCollectorBlkAddress)
+#define InterruptMaskRegWidth 32
+
+#define Mask3Mask 0x00000008
+#define Mask3Position 3
+#define Mask3Width 1
+#define Mask3_InterruptDisabledMVal 0x00000000
+#define Mask3_InterruptEnabledMVal 0x00000008
+#define Mask3BusResetMRstVal 0x00000000
+
+</pre><pre class="programlisting">#define Mask2Mask 0x00000004
+#define Mask2Position 2
+#define Mask2Width 1
+#define Mask2_InterruptDisabledMVal 0x00000000
+#define Mask2_InterruptEnabledMVal 0x00000004
+#define Mask2BusResetMRstVal 0x00000000
+
+#define Mask1Mask 0x00000002
+#define Mask1Position 1
+#define Mask1Width 1
+#define Mask1_InterruptDisabledMVal 0x00000000
+#define Mask1_InterruptEnabledMVal 0x00000002
+#define Mask1BusResetMRstVal 0x00000000
+
+#define Mask0Mask 0x00000001
+#define Mask0Position 0
+#define Mask0Width 1
+#define Mask0_InterruptDisabledMVal 0x00000000
+#define Mask0_InterruptEnabledMVal 0x00000001
+#define Mask0BusResetMRstVal 0x00000000
+
+#define InterruptRequestRegAddress (0x4 + InterruptCollectorBlkAddress)
+#define InterruptRequestRegWidth 32
+
+#define Request3Mask 0x00000008
+#define Request3Position 3
+#define Request3Width 1
+#define Request3_NotPendingMVal 0x00000000
+#define Request3_PendingMVal 0x00000008
+#define Request3_NotConfirmedMVal 0x00000000
+#define Request3_ConfirmedMVal 0x00000008
+#define Request3_AsyncMRstVal 0x00000000
+
+#define Request2Mask 0x00000004
+#define Request2Position 2
+#define Request2Width 1
+#define Request2_NotPendingMVal 0x00000000
+#define Request2_PendingMVal 0x00000004
+#define Request2_NotConfirmedMVal 0x00000000
+#define Request2_ConfirmedMVal 0x00000004
+</pre><pre class="programlisting">#define Request2_AsyncMRstVal 0x00000000
+
+#define Request1Mask 0x00000002
+#define Request1Position 1
+#define Request1Width 1
+#define Request1_NotPendingMVal 0x00000000
+#define Request1_PendingMVal 0x00000002
+#define Request1_NotConfirmedMVal 0x00000000
+#define Request1_ConfirmedMVal 0x00000002
+#define Request1_AsyncMRstVal 0x00000000
+
+#define Request0Mask 0x00000001
+#define Request0Position 0
+#define Request0Width 1
+#define Request0_NotPendingMVal 0x00000000
+#define Request0_PendingMVal 0x00000001
+#define Request0_NotConfirmedMVal 0x00000000
+#define Request0_ConfirmedMVal 0x00000001
+#define Request0_AsyncMRstVal 0x00000000
+
+#define InterruptServiceRegAddress (0x8 + InterruptCollectorBlkAddress)
+#define InterruptServiceRegWidth 32
+
+#define Service3Mask 0x00000008
+#define Service3Position 3
+#define Service3Width 1
+#define Service3_EndedMVal 0x00000000
+#define Service3_InProcessMVal 0x00000008
+#define Service3_NotConfirmedMVal 0x00000000
+#define Service3_ConfirmedMVal 0x00000008
+#define Service3_AsyncMRstVal 0x00000000
+
+#define Service2Mask 0x00000004
+#define Service2Position 2
+#define Service2Width 1
+#define Service2_EndedMVal 0x00000000
+#define Service2_InProcessMVal 0x00000004
+#define Service2_NotConfirmedMVal 0x00000000
+#define Service2_ConfirmedMVal 0x00000004
+#define Service2_AsyncMRstVal 0x00000000
+</pre><pre class="programlisting">
+#define Service1Mask 0x00000002
+#define Service1Position 1
+#define Service1Width 1
+#define Service1_EndedMVal 0x00000000
+#define Service1_InProcessMVal 0x00000002
+#define Service1_NotConfirmedMVal 0x00000000
+#define Service1_ConfirmedMVal 0x00000002
+#define Service1_AsyncMRstVal 0x00000000
+
+#define Service0Mask 0x00000001
+#define Service0Position 0
+#define Service0Width 1
+#define Service0_EndedMVal 0x00000000
+#define Service0_InProcessMVal 0x00000001
+#define Service0_NotConfirmedMVal 0x00000000
+#define Service0_ConfirmedMVal 0x00000001
+#define Service0_AsyncMRstVal 0x00000000
+
+#endif
+</pre></div>
+<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="InterruptCollectorIfc_python_code_preview"></a>Interrupt Collector Python code preview</h2></div></div></div><p>The original file can be found in the generated src-gen/python folder.</p><p>Together with simstm2py it should be used to run the simstm test on the real target HW.</p><pre class="programlisting"># Copyright (C) 2024 Eccelerators GmbH
+# 
+# This code was generated by:
+#
+# HxS Compiler v0.0.0-0000000
+# Python Extension for HxS 1.0.7-62bb9ef4
+# 
+# Further information at https://eccelerators.com/hxs
+# 
+# Changes to this file may cause incorrect behavior and will be lost if the
+# code is regenerated.
+	
+	
+# -----------------------------------------------------
+# Addresses, widths, values and masks for direct access
+# -----------------------------------------------------
+InterruptCollectorIfcAddressBusWidth = 4
+InterruptCollectorIfcDataBusWidth = 32
+
+class InterruptCollectorBlk:
+    InterruptCollectorBlkAddress = 0x0 
+    InterruptCollectorBlkSize = 0xC 
+
+    @property
+    def InterruptMaskRegAddress(self):
+        return (0x0 + self.InterruptCollectorBlkAddress)
+
+    InterruptMaskRegWidth = 32
+
+    Mask3Mask = 0x00000008
+    Mask3Position = 3
+    Mask3Width = 1
+    Mask3_InterruptDisabledMVal = 0x00000000
+    Mask3_InterruptEnabledMVal = 0x00000008
+    Mask3BusResetMRstVal = 0x00000000
+</pre><pre class="programlisting">
+    Mask2Mask = 0x00000004
+    Mask2Position = 2
+    Mask2Width = 1
+    Mask2_InterruptDisabledMVal = 0x00000000
+    Mask2_InterruptEnabledMVal = 0x00000004
+    Mask2BusResetMRstVal = 0x00000000
+
+    Mask1Mask = 0x00000002
+    Mask1Position = 1
+    Mask1Width = 1
+    Mask1_InterruptDisabledMVal = 0x00000000
+    Mask1_InterruptEnabledMVal = 0x00000002
+    Mask1BusResetMRstVal = 0x00000000
+
+    Mask0Mask = 0x00000001
+    Mask0Position = 0
+    Mask0Width = 1
+    Mask0_InterruptDisabledMVal = 0x00000000
+    Mask0_InterruptEnabledMVal = 0x00000001
+    Mask0BusResetMRstVal = 0x00000000
+
+
+    @property
+    def InterruptRequestRegAddress(self):
+        return (0x4 + self.InterruptCollectorBlkAddress)
+
+    InterruptRequestRegWidth = 32
+
+    Request3Mask = 0x00000008
+    Request3Position = 3
+    Request3Width = 1
+    Request3_NotPendingMVal = 0x00000000
+    Request3_PendingMVal = 0x00000008
+    Request3_NotConfirmedMVal = 0x00000000
+    Request3_ConfirmedMVal = 0x00000008
+    Request3_AsyncMRstVal = 0x00000000
+
+    Request2Mask = 0x00000004
+    Request2Position = 2
+</pre><pre class="programlisting">    Request2Width = 1
+    Request2_NotPendingMVal = 0x00000000
+    Request2_PendingMVal = 0x00000004
+    Request2_NotConfirmedMVal = 0x00000000
+    Request2_ConfirmedMVal = 0x00000004
+    Request2_AsyncMRstVal = 0x00000000
+
+    Request1Mask = 0x00000002
+    Request1Position = 1
+    Request1Width = 1
+    Request1_NotPendingMVal = 0x00000000
+    Request1_PendingMVal = 0x00000002
+    Request1_NotConfirmedMVal = 0x00000000
+    Request1_ConfirmedMVal = 0x00000002
+    Request1_AsyncMRstVal = 0x00000000
+
+    Request0Mask = 0x00000001
+    Request0Position = 0
+    Request0Width = 1
+    Request0_NotPendingMVal = 0x00000000
+    Request0_PendingMVal = 0x00000001
+    Request0_NotConfirmedMVal = 0x00000000
+    Request0_ConfirmedMVal = 0x00000001
+    Request0_AsyncMRstVal = 0x00000000
+
+
+    @property
+    def InterruptServiceRegAddress(self):
+        return (0x8 + self.InterruptCollectorBlkAddress)
+
+    InterruptServiceRegWidth = 32
+
+    Service3Mask = 0x00000008
+    Service3Position = 3
+    Service3Width = 1
+    Service3_EndedMVal = 0x00000000
+    Service3_InProcessMVal = 0x00000008
+    Service3_NotConfirmedMVal = 0x00000000
+    Service3_ConfirmedMVal = 0x00000008
+    Service3_AsyncMRstVal = 0x00000000
+</pre><pre class="programlisting">
+    Service2Mask = 0x00000004
+    Service2Position = 2
+    Service2Width = 1
+    Service2_EndedMVal = 0x00000000
+    Service2_InProcessMVal = 0x00000004
+    Service2_NotConfirmedMVal = 0x00000000
+    Service2_ConfirmedMVal = 0x00000004
+    Service2_AsyncMRstVal = 0x00000000
+
+    Service1Mask = 0x00000002
+    Service1Position = 1
+    Service1Width = 1
+    Service1_EndedMVal = 0x00000000
+    Service1_InProcessMVal = 0x00000002
+    Service1_NotConfirmedMVal = 0x00000000
+    Service1_ConfirmedMVal = 0x00000002
+    Service1_AsyncMRstVal = 0x00000000
+
+    Service0Mask = 0x00000001
+    Service0Position = 0
+    Service0Width = 1
+    Service0_EndedMVal = 0x00000000
+    Service0_InProcessMVal = 0x00000001
+    Service0_NotConfirmedMVal = 0x00000000
+    Service0_ConfirmedMVal = 0x00000001
+    Service0_AsyncMRstVal = 0x00000000
+</pre></div>
+<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="InterruptCollectorIfc_simulation_code_preview"></a>Interrupt Collector Simulation code preview</h2></div></div></div><p>It is complemented by the simstm code in the tb/simstm folder of the repository
+and should be used for HDL testbench development to operate the InterruptCollector.</p><p>The original file can be found in the generated src-gen/simstm folder.</p><p>The entry point for simulation is the testMain.stm file found in the tb/simstm folder..</p><pre class="programlisting">-- Copyright (C) 2024 Eccelerators GmbH
+-- 
+-- This code was generated by:
+--
+-- HxS Compiler v0.0.0-0000000
+-- SimStm Extension for HxS 1.0.12-d6fdbb9b
+-- 
+-- Further information at https://eccelerators.com/hxs
+-- 
+-- Changes to this file may cause incorrect behavior and will be lost if the
+-- code is regenerated.
+    
+    
+-- Eccelerators.Library.IP
+
+const InterruptCollectorIfcAddressBusWidth 4
+const InterruptCollectorIfcDataBusWidth 32
+
+var InterruptCollectorIfcAddress 0
+bus InterruptCollectorIfcBus 0
+
+var InterruptCollectorBlkAddress 0x0
+const InterruptCollectorBlkSize 0xC
+
+var InterruptMaskRegAddress 0x0
+const InterruptMaskRegWidth 32
+
+const Mask3Mask 0x00000008
+const Mask3Position 3
+const Mask3Width 1
+const Mask3_InterruptDisabledMVal 0x00000000
+const Mask3_InterruptEnabledMVal 0x00000008
+const Mask3BusResetMRstVal 0x00000000
+</pre><pre class="programlisting">
+const Mask2Mask 0x00000004
+const Mask2Position 2
+const Mask2Width 1
+const Mask2_InterruptDisabledMVal 0x00000000
+const Mask2_InterruptEnabledMVal 0x00000004
+const Mask2BusResetMRstVal 0x00000000
+
+const Mask1Mask 0x00000002
+const Mask1Position 1
+const Mask1Width 1
+const Mask1_InterruptDisabledMVal 0x00000000
+const Mask1_InterruptEnabledMVal 0x00000002
+const Mask1BusResetMRstVal 0x00000000
+
+const Mask0Mask 0x00000001
+const Mask0Position 0
+const Mask0Width 1
+const Mask0_InterruptDisabledMVal 0x00000000
+const Mask0_InterruptEnabledMVal 0x00000001
+const Mask0BusResetMRstVal 0x00000000
+
+var InterruptRequestRegAddress 0x0
+const InterruptRequestRegWidth 32
+
+const Request3Mask 0x00000008
+const Request3Position 3
+const Request3Width 1
+const Request3_NotPendingMVal 0x00000000
+const Request3_PendingMVal 0x00000008
+const Request3_NotConfirmedMVal 0x00000000
+const Request3_ConfirmedMVal 0x00000008
+const Request3_AsyncMRstVal 0x00000000
+
+const Request2Mask 0x00000004
+const Request2Position 2
+const Request2Width 1
+const Request2_NotPendingMVal 0x00000000
+const Request2_PendingMVal 0x00000004
+const Request2_NotConfirmedMVal 0x00000000
+</pre><pre class="programlisting">const Request2_ConfirmedMVal 0x00000004
+const Request2_AsyncMRstVal 0x00000000
+
+const Request1Mask 0x00000002
+const Request1Position 1
+const Request1Width 1
+const Request1_NotPendingMVal 0x00000000
+const Request1_PendingMVal 0x00000002
+const Request1_NotConfirmedMVal 0x00000000
+const Request1_ConfirmedMVal 0x00000002
+const Request1_AsyncMRstVal 0x00000000
+
+const Request0Mask 0x00000001
+const Request0Position 0
+const Request0Width 1
+const Request0_NotPendingMVal 0x00000000
+const Request0_PendingMVal 0x00000001
+const Request0_NotConfirmedMVal 0x00000000
+const Request0_ConfirmedMVal 0x00000001
+const Request0_AsyncMRstVal 0x00000000
+
+var InterruptServiceRegAddress 0x0
+const InterruptServiceRegWidth 32
+
+const Service3Mask 0x00000008
+const Service3Position 3
+const Service3Width 1
+const Service3_EndedMVal 0x00000000
+const Service3_InProcessMVal 0x00000008
+const Service3_NotConfirmedMVal 0x00000000
+const Service3_ConfirmedMVal 0x00000008
+const Service3_AsyncMRstVal 0x00000000
+
+const Service2Mask 0x00000004
+const Service2Position 2
+const Service2Width 1
+const Service2_EndedMVal 0x00000000
+const Service2_InProcessMVal 0x00000004
+const Service2_NotConfirmedMVal 0x00000000
+const Service2_ConfirmedMVal 0x00000004
+</pre><pre class="programlisting">const Service2_AsyncMRstVal 0x00000000
+
+const Service1Mask 0x00000002
+const Service1Position 1
+const Service1Width 1
+const Service1_EndedMVal 0x00000000
+const Service1_InProcessMVal 0x00000002
+const Service1_NotConfirmedMVal 0x00000000
+const Service1_ConfirmedMVal 0x00000002
+const Service1_AsyncMRstVal 0x00000000
+
+const Service0Mask 0x00000001
+const Service0Position 0
+const Service0Width 1
+const Service0_EndedMVal 0x00000000
+const Service0_InProcessMVal 0x00000001
+const Service0_NotConfirmedMVal 0x00000000
+const Service0_ConfirmedMVal 0x00000001
+const Service0_AsyncMRstVal 0x00000000
+
+
+InterruptCollectorIfcInit:
+proc
+    equ InterruptCollectorBlkAddress 0x0
+    add InterruptCollectorBlkAddress $InterruptCollectorIfcAddress
+    call $InterruptCollectorBlkInit
+end proc
+
+InterruptCollectorBlkInit:
+proc
+    equ InterruptMaskRegAddress 0x0
+    add InterruptMaskRegAddress $InterruptCollectorBlkAddress
+    equ InterruptRequestRegAddress 0x4
+    add InterruptRequestRegAddress $InterruptCollectorBlkAddress
+    equ InterruptServiceRegAddress 0x8
+    add InterruptServiceRegAddress $InterruptCollectorBlkAddress
+end proc
+
+var RvalInterruptCollectorBlk_BusReset 0
+
+</pre><pre class="programlisting">ResetTestInterruptCollectorBlkByBusReset:
+proc
+    bus verify InterruptCollectorIfcBus 32 $InterruptMaskRegAddress RvalInterruptCollectorBlk_BusReset 0 $Mask3Mask
+    bus verify InterruptCollectorIfcBus 32 $InterruptMaskRegAddress RvalInterruptCollectorBlk_BusReset 0 $Mask2Mask
+    bus verify InterruptCollectorIfcBus 32 $InterruptMaskRegAddress RvalInterruptCollectorBlk_BusReset 0 $Mask1Mask
+    bus verify InterruptCollectorIfcBus 32 $InterruptMaskRegAddress RvalInterruptCollectorBlk_BusReset 0 $Mask0Mask
+end proc
+
+
+var RbvlInterruptCollectorBlk 0
+
+ReadBackTestInterruptCollectorBlk:
+proc
+    bus write InterruptCollectorIfcBus 32 $InterruptMaskRegAddress 0x00000000
+    bus verify InterruptCollectorIfcBus 32 $InterruptMaskRegAddress RbvlInterruptCollectorBlk 0x00000000 $Mask3Mask
+    bus write InterruptCollectorIfcBus 32 $InterruptMaskRegAddress 0x00000008
+    bus verify InterruptCollectorIfcBus 32 $InterruptMaskRegAddress RbvlInterruptCollectorBlk 0x00000008 $Mask3Mask
+    bus write InterruptCollectorIfcBus 32 $InterruptMaskRegAddress 0x00000000
+    bus verify InterruptCollectorIfcBus 32 $InterruptMaskRegAddress RbvlInterruptCollectorBlk 0x00000000 $Mask2Mask
+    bus write InterruptCollectorIfcBus 32 $InterruptMaskRegAddress 0x00000004
+    bus verify InterruptCollectorIfcBus 32 $InterruptMaskRegAddress RbvlInterruptCollectorBlk 0x00000004 $Mask2Mask
+    bus write InterruptCollectorIfcBus 32 $InterruptMaskRegAddress 0x00000000
+    bus verify InterruptCollectorIfcBus 32 $InterruptMaskRegAddress RbvlInterruptCollectorBlk 0x00000000 $Mask1Mask
+    bus write InterruptCollectorIfcBus 32 $InterruptMaskRegAddress 0x00000002
+    bus verify InterruptCollectorIfcBus 32 $InterruptMaskRegAddress RbvlInterruptCollectorBlk 0x00000002 $Mask1Mask
+    bus write InterruptCollectorIfcBus 32 $InterruptMaskRegAddress 0x00000000
+    bus verify InterruptCollectorIfcBus 32 $InterruptMaskRegAddress RbvlInterruptCollectorBlk 0x00000000 $Mask0Mask
+    bus write InterruptCollectorIfcBus 32 $InterruptMaskRegAddress 0x00000001
+    bus verify InterruptCollectorIfcBus 32 $InterruptMaskRegAddress RbvlInterruptCollectorBlk 0x00000001 $Mask0Mask
+end proc
+</pre></div>
+</div>
+</div></body></html>
