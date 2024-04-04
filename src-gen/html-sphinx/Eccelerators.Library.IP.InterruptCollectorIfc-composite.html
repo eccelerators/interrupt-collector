@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Interrupt Collector Interface (InterruptCollectorIfc) &#8212; eccelerators-sphinx-sample-configuration  documentation</title>
+    <title>2. Interrupt Collector Interface (InterruptCollectorIfc) &#8212; eccelerators-sphinx-sample-configuration  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=f63d8bfa" />
     <link rel="stylesheet" type="text/css" href="_static/haiku.css?v=e491ac2d" />
     <script src="_static/documentation_options.js?v=5929fcd5"></script>
@@ -13,21 +13,21 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Interrupt Collector C-Header preview" href="InterruptCollectorIfc_c_code_preview.html" />
-    <link rel="prev" title="Introduction" href="InterruptCollectorIfc_usage.html" /> 
+    <link rel="next" title="3. Interrupt Collector C-Header preview" href="InterruptCollectorIfc_c_code_preview.html" />
+    <link rel="prev" title="1. Interrupt Collector" href="InterruptCollector_usage.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>eccelerators-sphinx-sample-configuration  documentation</span></a></h1>
-        <h2 class="heading"><span>Interrupt Collector Interface (InterruptCollectorIfc)</span></h2>
+        <h2 class="heading"><span>2. Interrupt Collector Interface (InterruptCollectorIfc)</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="InterruptCollectorIfc_usage.html"><strong>Introduction</strong></a>
+        «&#160;&#160;<a href="InterruptCollector_usage.html"><span class="section-number">1. </span>Interrupt Collector</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="InterruptCollectorIfc_c_code_preview.html">Interrupt Collector C-Header preview</a>&#160;&#160;»
+        <a href="InterruptCollectorIfc_c_code_preview.html"><span class="section-number">3. </span>Interrupt Collector C-Header preview</a>&#160;&#160;»
         </p>
 
       </div>
@@ -35,7 +35,7 @@
         
         
   <section id="interrupt-collector-interface-interruptcollectorifc">
-<h1>Interrupt Collector Interface (InterruptCollectorIfc)<a class="headerlink" href="#interrupt-collector-interface-interruptcollectorifc" title="Link to this heading">¶</a></h1>
+<h1><span class="section-number">2. </span>Interrupt Collector Interface (InterruptCollectorIfc)<a class="headerlink" href="#interrupt-collector-interface-interruptcollectorifc" title="Link to this heading">¶</a></h1>
 <p>Interface containing a basic Interrupt Collector block.</p>
 <table class="docutils align-default" id="id1">
 <caption><span class="caption-text">Blocks of Interrupt Collector Interface</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
@@ -76,7 +76,7 @@
 <div class="line"><br /></div>
 </div>
 <section id="interrupt-collector-block-interruptcollectorblk">
-<h2>Interrupt Collector Block (InterruptCollectorBlk)<a class="headerlink" href="#interrupt-collector-block-interruptcollectorblk" title="Link to this heading">¶</a></h2>
+<h2><span class="section-number">2.1. </span>Interrupt Collector Block (InterruptCollectorBlk)<a class="headerlink" href="#interrupt-collector-block-interruptcollectorblk" title="Link to this heading">¶</a></h2>
 <p>This block defines a basic interrupt collector for <strong>level triggered</strong> interrupt sources.
 Usually edge triggered sources e.g., timer pulses can be converted to level triggered
 ones by catching them in the user logic.</p>
@@ -138,7 +138,7 @@ register of an UART.</p></li>
 </tbody>
 </table>
 <section id="interrupt-mask-register-interruptmaskreg">
-<h3>Interrupt Mask Register (InterruptMaskReg)<a class="headerlink" href="#interrupt-mask-register-interruptmaskreg" title="Link to this heading">¶</a></h3>
+<h3><span class="section-number">2.1.1. </span>Interrupt Mask Register (InterruptMaskReg)<a class="headerlink" href="#interrupt-mask-register-interruptmaskreg" title="Link to this heading">¶</a></h3>
 <table class="docutils align-default" id="id5">
 <caption><span class="caption-text">Bits of Interrupt Mask Register</span><a class="headerlink" href="#id5" title="Link to this table">¶</a></caption>
 <tbody>
@@ -363,7 +363,7 @@ register of an UART.</p></li>
 </table>
 </section>
 <section id="interrupt-request-register-interruptrequestreg">
-<h3>Interrupt Request Register (InterruptRequestReg)<a class="headerlink" href="#interrupt-request-register-interruptrequestreg" title="Link to this heading">¶</a></h3>
+<h3><span class="section-number">2.1.2. </span>Interrupt Request Register (InterruptRequestReg)<a class="headerlink" href="#interrupt-request-register-interruptrequestreg" title="Link to this heading">¶</a></h3>
 <table class="docutils align-default" id="id14">
 <caption><span class="caption-text">Bits of Interrupt Request Register</span><a class="headerlink" href="#id14" title="Link to this table">¶</a></caption>
 <tbody>
@@ -696,7 +696,7 @@ Solely the write action is sufficient.</p>
 </table>
 </section>
 <section id="interrupt-service-register-interruptservicereg">
-<h3>Interrupt Service Register (InterruptServiceReg)<a class="headerlink" href="#interrupt-service-register-interruptservicereg" title="Link to this heading">¶</a></h3>
+<h3><span class="section-number">2.1.3. </span>Interrupt Service Register (InterruptServiceReg)<a class="headerlink" href="#interrupt-service-register-interruptservicereg" title="Link to this heading">¶</a></h3>
 <table class="docutils align-default" id="id23">
 <caption><span class="caption-text">Bits of Interrupt Service Register</span><a class="headerlink" href="#id23" title="Link to this table">¶</a></caption>
 <tbody>
@@ -1036,11 +1036,11 @@ Solely the write action is sufficient.</p>
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="InterruptCollectorIfc_usage.html"><strong>Introduction</strong></a>
+        «&#160;&#160;<a href="InterruptCollector_usage.html"><span class="section-number">1. </span>Interrupt Collector</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="InterruptCollectorIfc_c_code_preview.html">Interrupt Collector C-Header preview</a>&#160;&#160;»
+        <a href="InterruptCollectorIfc_c_code_preview.html"><span class="section-number">3. </span>Interrupt Collector C-Header preview</a>&#160;&#160;»
         </p>
 
       </div>

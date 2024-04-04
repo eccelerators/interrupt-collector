@@ -3,8 +3,12 @@
                  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
 <book>
 <title>Eccelerators Library IP specification</title>
-<chapter id="Eccelerators-Library-IP-InterruptCollectorIfc-composite">
-<title>EventCatcherIfc</title>
+<chapter id="Eccelerators-Library-IP-InterruptCollector">
+<title>InterruptCollectorIfc</title>
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"  href="InterruptCollector_usage.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"  href="Eccelerators.Library.IP.InterruptCollectorIfc-composite.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"  href="InterruptCollectorIfc_c_code_preview.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"  href="InterruptCollectorIfc_python_code_preview.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"  href="InterruptCollectorIfc_simulation_code_preview.xml" />
 </chapter>
 </book>
