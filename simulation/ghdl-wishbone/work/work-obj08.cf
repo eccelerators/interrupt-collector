@@ -1,4 +1,0 @@
-v 4
-file / "/home/dev/git/eccelerators/interrupt-collector/tb/hdl/simstm_src_to_customize/tb_signals_pkg.vhd" "6aff584fc767d5d58106d46f95338ee18b130723" "20240404142239.744":
-  package tb_signals_pkg at 1( 0) + 0 on 11 body;
-  package body tb_signals_pkg at 69( 3137) + 0 on 12;

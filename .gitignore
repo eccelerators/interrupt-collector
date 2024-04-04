@@ -1,4 +1,5 @@
 **/__pycache__
 tmp-gen/
 src/docs/src-gen/
-
+simulation/ghdl-wishbone/work
+simulation/modelsim-wishbone/work

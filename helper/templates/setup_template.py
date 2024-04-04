@@ -15,8 +15,8 @@ __version__ = "{}".format(__tag__)
 static_setup_data = {
     "name" : "{{project_folder_name}}", 
     "author": "Heinrich Diebel, Bernd Roeckert, Denis Vasilik",
-    "author_email" : "heinrich.diebel@emerson.com; bernd.roeckert@emerson.com; denis.vasilik@emerson.com;",
-    "url" : "https://gitlab.aug/fpga/{{project_folder_name}}/",
+    "author_email" : "heinrich.diebel@eccelerators.com; bernd.roeckert@eccelerators.com; denis.vasilik@eccelerators.com;",
+    "url" : "https://github.com/ecclerators/{{project_folder_name}}/",
     "description" : "{{project_name}}",
     "long_description_content_type" : "text/markdown",                   
     "classifiers" : [

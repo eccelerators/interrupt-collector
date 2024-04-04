@@ -42,3 +42,8 @@
 	path = submodules/break-docbook-program-listing
 	url = https://github.com/eccelerators/break-docbook-program-listing.git
 	branch = main
+
+[submodule "submodules/simstm"]
+	path = submodules/simstm
+	url = https://github.com/eccelerators/simstm.git
+	branch = main
