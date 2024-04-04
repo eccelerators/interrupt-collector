@@ -19,41 +19,42 @@ class PlausibilityCheckOfSetupPy:
         json_string = extractor.extract(setup_py_file_path)
         static_setup_data = loads(json_string)
         
-        TestSuiteFileDictList = []    
-        for f in os.listdir(project_folder_path + '/tb/simstm/TestSuites'):
-            if os.path.isfile(project_folder_path + '/tb/simstm/TestSuites' + '/' + f):
-                if Path(project_folder_path + '/tb/simstm/TestSuites' + '/' + f).suffix in ['.stm']:                   
-                    if "TestSuite" in f:  
-                        TestSuiteObjectName = Path(project_folder_path + '/tb/simstm/TestSuites' + '/' + f).stem[9:]   
-                        if TestSuiteObjectName.startswith("Indexed"):
-                            isIndexedTestSuite = True
+        TestSuiteFileDictList = []
+        if os.path.isdir(project_folder_path + '/tb/simstm/TestSuites'):
+            for f in os.listdir(project_folder_path + '/tb/simstm/TestSuites'):
+                if os.path.isfile(project_folder_path + '/tb/simstm/TestSuites' + '/' + f):
+                    if Path(project_folder_path + '/tb/simstm/TestSuites' + '/' + f).suffix in ['.stm']:                   
+                        if "TestSuite" in f:  
+                            TestSuiteObjectName = Path(project_folder_path + '/tb/simstm/TestSuites' + '/' + f).stem[9:]   
+                            if TestSuiteObjectName.startswith("Indexed"):
+                                isIndexedTestSuite = True
+                            else:
+                                isIndexedTestSuite = False                         
+                            tsf = open(project_folder_path + '/tb/simstm/TestSuites' + '/' + f, 'r')
+                            tsf_lines = tsf.readlines()
+                            for l in tsf_lines:
+                                if l.startswith("testSuite"):
+                                    testsuite_name = l.split(':')[0]
+                                    break
+                            entry_file = "testMainSuite"  + TestSuiteObjectName + ".stm"
+                            entry_label = "$testMainSuite" + TestSuiteObjectName  
+                        if isIndexedTestSuite:  
+                            tsmf = open(project_folder_path+ '/tb/simstm/' + entry_file, 'r')
+                            tsmf_lines = tsmf.readlines()
+                            for l in tsmf_lines:
+                                if "const" in l and "testMainSuite"  + TestSuiteObjectName + "MaximumIndex" in l:
+                                    testsuite_indexes = l.split()[2]
+                                    break                                                                            
+                            TestSuiteFileDictList.append({"testsuite-name": testsuite_name, 
+                                                      "file":"TestSuites/" + f,
+                                                      "testsuite-indexes": "10",                                                   
+                                                      "entry-file":entry_file, 
+                                                      "entry-label":entry_label})
                         else:
-                            isIndexedTestSuite = False                         
-                        tsf = open(project_folder_path + '/tb/simstm/TestSuites' + '/' + f, 'r')
-                        tsf_lines = tsf.readlines()
-                        for l in tsf_lines:
-                            if l.startswith("testSuite"):
-                                testsuite_name = l.split(':')[0]
-                                break
-                        entry_file = "testMainSuite"  + TestSuiteObjectName + ".stm"
-                        entry_label = "$testMainSuite" + TestSuiteObjectName  
-                    if isIndexedTestSuite:  
-                        tsmf = open(project_folder_path+ '/tb/simstm/' + entry_file, 'r')
-                        tsmf_lines = tsmf.readlines()
-                        for l in tsmf_lines:
-                            if "const" in l and "testMainSuite"  + TestSuiteObjectName + "MaximumIndex" in l:
-                                testsuite_indexes = l.split()[2]
-                                break                                                                            
-                        TestSuiteFileDictList.append({"testsuite-name": testsuite_name, 
-                                                  "file":"TestSuites/" + f,
-                                                  "testsuite-indexes": "10",                                                   
-                                                  "entry-file":entry_file, 
-                                                  "entry-label":entry_label})
-                    else:
-                        TestSuiteFileDictList.append({"testsuite-name": testsuite_name, 
-                                                  "file":"TestSuites/" + f,                                                
-                                                  "entry-file":entry_file, 
-                                                  "entry-label":entry_label})        
+                            TestSuiteFileDictList.append({"testsuite-name": testsuite_name, 
+                                                      "file":"TestSuites/" + f,                                                
+                                                      "entry-file":entry_file, 
+                                                      "entry-label":entry_label})        
                         
                         
         for test_suite_defined in static_setup_data["test_suites"]:
@@ -156,9 +157,7 @@ class PlausibilityCheckOfSetupPy:
         
     def project_folder_name_to_project_name(self, project_folder_name):
         project_name = ""
-        project_folder_name_parts = project_folder_name.split('_')
-        if project_folder_name_parts[0] == "pacusc":
-            project_folder_name_parts[0] = "pacuSc"
+        project_folder_name_parts = project_folder_name.split('-')
         for p in project_folder_name_parts:
             project_name += p[0].upper() + p[1:]
         return project_name    

@@ -15,8 +15,8 @@ __version__ = "{}".format(__tag__)
 static_setup_data = {
     "name" : "interrupt-collector", 
     "author": "Heinrich Diebel, Bernd Roeckert, Denis Vasilik",
-    "author_email" : "heinrich.diebel@emerson.com; bernd.roeckert@emerson.com; denis.vasilik@emerson.com;",
-    "url" : "https://gitlab.aug/fpga/interrupt-collector/",
+    "author_email" : "heinrich.diebel@eccelerators.com; bernd.roeckert@eccelerators.com; denis.vasilik@eccelerators.com;",
+    "url" : "https://github.com/ecclerators/interrupt-collector/",
     "description" : "InterruptCollector",
     "long_description_content_type" : "text/markdown",                   
     "classifiers" : [
@@ -39,7 +39,7 @@ static_setup_data = {
             {"file":"src-gen/c/InterruptCollectorIfc.h"},
             {"file":"src-gen/simstm/InterruptCollectorIfc.stm"},
             {"file":"src-gen/python/InterruptCollectorIfcPlain.py"},
-            {"file":"src-gen/docbook-pdf/emerson.pac.InterruptCollectorIfc.pdf"}
+            {"file":"src-gen/docbook-pdf/Ecclerators.Library.IP.InterruptCollectorIfc.pdf"}
         ]),(
         "interrupt-collector/package/xgui", [
             {"file":"package/xgui/InterruptCollector_v1_0.tcl"}
